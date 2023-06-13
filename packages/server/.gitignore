@@ -1,0 +1,7 @@
+/dist
+/ts-build
+/data
+
+/.env
+/buildinfo
+/*.log
