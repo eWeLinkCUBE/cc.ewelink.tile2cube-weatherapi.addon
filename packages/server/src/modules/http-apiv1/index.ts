@@ -7,8 +7,18 @@ import {
     createErrorRes,
     ERR_SERVER_INTERNAL,
 } from './error';
+import SSE from '../../utils/sse';
 
 export const apiv1 = express.Router();
+
+// SSE stream
+apiv1.get('/events', async (req, res) => {
+    try {
+        SSE.buildStreamContext(req, res);
+    } catch (err) {
+        logger.error("build sse connection error: ", err);
+    }
+});
 
 // Get eWeLink Cube token information
 apiv1.get('/cube-token-info', async (req, res) => {
@@ -63,7 +73,15 @@ apiv1.get('/cube-token', async (req, res) => {
     try {
         const now = Date.now();
         await cubeTokenStore.setCubeToken({ requestTokenTime: now });
+        SSE.send({
+            name: 'get_cube_token_start',
+            data: { requestTokenTime: now }
+        });
         const tokenRes = await cubeApiClient.getBridgeToken();
+        SSE.send({
+            name: 'get_cube_token_end',
+            data: { requestTokenTime: now }
+        });
         if (tokenRes.error === 0) {
             const token = _.get(tokenRes, 'data.token');
             _.set(result, 'data.token', token);
