@@ -7,6 +7,9 @@ import {
     LISTEN_HOST,
     LISTEN_PORT
 } from './const';
+import { apiv1 } from './modules/http-apiv1';
+import { cubeTokenStore } from './modules/local-store/cube-token';
+import { cubeApiClient } from './modules/cube-api';
 
 logger.info('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ START @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
 
@@ -17,28 +20,36 @@ app.use(express.json());
 
 // Middleware - log request
 app.use((req, res, next) => {
-    const logType = '(app.mid.log)';
     const {
         ip,
         method,
         originalUrl,
         body
     } = req;
-
-    // Set request ID
+    const logType = 'app.mid.log';
     const requestId = uuid();
     _.set(req, 'requestId', requestId);
+    const logPrefix = `[${requestId}] (${logType})`
 
-    logger.info(`[${requestId}] ${logType} request: ${ip} --> ${method} ${originalUrl}`);
+    logger.info(`${logPrefix} request: ${ip} --> ${method} ${originalUrl}`);
     if (!_.isEmpty(body)) {
-        logger.info(`[${requestId}] ${logType} body: ${JSON.stringify(body)}`);
+        logger.info(`${logPrefix} body: ${JSON.stringify(body)}`);
     }
 
     next();
 });
 
-app.listen(LISTEN_PORT, LISTEN_HOST, () => {
+app.use('/api/v1', apiv1);
+
+app.listen(LISTEN_PORT, LISTEN_HOST, async () => {
     logger.info(`Server listen at port ${LISTEN_PORT}`);
+
+    // Init cubeApiClient
+    const tokenData = await cubeTokenStore.getCubeToken();
+    const tokenStr = _.get(tokenData, 'token');
+    if (tokenStr) {
+        cubeApiClient.setToken(tokenStr);
+    }
 });
 
 process.on('SIGTERM', () => {
