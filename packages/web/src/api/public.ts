@@ -134,7 +134,7 @@ async function _httpGetPOSTPutDeleteRequest<T>(url: string, params: object, meth
         if (result.data.error === 500) {
             message.error(i18n.global.t('ERROR_500'))
         }
-        console.log(`http请求结束 url:${url}`, `method:${methodType}`, 'params:', params);
+        // console.log(`http请求结束 url:${url}`, `method:${methodType}`, 'params:', params);
         return result ? (result.data as IResponse<T>) : ({} as IResponse<T>);
     } catch (error) {
         console.log('error => ', error);

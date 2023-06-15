@@ -1,7 +1,7 @@
 
 
 import axios from 'axios';
-import NSPanelPro from './Weather';
+import Weather from './Weather';
 import { useEtcStore } from '@/store/etc';
 import ErrorCodeHandle from '@/utils/ErrorCodeHandle';
 import { emitter } from '@/main';
@@ -89,5 +89,5 @@ export default {
     getAt,
     setEventCallback,
     cleanEventCallback,
-    NSPanelPro,
+    Weather,
 };

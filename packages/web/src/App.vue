@@ -12,6 +12,8 @@ const router = useRouter();
 const sseStore = useSseStore();
 
 onMounted(() => {
-
+    // sseStore.startSse();
 });
 </script>
+
+<style></style>

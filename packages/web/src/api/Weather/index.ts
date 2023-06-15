@@ -13,5 +13,6 @@ async function GetToken(){
 }
 
 export default {
-    GetTokenInfo
+    GetTokenInfo,
+    GetToken
 };

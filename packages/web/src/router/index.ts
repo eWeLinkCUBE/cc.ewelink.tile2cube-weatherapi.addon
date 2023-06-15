@@ -1,23 +1,26 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Token from '@/views/Token/Index.vue'
-import Setting from '@/views/Setting/Index.vue'
 
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
         {
             path: '/',
-            redirect: '/setting'
-        },
-        {
-            path:'/setting',
-            name:'setting',
-            component: Setting,
+            redirect: '/token'
         },
         {
             path:'/token',
             name:'token',
-            component: Token,
+            component: () => import('@/views/Token/Index.vue'),
+        },
+        {
+            path:'/setting',
+            name:'setting',
+            component: () => import('@/views/Settings/Index.vue'),
+        },
+        {
+            path:'/card',
+            name:'card',
+            component: () => import('@/views/Card/Index.vue'),
         }
     ]
 })

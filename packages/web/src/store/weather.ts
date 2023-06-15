@@ -4,18 +4,20 @@ import _ from 'lodash';
 import router from '@/router';
 import moment from 'moment';
 
-interface IDeviceState {
-
+interface IWeatherState {
+    weatherInfo:string,
 }
 
 export const useWeatherStore = defineStore('weather', {
-    state: (): IDeviceState => {
+    state: (): IWeatherState => {
         return {
-
+            weatherInfo:'',
         };
     },
     actions: {
-
+        setWeatherInfo(weatherInfo:string){
+            this.weatherInfo = weatherInfo;
+        },
     },
     getters: {
 

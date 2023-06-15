@@ -29,15 +29,26 @@ export const useSseStore = defineStore('sse', {
             const timestamp = new Date().getTime();
             source = new EventSource(`${sseUrl}?id=${timestamp}`);
             source.addEventListener('open', () => {
-                const etcStore = useEtcStore();
                 console.log('SSE connect success');
                 this.sseIsConnect = true;
             });
 
+            source.addEventListener('get_cube_token_start', (event: any) => {
+                console.log('get_cube_token_start------------>',JSON.parse(event));
+
+            });
+
+            source.addEventListener('get_cube_token_end', (event: any) => {
+                console.log('get_cube_token_end------------>',JSON.parse(event));
+
+            });
+
             /** SSE失败 */
-            source.addEventListener('error', async (event: any) => {
+            source.addEventListener('error',(event: any) => {
                 console.log('SSE connect error, reboot');
-                await this.startSse();
+                setTimeout(()=>{
+                    this.startSse();
+                },10000)
             });
         },
     },
