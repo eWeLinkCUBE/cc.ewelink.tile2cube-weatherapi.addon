@@ -5,9 +5,12 @@ import { logger } from '../../logger';
 import { cubeApiClient } from '../cube-api';
 import {
     createErrorRes,
+    ERR_PARAM_NO_CITY_NAME,
+    ERR_PARAM_NO_WEATHER_API_KEY,
     ERR_SERVER_INTERNAL,
 } from './error';
 import SSE from '../../utils/sse';
+import { weatherApiClient } from '../weather-api';
 
 export const apiv1 = express.Router();
 
@@ -94,5 +97,47 @@ apiv1.get('/cube-token', async (req, res) => {
         return res.send(result);
     } finally {
         logger.info(`${logPrefix} result: ${JSON.stringify(result)}`);
+    }
+});
+
+// Get city list
+apiv1.get('/city-list', async (req, res) => {
+    const requestId = _.get(req, 'requestId');
+    const logType = 'apiv1.getCityList';
+    const logPrefix = `[${requestId}] (${logType})`;
+
+    const weatherApiKey = req.query.key as string;
+    const cityName = req.query.city as string;
+
+    let result = {
+        error: 0,
+        msg: 'Success',
+        data: {}
+    };
+
+    try {
+        if (!weatherApiKey) {
+            result = createErrorRes(ERR_PARAM_NO_WEATHER_API_KEY);
+            return res.send(result);
+        }
+
+        if (!cityName) {
+            result = createErrorRes(ERR_PARAM_NO_CITY_NAME);
+            return res.send(result);
+        }
+
+        weatherApiClient.setRequestKey(weatherApiKey);
+        const cityRes = await weatherApiClient.requestJsonData('search.json', { q: cityName });
+        if (cityRes.error === 0) {
+            _.set(result, 'data.cityList', cityRes.data);
+        } else {
+            result = createErrorRes(cityRes);
+        }
+        return res.send(result);
+    } catch (err: any) {
+        result = createErrorRes(ERR_SERVER_INTERNAL);
+        return res.send(result);
+    } finally {
+        logger.info(`${logPrefix} result :${JSON.stringify(result)}`);
     }
 });
