@@ -66,14 +66,14 @@ class CubeApiClient {
             _.set(reqConfig, 'headers["Authorization"]', `Bearer ${this._token}`);
         }
 
-        logger.debug(`(mod.cube-api) _sendHttpRequest reqConfig: ${JSON.stringify(reqConfig)}`);
+        logger.debug(`(mod.cube-api) _sendHttpRequest() reqConfig: ${JSON.stringify(reqConfig)}`);
 
         try {
             const res = await axios(reqConfig);
-            logger.debug(`(mod.cube-api) _sendHttpRequest res.data: ${JSON.stringify(res.data)}`);
+            logger.debug(`(mod.cube-api) _sendHttpRequest() res.data: ${JSON.stringify(res.data)}`);
             return res.data;
         } catch (err: any) {
-            logger.error(`(mod.cube-api) _sendHttpRequest error: ${err.message}`);
+            logger.error(`(mod.cube-api) _sendHttpRequest() error: ${err.message}`);
             if (err.code === 'EHOSTUNREACH') {
                 return createErrorRes(ERR_IHOST_UNREACH);
             } else {
@@ -83,7 +83,7 @@ class CubeApiClient {
     }
 
     setToken(token: string) {
-        logger.debug(`(mod.cube-api) setToken token: ${token}`);
+        logger.debug(`(mod.cube-api) setToken() token: ${token}`);
         this._token = token;
     }
 

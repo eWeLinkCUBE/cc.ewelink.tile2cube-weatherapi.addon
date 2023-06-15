@@ -44,7 +44,6 @@ apiv1.get('/cube-token-info', async (req, res) => {
             result.data.requestTokenTime = tokenData.requestTokenTime;
         }
 
-        // Check token valid
         const deviceListRes = await cubeApiClient.getDeviceList();
         if (deviceListRes.error === 0) {
             result.data.cubeTokenValid = true;

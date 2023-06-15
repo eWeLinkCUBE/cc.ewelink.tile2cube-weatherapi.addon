@@ -28,7 +28,7 @@ class CubeTokenStore {
 
     /** Set cube token data. */
     async setCubeToken(tokenData: CubeTokenData) {
-        logger.debug(`(mod.local-store.cube-token) setCubeToken tokenData: ${JSON.stringify(tokenData)}`);
+        logger.debug(`(mod.local-store.cube-token) setCubeToken() tokenData: ${JSON.stringify(tokenData)}`);
         const oldTokenData = await this.getCubeToken();
         if (!oldTokenData) {
             await this._store.set(this._key, tokenData);
@@ -44,9 +44,9 @@ class CubeTokenStore {
     }
 
     /** Get cube token data. */
-    async getCubeToken() {
+    async getCubeToken(): Promise<CubeTokenData | undefined> {
         const res = await this._store.get(this._key);
-        logger.debug(`(mod.local-store.cube-token) getCubeToken res: ${JSON.stringify(res)}`);
+        logger.debug(`(mod.local-store.cube-token) getCubeToken() res: ${JSON.stringify(res)}`);
         return res;
     }
 }
