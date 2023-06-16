@@ -1,6 +1,7 @@
 import express from 'express';
 import _ from 'lodash';
 import { cubeTokenStore } from '../local-store/cube-token';
+import { userConfigStore } from '../local-store/user-config';
 import { logger } from '../../logger';
 import { cubeApiClient } from '../cube-api';
 import {
@@ -138,6 +139,56 @@ apiv1.get('/city-list', async (req, res) => {
         result = createErrorRes(ERR_SERVER_INTERNAL);
         return res.send(result);
     } finally {
-        logger.info(`${logPrefix} result :${JSON.stringify(result)}`);
+        logger.info(`${logPrefix} result: ${JSON.stringify(result)}`);
     }
+});
+
+// Get user config
+apiv1.get('/config', async (req, res) => {
+    const requestId = _.get(req, 'requestId');
+    const logType = 'apiv1.getUserConfig';
+    const logPrefix = `[${requestId}] (${logType})`;
+
+    let result: any = {
+        error: 0,
+        msg: 'Success',
+        data: {
+            weatherApiKey: '',
+            cityName: '',
+            tempUnit: ''
+        }
+    };
+
+    try {
+        const userConfig = await userConfigStore.getUserConfigData();
+        logger.info(`${logPrefix} userConfig: ${JSON.stringify(userConfig)}`);
+        if (userConfig) {
+            if (userConfig.weatherApiKey) {
+                result.data.weatherApiKey = userConfig.weatherApiKey;
+            }
+            if (userConfig.cityName) {
+                result.data.cityName = userConfig.cityName;
+            }
+            if (userConfig.tempUnit) {
+                result.data.tempUnit = userConfig.tempUnit;
+            }
+        }
+        return res.send(result);
+    } catch (err: any) {
+        result = createErrorRes(ERR_SERVER_INTERNAL);
+        return res.send(result);
+    } finally {
+        logger.info(`${logPrefix} result: ${JSON.stringify(result)}`);
+    }
+});
+
+// Save user config
+apiv1.post('/config', async (req, res) => {
+    return res.send('you saved it');
+});
+
+// Get weather forecast data
+apiv1.get('/forecast', async (req, res) => {
+    // TODO: check weather API token and city (check user config)
+    return res.send('you got forecast');
 });
