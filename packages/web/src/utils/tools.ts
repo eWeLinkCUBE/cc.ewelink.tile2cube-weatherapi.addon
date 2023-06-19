@@ -42,3 +42,18 @@ export function sleep(time: number) {
         }, time)
     })
 }
+
+/**
+ * 温度单位选项
+ * @date 15/06/2023
+ */
+export const temperatureData = [
+    {
+        label: '℃',
+        value: '℃',
+    },
+    {
+        label: '℉',
+        value: '℉',
+    },
+];

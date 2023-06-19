@@ -4,10 +4,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
-import SmallCard from '@/views/Card/component/smallCard.vue';
-import LargeCard from '@/views/Card/component/largeCard.vue';
-import Detail from '@/views/Card/component/Detail.vue';
-import Cast from '@/views/Card/component/Cast.vue';
+import SmallCard from '@/views/Card/component/SmallCard.vue';
+import LargeCard from '@/views/Card/component/LargeCard.vue';
+import Detail from '@/views/Card/component/DetailCard.vue';
+import Cast from '@/views/Card/component/CastCard.vue';
 
 const displayType = ref();
 interface IStyle{
@@ -22,6 +22,9 @@ const styleObject = reactive<IStyle>({
         height:0
     },
 });
+const relationMap:{[key:string]:any} = {
+    'SmallCard':SmallCard
+}
 onMounted(()=>{
     styleObject.object.width = window.innerWidth;
     styleObject.object.height = window.innerHeight;
