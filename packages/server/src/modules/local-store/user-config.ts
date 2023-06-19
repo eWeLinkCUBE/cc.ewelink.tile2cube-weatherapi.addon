@@ -17,7 +17,15 @@ const FULLPATH = path.join(DATA_PATH, USER_CONFIG_FILE_NAME);
  */
 interface UserConfigData {
     weatherApiKey?: string;
-    cityData?: any;
+    cityData?: {
+        id: string;
+        name: string;
+        region: string;
+        country: string;
+        lat: string;
+        lon: string;
+        url: string;
+    };
     tempUnit?: string;
 }
 

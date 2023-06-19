@@ -12,6 +12,7 @@ import {
 } from './error';
 import SSE from '../../utils/sse';
 import { weatherApiClient } from '../weather-api';
+import { weatherDataStore } from '../local-store/weather-data';
 
 export const apiv1 = express.Router();
 
@@ -40,7 +41,7 @@ apiv1.get('/cube-token-info', async (req, res) => {
 
     try {
         const tokenData = await cubeTokenStore.getCubeToken();
-        if (!tokenData || !tokenData.token) {
+        if (!tokenData) {
             return res.send(result);
         }
 
@@ -48,9 +49,11 @@ apiv1.get('/cube-token-info', async (req, res) => {
             result.data.requestTokenTime = tokenData.requestTokenTime;
         }
 
-        const deviceListRes = await cubeApiClient.getDeviceList();
-        if (deviceListRes.error === 0) {
-            result.data.cubeTokenValid = true;
+        if (tokenData.token) {
+            const deviceListRes = await cubeApiClient.getDeviceList();
+            if (deviceListRes.error === 0) {
+                result.data.cubeTokenValid = true;
+            }
         }
 
         return res.send(result);
@@ -170,7 +173,7 @@ apiv1.get('/config', async (req, res) => {
                 result.data.weatherApiKey = userConfig.weatherApiKey;
             }
             if (userConfig.cityData) {
-                result.data.cityData = userConfig.cityData;
+                result.data.cityData = userConfig.cityData as any;
             }
             if (userConfig.tempUnit) {
                 result.data.tempUnit = userConfig.tempUnit;
@@ -233,6 +236,38 @@ apiv1.post('/config', async (req, res) => {
 
 // Get weather forecast data
 apiv1.get('/forecast', async (req, res) => {
-    // TODO: check weather API token and city (check user config)
-    return res.send('you got forecast');
+    const requestId = _.get(req, 'requestId');
+    const logType = 'apiv1.getForecastData';
+    const logPrefix = `[${requestId}] (${logType})`;
+
+    let result = {
+        error: 0,
+        msg: 'Success',
+        data: {}
+    };
+
+    try {
+        const days = req.query.days;
+        const refresh = req.query.refresh || '0';
+
+        if (refresh === '1') {
+            // Refresh cache data
+            const forecastDays = days ? _.toInteger(days) : 5;
+            const forecastRes = await weatherApiClient.getForecastData(forecastDays);
+            if (forecastRes.error !== 0) {
+                result = createErrorRes(forecastRes);
+                return res.send(result);
+            }
+        }
+
+        const weatherData = await weatherDataStore.getWeatherData();
+        _.set(result, 'data', weatherData);
+        return res.send(result);
+    } catch (err: any) {
+        logger.error(`${logPrefix} error: ${err.message}`);
+        result = createErrorRes(ERR_SERVER_INTERNAL) as any;
+        return res.send(result);
+    } finally {
+        logger.info(`${logPrefix} result: ${JSON.stringify(result)}`);
+    }
 });

@@ -9,8 +9,11 @@ import {
     ERR_WEATHER_API_KEY_DISABLED,
     ERR_WEATHER_API_KEY_INVALID,
     ERR_WEATHER_API_KEY_NOT_PROVIDED,
+    ERR_WEATHER_API_NO_CITY_DATA,
     createErrorRes
 } from '../http-apiv1/error';
+import { userConfigStore } from '../local-store/user-config';
+import { weatherDataStore } from '../local-store/weather-data';
 
 interface WeatherApiClientOpts {
     requestKey?: string;
@@ -21,6 +24,8 @@ interface WeatherApiRequestParams {
     lang?: string;
     dt?: string;
     days?: number;
+    aqi?: string;
+    alerts?: string;
 }
 
 type WeatherApiType = 'search.json' | 'current.json' | 'forecast.json';
@@ -78,19 +83,40 @@ class WeatherApiClient {
     }
 
     async getForecastData(days: number) {
-        // 1. get weather api key
+        const userConfig = await userConfigStore.getUserConfigData();
+        logger.debug(`(mod.weather-api) getForecastData() userConfig: ${JSON.stringify(userConfig)}`);
+        if (!userConfig?.weatherApiKey) {
+            return createErrorRes(ERR_WEATHER_API_KEY_NOT_PROVIDED);
+        }
 
-        // 2. get city data
+        if (!userConfig.cityData) {
+            return createErrorRes(ERR_WEATHER_API_NO_CITY_DATA);
+        }
 
-        // 3. get forecast data
+        this.setRequestKey(userConfig.weatherApiKey);
 
-        // 4. save it
+        const query = {
+            q: `${userConfig.cityData.lat},${userConfig.cityData.lon}`,
+            days,
+            aqi: 'yes',
+            alerts: 'yes'
+        };
+        const res = await this.requestJsonData('forecast.json', query);
+        logger.debug(`(mod.weather-api) getForecastData() res: ${JSON.stringify(res)}`);
+
+        if (res.error === 0) {
+            const now = Date.now();
+            await weatherDataStore.setWeatherData({ updateTime: now, forecastData: res.data });
+        }
+
+        return res;
     }
 
     startSched() {
         logger.info('(mod.weather-api) startSched()');
         schedule.scheduleJob('0 0 * * * *', async () => {
-            logger.info('(mod.weather-api) get weather and save it');
+            // Get 5 days forecast every hour
+            await this.getForecastData(5);
         });
     }
 

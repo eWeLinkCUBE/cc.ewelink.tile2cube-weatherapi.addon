@@ -40,6 +40,11 @@ export const ERR_WEATHER_API_INTERNAL = {
     msg: 'Weather API internal error'
 };
 
+export const ERR_WEATHER_API_NO_CITY_DATA = {
+    error: 1008,
+    msg: 'Weather API no city data'
+};
+
 export const ERR_PARAM_NO_WEATHER_API_KEY = {
     error: 2000,
     msg: 'No weather API key'
