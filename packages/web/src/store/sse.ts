@@ -4,7 +4,7 @@ import { useEtcStore } from './etc';
 import { message } from 'ant-design-vue';
 import i18n from '@/i18n';
 import type {
-    IGateWayInfoData,
+    ITokenInfo,
 } from '@/api/ts/interface/IWeatherInfo';
 let source: null | EventSource = null;
 
