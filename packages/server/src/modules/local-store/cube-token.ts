@@ -8,6 +8,12 @@ const DATA_PATH = process.env.CONFIG_DATA_PATH as string;
 const CUBE_TOKEN_FILE_NAME = 'cube-token.json';
 const FULLPATH = path.join(DATA_PATH, CUBE_TOKEN_FILE_NAME);
 
+/**
+ * eWeLink cube data interface
+ *
+ * @param token token data string
+ * @param requestTokenTime last request token timestamp
+ */
 interface CubeTokenData {
     token?: string;
     requestTokenTime?: number;
@@ -16,7 +22,7 @@ interface CubeTokenData {
 class CubeTokenStore {
     private _store;
 
-    private _key = 'cubeToken';
+    private readonly _key = 'cubeToken';
 
     constructor() {
         this._store = new Keyv({

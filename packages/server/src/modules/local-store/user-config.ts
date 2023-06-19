@@ -8,6 +8,13 @@ const DATA_PATH = process.env.CONFIG_DATA_PATH as string;
 const USER_CONFIG_FILE_NAME = 'user-config.json';
 const FULLPATH = path.join(DATA_PATH, USER_CONFIG_FILE_NAME);
 
+/**
+ * User config data interface
+ *
+ * @param weatherApiKey Weather API key
+ * @param cityName User city name
+ * @param tempUnit Temperature unit
+ */
 interface UserConfigData {
     weatherApiKey?: string;
     cityName?: string;
@@ -17,7 +24,7 @@ interface UserConfigData {
 class UserConfigStore {
     private _store;
 
-    private _key = 'userConfig';
+    private readonly _key = 'userConfig';
 
     constructor() {
         this._store = new Keyv({

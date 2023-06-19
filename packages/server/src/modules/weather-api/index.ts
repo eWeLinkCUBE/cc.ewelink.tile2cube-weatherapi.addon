@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import axios, { AxiosRequestConfig } from 'axios';
+import schedule from 'node-schedule';
 import { logger } from '../../logger';
 import {
     ERR_SERVER_INTERNAL,
@@ -74,6 +75,29 @@ class WeatherApiClient {
                 return createErrorRes(ERR_SERVER_INTERNAL);
             }
         }
+    }
+
+    async getForecastData(days: number) {
+        // 1. get weather api key
+
+        // 2. get city data
+
+        // 3. get forecast data
+
+        // 4. save it
+    }
+
+    startSched() {
+        logger.info('(mod.weather-api) startSched()');
+        schedule.scheduleJob('0 0 * * * *', async () => {
+            logger.info('(mod.weather-api) get weather and save it');
+        });
+    }
+
+    async stopSched() {
+        logger.info('(mod.weather-api) stopSched() start');
+        await schedule.gracefulShutdown();
+        logger.info('(mod.weather-api) stopSched() end');
     }
 }
 

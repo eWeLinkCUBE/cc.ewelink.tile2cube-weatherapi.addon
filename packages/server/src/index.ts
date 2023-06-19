@@ -10,6 +10,7 @@ import {
 import { apiv1 } from './modules/http-apiv1';
 import { cubeTokenStore } from './modules/local-store/cube-token';
 import { cubeApiClient } from './modules/cube-api';
+import { weatherApiClient } from './modules/weather-api';
 
 logger.info('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ START @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
 
@@ -50,9 +51,13 @@ app.listen(LISTEN_PORT, LISTEN_HOST, async () => {
     if (tokenStr) {
         cubeApiClient.setToken(tokenStr);
     }
+
+    // Start weather schedule
+    weatherApiClient.startSched();
 });
 
-process.on('SIGTERM', () => {
-    logger.info('................................ GOT SIGTERM ................................');
+process.on('SIGTERM', async () => {
+    await weatherApiClient.stopSched();
+    logger.info('................................ STOP ................................');
     process.exit(0);
 });
