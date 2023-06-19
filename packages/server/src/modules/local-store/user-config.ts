@@ -12,12 +12,12 @@ const FULLPATH = path.join(DATA_PATH, USER_CONFIG_FILE_NAME);
  * User config data interface
  *
  * @param weatherApiKey Weather API key
- * @param cityName User city name
+ * @param cityData Weather API city data
  * @param tempUnit Temperature unit
  */
 interface UserConfigData {
     weatherApiKey?: string;
-    cityName?: string;
+    cityData?: any;
     tempUnit?: string;
 }
 
@@ -45,8 +45,8 @@ class UserConfigStore {
                 oldData.weatherApiKey = userConfigData.weatherApiKey;
             }
 
-            if (userConfigData.cityName) {
-                oldData.cityName = userConfigData.cityName;
+            if (userConfigData.cityData) {
+                oldData.cityData = userConfigData.cityData;
             }
 
             if (userConfigData.tempUnit) {

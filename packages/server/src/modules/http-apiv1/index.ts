@@ -157,7 +157,7 @@ apiv1.get('/config', async (req, res) => {
         msg: 'Success',
         data: {
             weatherApiKey: '',
-            cityName: '',
+            cityData: null,
             tempUnit: ''
         }
     };
@@ -169,8 +169,8 @@ apiv1.get('/config', async (req, res) => {
             if (userConfig.weatherApiKey) {
                 result.data.weatherApiKey = userConfig.weatherApiKey;
             }
-            if (userConfig.cityName) {
-                result.data.cityName = userConfig.cityName;
+            if (userConfig.cityData) {
+                result.data.cityData = userConfig.cityData;
             }
             if (userConfig.tempUnit) {
                 result.data.tempUnit = userConfig.tempUnit;
@@ -201,15 +201,15 @@ apiv1.post('/config', async (req, res) => {
     try {
         // TODO: check params
         const weatherApiKey = _.get(req, 'body.weatherApiKey');
-        const cityName = _.get(req, 'body.cityName');
+        const cityData = _.get(req, 'body.cityData');
         const tempUnit = _.get(req, 'body.tempUnit');
 
         const saveData = {};
         if (weatherApiKey) {
             _.set(saveData, 'weatherApiKey', weatherApiKey);
         }
-        if (cityName) {
-            _.set(saveData, 'cityName', cityName);
+        if (cityData) {
+            _.set(saveData, 'cityData', cityData);
         }
         if (tempUnit) {
             _.set(saveData, 'tempUnit', tempUnit);
