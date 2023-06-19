@@ -54,7 +54,8 @@ apiv1.get('/cube-token-info', async (req, res) => {
         }
 
         return res.send(result);
-    } catch (err) {
+    } catch (err: any) {
+        logger.error(`${logPrefix} error: ${err.message}`);
         result = createErrorRes(ERR_SERVER_INTERNAL) as any;
         return res.send(result);
     } finally {
@@ -93,7 +94,8 @@ apiv1.get('/cube-token', async (req, res) => {
             result = createErrorRes(tokenRes);
         }
         return res.send(result);
-    } catch (err) {
+    } catch (err: any) {
+        logger.error(`${logPrefix} error: ${err.message}`);
         result = createErrorRes(ERR_SERVER_INTERNAL);
         return res.send(result);
     } finally {
@@ -136,6 +138,7 @@ apiv1.get('/city-list', async (req, res) => {
         }
         return res.send(result);
     } catch (err: any) {
+        logger.error(`${logPrefix} error: ${err.message}`);
         result = createErrorRes(ERR_SERVER_INTERNAL);
         return res.send(result);
     } finally {
@@ -149,7 +152,7 @@ apiv1.get('/config', async (req, res) => {
     const logType = 'apiv1.getUserConfig';
     const logPrefix = `[${requestId}] (${logType})`;
 
-    let result: any = {
+    let result = {
         error: 0,
         msg: 'Success',
         data: {
@@ -175,7 +178,8 @@ apiv1.get('/config', async (req, res) => {
         }
         return res.send(result);
     } catch (err: any) {
-        result = createErrorRes(ERR_SERVER_INTERNAL);
+        logger.error(`${logPrefix} error: ${err.message}`);
+        result = createErrorRes(ERR_SERVER_INTERNAL) as any;
         return res.send(result);
     } finally {
         logger.info(`${logPrefix} result: ${JSON.stringify(result)}`);
@@ -184,7 +188,47 @@ apiv1.get('/config', async (req, res) => {
 
 // Save user config
 apiv1.post('/config', async (req, res) => {
-    return res.send('you saved it');
+    const requestId = _.get(req, 'requestId');
+    const logType = 'apiv1.saveUserConfig';
+    const logPrefix = `[${requestId}] (${logType})`;
+
+    let result = {
+        error: 0,
+        msg: 'Success',
+        data: {}
+    };
+
+    try {
+        // TODO: check params
+        const weatherApiKey = _.get(req, 'body.weatherApiKey');
+        const cityName = _.get(req, 'body.cityName');
+        const tempUnit = _.get(req, 'body.tempUnit');
+
+        const saveData = {};
+        if (weatherApiKey) {
+            _.set(saveData, 'weatherApiKey', weatherApiKey);
+        }
+        if (cityName) {
+            _.set(saveData, 'cityName', cityName);
+        }
+        if (tempUnit) {
+            _.set(saveData, 'tempUnit', tempUnit);
+        }
+
+        if (!_.isEmpty(saveData)) {
+            await userConfigStore.setUserConfigData(saveData);
+        }
+
+        // TODO: create weather cards
+
+        return res.send(result);
+    } catch (err: any) {
+        logger.error(`${logPrefix} error: ${err.message}`);
+        result = createErrorRes(ERR_SERVER_INTERNAL) as any;
+        return res.send(result);
+    } finally {
+        logger.info(`${logPrefix} result: ${JSON.stringify(result)}`);
+    }
 });
 
 // Get weather forecast data
