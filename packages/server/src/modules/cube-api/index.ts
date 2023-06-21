@@ -12,6 +12,7 @@ import {
     ERR_SERVER_INTERNAL,
     ERR_IHOST_UNREACH,
     ERR_GET_BRIDGE_TOKEN_TIMEOUT,
+    ERR_NO_CUBE_API_TOKEN,
 } from '../http-apiv1/error';
 
 interface CubeApiClientOpts {
@@ -32,6 +33,27 @@ interface CubeApiClientGetBridgeTokenParams {
     appName?: string;
 }
 
+interface AddUiCardListParams {
+    label?: string;
+    cast_settings?: {
+        dimensions: {
+            src: string;
+            size: string;
+        }[];
+        default: string;
+    };
+    web_settings: {
+        dimensions: {
+            src: string;
+            size: string;
+        }[];
+        drawer_component?: {
+            src: string;
+        };
+        default: string;
+    };
+}
+
 class CubeApiClient {
     private _host = '';
     private _token = '';
@@ -42,7 +64,9 @@ class CubeApiClient {
     }
 
     private async _sendHttpRequest(params: CubeApiClientSendHttpRequestParams) {
-        // TODO: check token first
+        if (!this._token) {
+            return createErrorRes(ERR_NO_CUBE_API_TOKEN);
+        }
 
         const reqConfig: AxiosRequestConfig = {
             method: params.method,
@@ -126,6 +150,25 @@ class CubeApiClient {
             method: 'GET',
             url: '/open-api/v1/rest/devices',
             needToken: true
+        });
+    }
+
+    /** Get iHost UI card list */
+    async getUiCardList() {
+        return await this._sendHttpRequest({
+            method: 'GET',
+            url: '/open-api/v1/rest/ui/cards',
+            needToken: true
+        });
+    }
+
+    /** Add iHost UI card list */
+    async addUiCardList(params: AddUiCardListParams) {
+        return await this._sendHttpRequest({
+            method: 'POST',
+            url: '/open-api/v1/rest/ui/cards',
+            needToken: true,
+            bodyData: params
         });
     }
 }

@@ -14,6 +14,7 @@ const FULLPATH = path.join(DATA_PATH, USER_CONFIG_FILE_NAME);
  * @param weatherApiKey Weather API key
  * @param cityData Weather API city data
  * @param tempUnit Temperature unit
+ * @param weatherCardIdList Weather card ID list
  */
 interface UserConfigData {
     weatherApiKey?: string;
@@ -27,6 +28,7 @@ interface UserConfigData {
         url: string;
     };
     tempUnit?: string;
+    weatherCardIdList?: string[];
 }
 
 class UserConfigStore {
@@ -59,6 +61,10 @@ class UserConfigStore {
 
             if (userConfigData.tempUnit) {
                 oldData.tempUnit = userConfigData.tempUnit;
+            }
+
+            if (userConfigData.weatherCardIdList) {
+                oldData.weatherCardIdList = userConfigData.weatherCardIdList;
             }
 
             await this._store.set(this._key, oldData);

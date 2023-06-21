@@ -25,8 +25,6 @@ class WeatherDataStore {
     private _key = 'weatherData';
 
     constructor() {
-        // TODO: refresh weather data every hours
-
         this._store = new Keyv({
             store: new KeyvFile({
                 filename: FULLPATH

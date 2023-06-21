@@ -222,7 +222,56 @@ apiv1.post('/config', async (req, res) => {
             await userConfigStore.setUserConfigData(saveData);
         }
 
-        // TODO: create weather cards
+        // Get iHost UI card list
+        const cardListRes = await cubeApiClient.getUiCardList();
+        if (cardListRes.error !== 0) {
+            result = createErrorRes(cardListRes);
+            return res.send(result);
+        }
+        const cardList = cardListRes.data;
+
+        // Check pre-save UI card ID
+        let shouldCreateWeatherUiCard = true;
+        const userConfigData = await userConfigStore.getUserConfigData();
+        if (userConfigData && userConfigData.weatherCardIdList && userConfigData.weatherCardIdList.length !== 0) {
+            for (const id of userConfigData.weatherCardIdList) {
+                const found = _.find(cardList, { id });
+                if (found) {
+                    shouldCreateWeatherUiCard = false;
+                    break;
+                }
+            }
+        }
+
+        if (shouldCreateWeatherUiCard) {
+            const addRes = await cubeApiClient.addUiCardList({
+                label: 'Weather Card',
+                web_settings: {
+                    default: '2×1',
+                    dimensions: [
+                        {
+                            size: '2×1',
+                            src: 'xxx'
+                        }
+                    ],
+                    drawer_component: {
+                        src: 'xxx'
+                    }
+                },
+                cast_settings: {
+                    default: '1×1',
+                    dimensions: [
+                        {
+                            size: '1×1',
+                            src: 'xxxx'
+                        }
+                    ]
+                }
+            });
+            if (addRes.error === 0) {
+                await userConfigStore.setUserConfigData({ weatherCardIdList: [ addRes.data.id ] });
+            }
+        }
 
         return res.send(result);
     } catch (err: any) {

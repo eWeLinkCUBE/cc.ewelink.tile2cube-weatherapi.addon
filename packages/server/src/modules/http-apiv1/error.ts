@@ -10,6 +10,11 @@ export const ERR_IHOST_UNREACH = {
     msg: 'iHost unreach'
 };
 
+export const ERR_NO_CUBE_API_TOKEN = {
+    error: 1002,
+    msg: 'No eWeLink Cube API token'
+};
+
 export const ERR_GET_BRIDGE_TOKEN_TIMEOUT = {
     error: 1002,
     msg: 'Get bridge token timeout'
