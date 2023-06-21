@@ -20,6 +20,9 @@ export const useEtcStore = defineStore('addon_etc', {
         setAt(at: string) {
             this.at = at;
         },
+        languageChange(language:'zh-cn' | 'en-us'){
+            this.language = language;
+        }
     },
     persist: true,
 });

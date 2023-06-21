@@ -1,89 +1,87 @@
 <template>
     <div class="get-token">
-        <!-- 文字 -->
         <section class="container">
             <h2 class="title">{{ $t('GET_GATEWAY_TOKEN') }}</h2>
-            <img src="@/assets/img/get_token.png" alt="" />
-            <h3 class="click-msg">{{ $t('CLICK_GET_TOKEN') }}</h3>
-            <h3 class="allow-msg">{{ $t('CONFIRM_GET_TOKEN') }}</h3>
-            <!-- 获取token -->
+            <div class="carousel">
+                <a-carousel autoplay>
+                    <div class="swiper-item" v-for="(item, index) in language ? zh_autoplayImageList : en_autoplayImageList" :key="index">
+                        <img class="swiper-image" :src="item.imgSrc" />
+                    </div>
+                </a-carousel>
+            </div>
+            <div class="word">
+                <h3 class="click-msg">{{ $t('CLICK_GET_TOKEN') }}</h3>
+                <h3 class="allow-msg">{{ $t('CONFIRM_GET_TOKEN') }}</h3>
+            </div>
             <a-button
                 type="primary"
                 @click="getToken"
-                :disabled="tokenInfo.item.cubeTokenValid"
-                :loading="countdownStatus"
-                :style="dynamicBtnColor"
+                :disabled="tokenInfo.cubeTokenValid"
+                :loading="weatherStore.countdownStatus"
+                :style="tokenInfo.cubeTokenValid ? { color: '#333333 !important' } : {}"
             >
-                <span v-if="countdownStatus && !tokenInfo.item.cubeTokenValid">{{ formatCount(countdownTime) }}</span>
-                <span v-else>{{ $t('GET_TOKEN') }}</span>
+                <span v-if="weatherStore.countdownStatus">{{ formatCount(countdownTime) }}</span>
+                <span v-else>{{ tokenInfo.cubeTokenValid ? $t('ALREADY_GET_TOKEN') : $t('GET_TOKEN') }}</span>
             </a-button>
         </section>
-        <!-- 下一步 -->
         <footer>
-            <div class="next-step">
-                <a @click="nextStep">{{ $t('NEXT') }} > </a>
+            <div class="next-step" :class="tokenInfo.cubeTokenValid ? 'enable-btn' : ''">
+                <a @click="nextStep" :class="tokenInfo.cubeTokenValid ? '' : 'disabled-btn'">{{ $t('NEXT') }} > </a>
             </div>
         </footer>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch, reactive } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import type { ITokenInfo } from '@/api/ts/interface/IWeatherInfo';
 import { useRouter } from 'vue-router';
+import { useEtcStore } from '@/store/etc';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
 import api from '@/api/Weather/index';
 import moment from 'moment';
+import { useWeatherStore } from '@/store/weather';
+//中文轮播图
+import GetToken_zh from '@/assets/img/get_token_zh.png';
+import GetToken_en from '@/assets/img/get_token_en.png';
+//英文轮播图
+import Confirm_zh from '@/assets/img/confirm_zh.png';
+import Confirm_en from '@/assets/img/confirm_en.png';
 const router = useRouter();
-onMounted(() => {
-    getTokenInfo();
-});
-/** 获取token信息 */
-const getTokenInfo = async () => {
-    const res = await api.GetTokenInfo();
-    if (res.error === 0 && res.data) {
-        tokenInfo.item = res.data;
-    } else {
-        tokenInfo.item = {
-            requestTokenTime: 0,
-            cubeTokenValid: false,
-        };
-    }
-};
-
-const dynamicBtnColor = computed(()=>{
-    if(tokenInfo.item.cubeTokenValid){
-        return { 'color': 'black !important' };
-    }
-})
-
-/** token信息 */
-let tokenInfo = reactive<{item:ITokenInfo}>({item:{
-    requestTokenTime: 0,
-    cubeTokenValid: false,
-}});
-
-/** 300秒的倒计时时间内 */
-const countdownStatus = computed(() => {
-    const nowTime = moment();
-    const seconds = moment(nowTime).diff(moment(tokenInfo.item.requestTokenTime), 'seconds');
-    console.log('second------------>',seconds);
-    return seconds >= 300 ? false : true;
-});
-
+const etcStore = useEtcStore();
+const weatherStore = useWeatherStore();
 /** 倒计时时间 */
 const countdownTime = ref<number>(300);
-
 /** 倒计时定时器 */
-const timer: any = null;
+const timer = ref<any>(null);
+/** 当前语言环境 */
+const language = computed(() => etcStore.language === 'zh-cn');
+/** 英文轮播图列表 */
+const en_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_zh }, { imgSrc: Confirm_zh }];
+// /** 中文轮播图列表 */
+const zh_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_en }, { imgSrc: Confirm_en }];
+
+onMounted(async () => {
+    await weatherStore.getTokenInfo();
+});
+
+watch(
+    () => weatherStore.tokenInfo.cubeTokenValid,
+    () => {
+        if (weatherStore.tokenInfo.cubeTokenValid) {
+            clearInterval(timer);
+        }
+    }
+);
+
+const tokenInfo = computed(() => weatherStore.tokenInfo);
 
 /** 开始倒计时 */
 const setCutDownTimer = (seconds: number) => {
     countdownTime.value = 300 - seconds;
-    if (timer.value) {
-        window.clearInterval(timer.value);
-    }
+    if (timer.value) window.clearInterval(timer.value);
+
     timer.value = window.setInterval(() => {
         if (countdownTime.value > 0) {
             countdownTime.value--;
@@ -91,22 +89,26 @@ const setCutDownTimer = (seconds: number) => {
             window.clearInterval(timer.value);
             countdownTime.value = 0;
         }
+        console.log('---------------->', countdownTime.value);
     }, 1000);
 };
 
 /** 下一步 */
 const nextStep = () => {
-    router.push('/setting');
+    if (tokenInfo.value.cubeTokenValid) {
+        router.push('/setting');
+    }
 };
 
 /** 获取token按钮 */
 const getToken = async () => {
-    // if(tokenInfo.cubeTokenValid || countdownStatus.value)return;
-    const res = await api.GetToken();
-    if(res.error !== 0){
-        //重新将状态变成获取token
-        setCutDownTimer(0);
-    }
+    if (tokenInfo.value.cubeTokenValid || weatherStore.countdownStatus) return;
+    //直接开始倒计时；
+    setCutDownTimer(0);
+    // 开始获取token
+    await api.GetToken();
+    // 获取token信息
+    await weatherStore.getTokenInfo();
 };
 
 /** 格式化时间 */
@@ -125,23 +127,51 @@ const formatCount = (count: number) => {
         font-weight: 600;
         color: #424242;
     }
+    .carousel {
+        width: 365px;
+        height: 279px;
+        margin: 0 auto;
+        .swiper-item {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            img {
+                height: 100%;
+            }
+        }
+        :deep(.ant-carousel .slick-dots li button) {
+            width: 8px;
+            height: 8px;
+            margin-right: 8px;
+            background-color: #bbbbbb;
+            border-radius: 50%;
+        }
+
+        :deep(.slick-dots-bottom) {
+            bottom: 23px;
+        }
+
+        :deep(.ant-carousel .slick-dots .slick-active button) {
+            background-color: #1890ff;
+            margin-right: 8px;
+        }
+    }
     .container {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        h2 {
-            margin-bottom: 16px;
-        }
         img {
-            margin-top: 16px;
-            margin-bottom: 12px;
+            margin: 16px 0 12px 0;
             width: 365px;
             height: 279px;
         }
-        h3 {
-            width: 365px;
-            text-align: left;
+        .word {
+            margin: 26px 0 24px 0;
+            h3 {
+                width: 365px;
+                text-align: left;
+            }
         }
         :deep(.ant-btn) {
             border-radius: 8px;
@@ -149,7 +179,6 @@ const formatCount = (count: number) => {
             height: 40px;
             color: #ffff;
             font-size: 16px;
-            margin-top: 24px;
         }
     }
     footer {
@@ -160,10 +189,6 @@ const formatCount = (count: number) => {
         .next-step {
             font-size: 16px;
             font-weight: 600;
-            width: 106px;
-            height: 32px;
-            background-color: rgba(24, 144, 255, 0.2);
-            border-radius: 8px;
             color: #ffff;
             text-align: center;
             a {
@@ -179,6 +204,12 @@ const formatCount = (count: number) => {
                 filter: grayscale(100%);
                 user-select: none;
             }
+        }
+        .enable-btn {
+            width: 106px;
+            height: 32px;
+            background: rgba(24, 144, 255, 0.2);
+            border-radius: 8px 8px 8px 8px;
         }
     }
 }

@@ -1,5 +1,5 @@
 import { request } from '../public';
-import type { ITokenInfo, ICityData ,IFormData ,IFormState } from '@/api/ts/interface/IWeatherInfo';
+import type { ITokenInfo, ICityData ,ISubmitData ,IFormState ,IRequestForeCastInfo ,IRequestConfigInfo ,IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 import EReqMethod from '../ts/enum/EReqMethod';
 
 /** 获取当前凭证信息 */
@@ -19,12 +19,17 @@ async function GetCityList(apiKey: string, city: string) {
 
 /** 获取已经保存的配置信息 */
 async function GetSaveData() {
-    return await request<IFormData>(`/config`, {}, EReqMethod.GET);
+    return await request<ISubmitData>(`/config`, {}, EReqMethod.GET);
 }
 
 /** 保存配置信息 */
-async function setConfigData(params:IFormData){
-    return await request<any>(`/config`, {params}, EReqMethod.POST);
+async function setConfigData(params:IRequestConfigInfo){
+    return await request<any>(`/config`, params, EReqMethod.POST);
+}
+
+/** 获取天气预报 */
+async function getForeCastInfo(params:IRequestForeCastInfo){
+    return await request<IForeCastResultInfo>(`/forecast?days=${params.days}&refresh=${params.refresh}`, {}, EReqMethod.GET);
 }
 
 export default {
@@ -32,5 +37,6 @@ export default {
     GetToken,
     GetCityList,
     GetSaveData,
-    setConfigData
+    setConfigData,
+    getForeCastInfo
 };

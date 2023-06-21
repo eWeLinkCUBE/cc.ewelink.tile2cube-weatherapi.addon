@@ -1,46 +1,118 @@
 /** 获取到的网关信息 */
-export interface ITokenInfo{
+export interface ITokenInfo {
     /**  凭证是否有效 */
-    cubeTokenValid : boolean,
+    cubeTokenValid: boolean;
     /** 上次获取token的请求时间 */
-    requestTokenTime:number
+    requestTokenTime: number;
 }
 
-export interface ICityData{
+/** 城市数据 */
+export interface ICityData {
     //城市
-    country:string,
+    country: string;
     //id
-    id:number,
+    id: number;
     //精度
-    lat:number,
+    lat: number;
     //纬度
-    lon:string,
+    lon: string;
     //名字
-    name:string,
+    name: string;
     //地区
-    region:string,
+    region: string;
     //图片的url
-    url:string,
-    //展示名字
-    display_name?:string
+    url: string;
+    //前端自己加的展示名字
+    display_name?: string;
 }
 
+/** 表单数据 */
 export interface IFormState {
     weather: {
         /** weather apiKey */
         weatherApiKey: string;
-         /** 城市名称 */
-        cityName: string | undefined;
+        /** 城市id */
+        cityData: string | undefined | number;
         /**温度单位 */
         tempUnit: string | undefined;
     };
 }
 
-export interface IFormData{
+/** 提交保存配置信息 */
+export interface ISubmitData {
     /** weather apiKey */
-    weatherApiKey:string,
-    /** 城市名称 */
-    cityName:string | undefined;
+    weatherApiKey: string;
+    /** 城市完整数据 */
+    cityData: ICityData;
     /**温度单位 */
-    tempUnit:string | undefined;
+    tempUnit: string | undefined;
+}
+
+/** 提交的配置信息 */
+export interface IRequestConfigInfo {
+    /** apiKey */
+    weatherApiKey: string;
+    /** 完整城市数据 */
+    cityData: object;
+    /**温度单位 */
+    tempUnit: string | undefined;
+}
+
+/** 请求天气预报参数 */
+export interface IRequestForeCastInfo {
+    /** 天气预报的天数 */
+    days: number;
+    /** 是否强制刷新天气 */
+    refresh: string;
+}
+
+/** 返回的天气预报信息 */
+export interface IForeCastResultInfo {
+    forecastData: {
+        /** 天气预警 */
+        alerts: object;
+        /** 当日天气预报 */
+        current: object;
+        /** 未来五天天气预报 */
+        forecast: object;
+        /** 位置信息 */
+        location: {
+            // country: string;
+            // lat: number;
+            // localtime: string;
+            // localtime_epoch: number;
+            // lon: number;
+            // name: string;
+            // region: string;
+            // tz_id: string;
+        };
+    };
+    updateTime: number;
+}
+
+export interface ICardStyle {
+    width: number;
+    height: number;
+}
+
+export interface IForeCastMapping {
+    [code: number]: {
+        /** 白天天气 */
+        dayText: string;
+        /** 晚上天气 */
+        nightText: string;
+        /** 白天图标 */
+        dayIcon: string;
+        /** 晚上图标 */
+        nightIcon: string;
+    };
+}
+
+export interface IWindDirMapping{
+    [windDir:string]:{
+        /** 中文风向 */
+        zh_sc:string,
+        /** 英文风向 */
+        en_us:string,
+    }
 }
