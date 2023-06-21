@@ -1,3 +1,4 @@
+import process from 'node:process';
 import express from 'express';
 import _ from 'lodash';
 import { cubeTokenStore } from '../local-store/cube-token';
@@ -13,6 +14,7 @@ import {
 import SSE from '../../utils/sse';
 import { weatherApiClient } from '../weather-api';
 import { weatherDataStore } from '../local-store/weather-data';
+import { LISTEN_PORT } from '../../const';
 
 export const apiv1 = express.Router();
 
@@ -244,6 +246,7 @@ apiv1.post('/config', async (req, res) => {
         }
 
         if (shouldCreateWeatherUiCard) {
+            const HOST = `${process.env.CONFIG_CUBE_HOST}:${LISTEN_PORT}`;
             const addRes = await cubeApiClient.addUiCardList({
                 label: 'Weather Card',
                 web_settings: {
@@ -251,11 +254,11 @@ apiv1.post('/config', async (req, res) => {
                     dimensions: [
                         {
                             size: '2×1',
-                            src: 'xxx'
+                            src: `http://${HOST}/#/card`
                         }
                     ],
                     drawer_component: {
-                        src: 'xxx'
+                        src: `http://${HOST}/#/card`
                     }
                 },
                 cast_settings: {
@@ -263,7 +266,7 @@ apiv1.post('/config', async (req, res) => {
                     dimensions: [
                         {
                             size: '1×1',
-                            src: 'xxxx'
+                            src: `http://${HOST}/#/card`
                         }
                     ]
                 }
