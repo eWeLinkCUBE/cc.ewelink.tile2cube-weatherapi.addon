@@ -65,7 +65,6 @@ const assembleData = () => {
             for (let i = 0; i <= twoDaysHourData.length - 1; i++) {
                 if (twoDaysHourData[i].time_epoch <= moment().unix() && twoDaysHourData[i + 1].time_epoch >= moment().unix()) {
                     index = i;
-                    console.log('index------------>', index);
                     break;
                 }
             }
@@ -84,7 +83,7 @@ const assembleData = () => {
     flex-direction: column;
     margin: 0 auto;
     user-select: none;
-    width: 433px;
+    width: 100%;
     height: 129px;
     border: 1px solid #ccc;
     background: rgba(255, 255, 255, 0.2) !important;

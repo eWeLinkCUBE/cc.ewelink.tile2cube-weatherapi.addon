@@ -10,7 +10,7 @@ import DetailCard from '@/views/Card/component/DetailCard.vue';
 import CastCard from '@/views/Card/component/CastCard.vue';
 import { getQuery } from '@/utils/tools';
 import api from '@/api/Weather/index';
-import type { IRequestForeCastInfo ,IForeCastResultInfo ,ICardStyle} from '@/api/ts/interface/IWeatherInfo'
+import type { IRequestForeCastInfo, IForeCastResultInfo, ICardStyle } from '@/api/ts/interface/IWeatherInfo';
 
 /** 当前的卡片类型 */
 const cardType = ref<any>();
@@ -38,45 +38,46 @@ const relationMap: { [key: string]: any } = {
 
 onMounted(async () => {
     getIframeWidth();
-    // await judgeCardType();
+    await judgeCardType();
 
     // console.log('styleObject--------------->',window.innerWidth,window.innerHeight);
-    await getForeCastInfo();
-    cardType.value = DetailCard;
+    // await getForeCastInfo();
+    // cardType.value = CastCard;
 });
 
 /** 获取iframe容器的宽高 */
 const getIframeWidth = () => {
     styleObject.width = window.innerWidth;
     styleObject.height = window.innerHeight;
-}
+};
+
+const isFiveDay = ref(false);
 
 /** 判断当前卡片类型 */
-const judgeCardType = async () =>{
+const judgeCardType = async () => {
     const params = getQuery(window.location.href);
     if (params.ihost_env) {
         await getForeCastInfo();
         cardType.value = relationMap[params.ihost_env];
-        console.log('------------------>',params.ihost_env);
+        console.log('------------------>', params.ihost_env);
         //2*1卡片
         if (styleObject.width !== styleObject.height && params.ihost_env === 'iHostWebCustomCard') {
             cardType.value = relationMap['iHostWebCustomLargeCard'];
         }
     }
-}
+};
 
 /** 获取天气预报信息 */
-const getForeCastInfo = async () =>{
+const getForeCastInfo = async () => {
     const params: IRequestForeCastInfo = {
         refresh: '1',
         days: 5,
     };
     const res = await api.getForeCastInfo(params);
-    foreCastInfo.value = res.data;
-    console.log('foreCastInfo.value-------------->', foreCastInfo.value);
-    console.log('styleObject-------------->',styleObject);
-}
-//todo: 屏幕尺寸变化的时候
+    if(res.error === 0 && res.data){
+        foreCastInfo.value = res.data;
+    }
+};
 </script>
 
 <style scoped lang="scss"></style>

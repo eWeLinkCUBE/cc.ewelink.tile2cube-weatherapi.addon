@@ -3,16 +3,18 @@
         <header>
             <div class="area-icon">
                 <img src="@/assets/img/area.png" alt="" />
-                <span>{{ formState.cityName + '°' }}</span>
+                <span>{{ formState.cityName }}</span>
             </div>
         </header>
         <section>
             <div class="temperature">
                 <img src="@/assets/img/sunny.png" alt="" />
-                <span>{{ formState.temperature }}</span>
+                <span>{{ formState.temperature + '°'}}</span>
             </div>
             <div class="weather">
-                <span class="word">{{ formState.describe }}</span>
+                <span class="word">
+                    {{ formState.describe }}
+                </span>
                 <div class="api">
                     <img alt="" src="@/assets/img/area.png" />
                     <span>weather<br />api</span>
@@ -39,6 +41,7 @@ const props = defineProps<{
 }>();
 
 onMounted(() => {
+    console.log('屏幕的宽度----------------》',window.screen.height,window.screen.width);
     //页面宽度
     formState.cardWidth = props.styleObject.width;
     //城市名称
@@ -47,7 +50,7 @@ onMounted(() => {
     const tempUnit = weatherStore.weatherInfo.weather.tempUnit === 'C' ? 'temp_c' : 'temp_f';
     formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
     //天气更新时间
-    const time =_.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
+    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
     formState.updateTime = formatTimeUtils(time, 'HH:mm');
     //当前天气
     formState.describe = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'text'], '');
@@ -74,16 +77,18 @@ const formState = reactive<ISmallCardData>({
     updateTime: 0,
     cardWidth: 0,
 });
+
+// window.addEventListener('resize', () => {
+//     console.log('处理窗口缩放时要处理的逻辑操作！');
+// });
 </script>
 
 <style scoped lang="scss">
 .small-card {
     margin: 0 auto;
     text-align: center;
-    padding: 5px;
-    //  border: 1px solid #ccc;
+    padding: 8px;
     border-radius: 6px;
-    // width: v-bind(width + 'px');
     header {
         display: flex;
         align-items: center;
@@ -121,6 +126,7 @@ const formState = reactive<ISmallCardData>({
             margin-top: 10px;
             .word {
                 display: inline-block;
+                white-space: nowrap;
                 width: 52px;
                 text-align: center;
                 color: #333333;
@@ -138,7 +144,7 @@ const formState = reactive<ISmallCardData>({
                 span {
                     font-size: 12px;
                     color: #333333;
-                    text-align: center;
+                    text-align: right;
                     line-height: 11px;
                 }
             }
@@ -146,9 +152,14 @@ const formState = reactive<ISmallCardData>({
     }
     .update-time {
         text-align: left;
-        margin-top: 11px;
+        margin-top: 15px;
         font-size: 14px;
         color: #333333;
     }
+}
+@media screen and (min-width: 960px) {
+    // .small-card {
+    //     background-color: red !important;;
+    // }
 }
 </style>

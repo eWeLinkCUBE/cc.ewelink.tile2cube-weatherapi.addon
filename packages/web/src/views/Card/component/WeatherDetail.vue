@@ -16,7 +16,7 @@
 import { ref, onMounted, computed } from 'vue';
 import _ from 'lodash';
 import { useWeatherStore } from '@/store/weather';
-import { formatTimeUtils, kmToMs, WIND_DIR_MAPPING ,judgeUv} from '@/utils/tools';
+import { formatTimeUtils, kmToMs, WIND_DIR_MAPPING ,judgeUv ,judgeAirQuality} from '@/utils/tools';
 import moment from 'moment';
 import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 import i18n from '@/i18n/index';
@@ -62,7 +62,7 @@ interface IWeatherDetail {
     /** 风向 */
     wind_dir: string; //W N E
     /** 空气质量 */
-    air_quality: string; //所有空气数据
+    air_quality: number; //所有空气数据
     /** 紫外线 */
     uv: number;
     /** 能见度 */
@@ -110,10 +110,10 @@ const initialAssignment = () => {
         { imgSrc: PressureMb, value: formState.pressure_mb + ' hPa', describe: i18n.global.t('PRESSURE_MB') },
         { imgSrc: WindKph, value: kmToMs(formState.wind_kph) + 'm/s', describe: i18n.global.t('WIND_KPH') },
         { imgSrc: PrecipMm, value: formState.precip_mm + ' mm', describe: i18n.global.t('PRE_CIP_MM') },
-        { imgSrc: WindDir, value: isZhCn ? WIND_DIR_MAPPING[formState.wind_dir].zh_sc : WIND_DIR_MAPPING[formState.wind_dir].en_us, describe: i18n.global.t('WIND_DIR') },
-        { imgSrc: AirQuality, value: formState.air_quality, describe: i18n.global.t('AIR_QUALITY') },
+        { imgSrc: WindDir, value: WIND_DIR_MAPPING[formState.wind_dir], describe: i18n.global.t('WIND_DIR') },
+        { imgSrc: AirQuality, value: judgeAirQuality(formState.air_quality), describe: i18n.global.t('AIR_QUALITY') },
         { imgSrc: Uv, value: formState.uv + judgeUv(formState.uv), describe: i18n.global.t('UV') },
-        { imgSrc: Avg_vis_km, value: formState.avgvis_km, describe: i18n.global.t('AVG_VIS_KM') },
+        { imgSrc: Avg_vis_km, value: formState.avgvis_km+'km', describe: i18n.global.t('AVG_VIS_KM') },
     ];
 };
 </script>
@@ -122,8 +122,8 @@ const initialAssignment = () => {
 .weather-detail {
     margin: 0 auto;
     user-select: none;
-    width: 433px;
-    height: 427px;
+    width: 100%;
+    // height: 427px;
     border: 1px solid #ccc;
     background: rgba(255, 255, 255, 0.2) !important;
     border-radius: 12px;

@@ -3,8 +3,47 @@ import i18n from '@/i18n';
 import { message } from 'ant-design-vue';
 import { useEtcStore } from '@/store/etc';
 import moment from 'moment';
-import type { IForeCastMapping, IWindDirMapping } from '@/api/ts/interface/IWeatherInfo';
-const $t = i18n.global.t;
+import type { IForeCastMapping } from '@/api/ts/interface/IWeatherInfo';
+//晴天
+import SunnyIcon_day from '@/assets/img/forecast/day/sunnyIcon-day.png';
+import SunnyIcon_night from '@/assets/img/forecast/night/sunnyIcon-night.png';
+//热
+import HotIcon_day from '@/assets/img/forecast/day/hotIcon-day.png';
+import HotIcon_night from '@/assets/img/forecast/night/hotIcon-night.png';
+//冷
+import ColdIcon_day from '@/assets/img/forecast/day/coldIcon-day.png';
+import ColdIcon_night from '@/assets/img/forecast/night/coldIcon-night.png';
+//雨夹雪
+import RainSnowIcon_day from '@/assets/img/forecast/day/rainSnowIcon-day.png';
+import RainSnowIcon_night from '@/assets/img/forecast/night/rainSnowIcon-night.png';
+//风
+import WindyIcon from '@/assets/img/forecast/day/windyIcon.png'
+//晴转多云
+import SunnyCloudyIcon_day from '@/assets/img/forecast/day/sunnyCloudyIcon-day.png';
+import SunnyCloudyIcon_night from '@/assets/img/forecast/night/sunnyCloudyIcon-night.png';
+//冰雹
+import SleetIcon_day from '@/assets/img/forecast/day/sleetIcon-day.png';
+import SleetIcon_night from '@/assets/img/forecast/night/sleetIcon-night.png';
+//多云
+import CloudyIcon_day  from '@/assets/img/forecast/day/cloudyIcon-day.png';
+import CloudyIcon_night  from '@/assets/img/forecast/night/cloudyIcon-night.png';
+//雾
+import FogIcon_day  from '@/assets/img/forecast/day/fogIcon-day.png';
+import FogIcon_night  from '@/assets/img/forecast/night/fogIcon-night.png';
+//雪
+import SnowIcon_day  from '@/assets/img/forecast/day/snowIcon-day.png';
+import SnowIcon_night  from '@/assets/img/forecast/night/snowIcon-night.png';
+//暴雨
+import TStormsIcon_day  from '@/assets/img/forecast/day/tStormsIcon-day.png';
+import TStormsIcon_night  from '@/assets/img/forecast/night/tStormsIcon-night.png';
+//小雪
+import FlurriesIcon_day  from '@/assets/img/forecast/day/flurriesIcon-day.png';
+import FlurriesIcon_night  from '@/assets/img/forecast/night/flurriesIcon-night.png';
+//阵雨
+import ShowersIcon_day  from '@/assets/img/forecast/day/showersIcon-day.png';
+import ShowersIcon_night  from '@/assets/img/forecast/night/showersIcon-night.png';
+
+
 /**
  *
  * 根据路径获取assets文件夹内的文件（主要用于图片）
@@ -108,14 +147,344 @@ export function getWeekByTimeStamp(timeStamp: number, type = 'd') {
  * @param {number} code
  * @returns {*}
  */
-export const FORECAST_SETTING_MAPPING: IForeCastMapping = {
-    1003: {
-        dayText: '中文',
-        dayIcon: '',
-        nightText: '英文',
-        nightIcon: '',
-    },
-};
+export const FORECAST_SETTING_MAPPING: IForeCastMapping[] = [
+	{
+		"code" : 1000,
+		"day" : "Sunny",
+		"night" : "Clear",
+		"dayIcon" : SunnyIcon_day,
+        "nightIcon":SunnyIcon_night,
+	},
+	{
+		"code" : 1003,
+		"day" : "Partly cloudy",
+		"night" : "Partly cloudy",
+		"dayIcon" : CloudyIcon_day,
+        "nightIcon":CloudyIcon_night,
+	},
+	{
+		"code" : 1006,
+		"day" : "Cloudy",
+		"night" : "Cloudy",
+		"dayIcon" : CloudyIcon_day,
+        "nightIcon":CloudyIcon_night,
+	},
+	{
+		"code" : 1009,
+		"day" : "Overcast",
+		"night" : "Overcast",
+		"dayIcon" : CloudyIcon_day,
+        "nightIcon":CloudyIcon_night,
+	},
+	{
+		"code" : 1030,
+		"day" : "Mist",
+		"night" : "Mist",
+		"dayIcon" : FogIcon_day,
+        "nightIcon":FogIcon_night,
+	},
+	{
+		"code" : 1063,
+		"day" : "Patchy rain possible",
+		"night" : "Patchy rain possible",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1066,
+		"day" : "Patchy snow possible",
+		"night" : "Patchy snow possible",
+		"dayIcon" : FlurriesIcon_day,
+        "nightIcon":FlurriesIcon_night,
+	},
+	{
+		"code" : 1069,
+		"day" : "Patchy sleet possible",
+		"night" : "Patchy sleet possible",
+		"dayIcon" : RainSnowIcon_day,
+        "nightIcon":RainSnowIcon_night,
+	},
+	{
+		"code" : 1072,
+		"day" : "Patchy freezing drizzle possible",
+		"night" : "Patchy freezing drizzle possible",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1087,
+		"day" : "Thundery outbreaks possible",
+		"night" : "Thundery outbreaks possible",
+		"dayIcon" : TStormsIcon_day,
+        "nightIcon":TStormsIcon_night,
+	},
+	{
+		"code" : 1114,
+		"day" : "Blowing snow",
+		"night" : "Blowing snow",
+		"dayIcon" : FlurriesIcon_day,
+        "nightIcon":FlurriesIcon_night,
+	},
+	{
+		"code" : 1117,
+		"day" : "Blizzard",
+		"night" : "Blizzard",
+		"dayIcon" : SnowIcon_day,
+        "nightIcon":SnowIcon_night,
+	},
+	{
+		"code" : 1135,
+		"day" : "Fog",
+		"night" : "Fog",
+		"dayIcon" : FogIcon_day,
+        "nightIcon":FogIcon_night,
+	},
+	{
+		"code" : 1147,
+		"day" : "Freezing fog",
+		"night" : "Freezing fog",
+		"dayIcon" : FogIcon_day,
+        "nightIcon":FogIcon_night,
+	},
+	{
+		"code" : 1150,
+		"day" : "Patchy light drizzle",
+		"night" : "Patchy light drizzle",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1153,
+		"day" : "Light drizzle",
+		"night" : "Light drizzle",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1168,
+		"day" : "Freezing drizzle",
+		"night" : "Freezing drizzle",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1171,
+		"day" : "Heavy freezing drizzle",
+		"night" : "Heavy freezing drizzle",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1180,
+		"day" : "Patchy light rain",
+		"night" : "Patchy light rain",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1183,
+		"day" : "Light rain",
+		"night" : "Light rain",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1186,
+		"day" : "Moderate rain at times",
+		"night" : "Moderate rain at times",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1189,
+		"day" : "Moderate rain",
+		"night" : "Moderate rain",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1192,
+		"day" : "Heavy rain at times",
+		"night" : "Heavy rain at times",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1195,
+		"day" : "Heavy rain",
+		"night" : "Heavy rain",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1198,
+		"day" : "Light freezing rain",
+		"night" : "Light freezing rain",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1201,
+		"day" : "Moderate or heavy freezing rain",
+		"night" : "Moderate or heavy freezing rain",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1204,
+		"day" : "Light sleet",
+		"night" : "Light sleet",
+		"dayIcon" : RainSnowIcon_day,
+        "nightIcon":RainSnowIcon_night,
+	},
+	{
+		"code" : 1207,
+		"day" : "Moderate or heavy sleet",
+		"night" : "Moderate or heavy sleet",
+		"dayIcon" : RainSnowIcon_day,
+        "nightIcon":RainSnowIcon_night,
+	},
+	{
+		"code" : 1210,
+		"day" : "Patchy light snow",
+		"night" : "Patchy light snow",
+		"dayIcon" : FlurriesIcon_day,
+        "nightIcon":FlurriesIcon_night,
+	},
+	{
+		"code" : 1213,
+		"day" : "Light snow",
+		"night" : "Light snow",
+		"dayIcon" : FlurriesIcon_day,
+        "nightIcon":FlurriesIcon_night,
+	},
+	{
+		"code" : 1216,
+		"day" : "Patchy moderate snow",
+		"night" : "Patchy moderate snow",
+		"dayIcon" : SnowIcon_day,
+        "nightIcon":SnowIcon_night,
+	},
+	{
+		"code" : 1219,
+		"day" : "Moderate snow",
+		"night" : "Moderate snow",
+		"dayIcon" : SnowIcon_day,
+        "nightIcon":SnowIcon_night,
+	},
+	{
+		"code" : 1222,
+		"day" : "Patchy heavy snow",
+		"night" : "Patchy heavy snow",
+		"dayIcon" : SnowIcon_day,
+        "nightIcon":SnowIcon_night,
+	},
+	{
+		"code" : 1225,
+		"day" : "Heavy snow",
+		"night" : "Heavy snow",
+		"dayIcon" : SnowIcon_day,
+        "nightIcon":SnowIcon_night,
+	},
+	{
+		"code" : 1237,
+		"day" : "Ice pellets",
+		"night" : "Ice pellets",
+		"dayIcon" : SleetIcon_day,
+        "nightIcon":SleetIcon_night,
+	},
+	{
+		"code" : 1240,
+		"day" : "Light rain shower",
+		"night" : "Light rain shower",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1243,
+		"day" : "Moderate or heavy rain shower",
+		"night" : "Moderate or heavy rain shower",
+		"dayIcon" : TStormsIcon_day,
+        "nightIcon":TStormsIcon_night,
+	},
+	{
+		"code" : 1246,
+		"day" : "Torrential rain shower",
+		"night" : "Torrential rain shower",
+		"dayIcon" : TStormsIcon_day,
+        "nightIcon":TStormsIcon_night,
+	},
+	{
+		"code" : 1249,
+		"day" : "Light sleet showers",
+		"night" : "Light sleet showers",
+		"dayIcon" : RainSnowIcon_day,
+        "nightIcon":RainSnowIcon_night,
+	},
+	{
+		"code" : 1252,
+		"day" : "Moderate or heavy sleet showers",
+		"night" : "Moderate or heavy sleet showers",
+		"dayIcon" : RainSnowIcon_day,
+        "nightIcon":RainSnowIcon_night,
+	},
+	{
+		"code" : 1255,
+		"day" : "Light snow showers",
+		"night" : "Light snow showers",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1258,
+		"day" : "Moderate or heavy snow showers",
+		"night" : "Moderate or heavy snow showers",
+		"dayIcon" : ShowersIcon_day,
+        "nightIcon":ShowersIcon_night,
+	},
+	{
+		"code" : 1261,
+		"day" : "Light showers of ice pellets",
+		"night" : "Light showers of ice pellets",
+		"dayIcon" : SleetIcon_day,
+        "nightIcon":SleetIcon_night,
+	},
+	{
+		"code" : 1264,
+		"day" : "Moderate or heavy showers of ice pellets",
+		"night" : "Moderate or heavy showers of ice pellets",
+		"dayIcon" : SleetIcon_day,
+        "nightIcon":SleetIcon_night,
+	},
+	{
+		"code" : 1273,
+		"day" : "Patchy light rain with thunder",
+		"night" : "Patchy light rain with thunder",
+		"dayIcon" : FlurriesIcon_day,
+        "nightIcon":FlurriesIcon_night,
+	},
+	{
+		"code" : 1276,
+		"day" : "Moderate or heavy rain with thunder",
+		"night" : "Moderate or heavy rain with thunder",
+		"dayIcon" : TStormsIcon_day,
+        "nightIcon":TStormsIcon_night,
+	},
+	{
+		"code" : 1279,
+		"day" : "Patchy light snow with thunder",
+		"night" : "Patchy light snow with thunder",
+		"dayIcon" : FlurriesIcon_day,
+        "nightIcon":FlurriesIcon_night,
+	},
+	{
+		"code" : 1282,
+		"day" : "Moderate or heavy snow with thunder",
+		"night" : "Moderate or heavy snow with thunder",
+		"dayIcon" : SnowIcon_day,
+        "nightIcon":SnowIcon_night,
+	}
+]
 
 /**
  * 判断对象是否为空
@@ -148,72 +517,89 @@ export function kmToMs(kph: number) {
  * @param {string} windDir
  * @returns {*}
  */
-export const WIND_DIR_MAPPING: IWindDirMapping = {
-    // TODO:改成i18n
-    N: {
-        zh_sc: '北风',
-        en_us: 'N',
-    },
-    NNE: {
-        zh_sc: '北东北风',
-        en_us: 'NNE',
-    },
-    NE: {
-        zh_sc: '东北风',
-        en_us: 'NE',
-    },
-    ENE: {
-        zh_sc: '东东北风向',
-        en_us: 'ENE',
-    },
-    E: {
-        zh_sc: '东风向',
-        en_us: 'E',
-    },
-    ESE: {
-        zh_sc: '东东南风向',
-        en_us: 'ESE',
-    },
-    SE: {
-        zh_sc: '东南风向',
-        en_us: 'SE',
-    },
-    SSE: {
-        zh_sc: '南东南风向',
-        en_us: 'SSE',
-    },
-    S: {
-        zh_sc: '南风',
-        en_us: 'S',
-    },
-    SSW: {
-        zh_sc: '南西南风向',
-        en_us: 'SSW',
-    },
-    SW: {
-        zh_sc: '西南风向',
-        en_us: 'SW',
-    },
-    WSW: {
-        zh_sc: '西西南风向',
-        en_us: 'WSW',
-    },
-    W: {
-        zh_sc: '西风',
-        en_us: 'W',
-    },
-    WNW: {
-        zh_sc: '西西北风向',
-        en_us: 'WNW',
-    },
-    NW: {
-        zh_sc: '西北风向',
-        en_us: 'NW',
-    },
-    NNW: {
-        zh_sc: '北西北风向',
-        en_us: 'NNW',
-    },
+export const WIND_DIR_MAPPING: {
+    [windDir:string]:string
+} = {
+    N: i18n.global.t('WIND_DIRECTION.N'),
+    NNE: i18n.global.t('WIND_DIRECTION.NNE'),
+    NE: i18n.global.t('WIND_DIRECTION.NE'),
+    ENE: i18n.global.t('WIND_DIRECTION.ENE'),
+    E: i18n.global.t('WIND_DIRECTION.E'),
+    ESE: i18n.global.t('WIND_DIRECTION.ESE'),
+    SE: i18n.global.t('WIND_DIRECTION.SE'),
+    SSE: i18n.global.t('WIND_DIRECTION.SSE'),
+    S: i18n.global.t('WIND_DIRECTION.S'),
+    SSW: i18n.global.t('WIND_DIRECTION.SSW'),
+    SW: i18n.global.t('WIND_DIRECTION.SW'),
+    WSW: i18n.global.t('WIND_DIRECTION.WSW'),
+    W: i18n.global.t('WIND_DIRECTION.W'),
+    WNW: i18n.global.t('WIND_DIRECTION.WNW'),
+    NW: i18n.global.t('WIND_DIRECTION.NW'),
+    NNW: i18n.global.t('WIND_DIRECTION.NNW'),
+    // {
+    //     zh_sc: '北风',
+    //     en_us: 'N',
+    // },
+    // NNE: {
+    //     zh_sc: '北东北风',
+    //     en_us: 'NNE',
+    // },
+    // NE: {
+    //     zh_sc: '东北风',
+    //     en_us: 'NE',
+    // },
+    // ENE: {
+    //     zh_sc: '东东北风向',
+    //     en_us: 'ENE',
+    // },
+    // E: {
+    //     zh_sc: '东风向',
+    //     en_us: 'E',
+    // },
+    // ESE: {
+    //     zh_sc: '东东南风向',
+    //     en_us: 'ESE',
+    // },
+    // SE: {
+    //     zh_sc: '东南风向',
+    //     en_us: 'SE',
+    // },
+    // SSE: {
+    //     zh_sc: '南东南风向',
+    //     en_us: 'SSE',
+    // },
+    // S: {
+    //     zh_sc: '南风',
+    //     en_us: 'S',
+    // },
+    // SSW: {
+    //     zh_sc: '南西南风向',
+    //     en_us: 'SSW',
+    // },
+    // SW: {
+    //     zh_sc: '西南风向',
+    //     en_us: 'SW',
+    // },
+    // WSW: {
+    //     zh_sc: '西西南风向',
+    //     en_us: 'WSW',
+    // },
+    // W: {
+    //     zh_sc: '西风',
+    //     en_us: 'W',
+    // },
+    // WNW: {
+    //     zh_sc: '西西北风向',
+    //     en_us: 'WNW',
+    // },
+    // NW: {
+    //     zh_sc: '西北风向',
+    //     en_us: 'NW',
+    // },
+    // NNW: {
+    //     zh_sc: '北西北风向',
+    //     en_us: 'NNW',
+    // },
 };
 
 /**
@@ -223,7 +609,7 @@ export const WIND_DIR_MAPPING: IWindDirMapping = {
  * @param {number} air_quality
  * @returns {*}
  */
-export function judgeAirQuality(air_quality: Number) {
+export function judgeAirQuality(air_quality: number) {
     switch (air_quality) {
         case 1:
             return i18n.global.t('AIR_GOOD');

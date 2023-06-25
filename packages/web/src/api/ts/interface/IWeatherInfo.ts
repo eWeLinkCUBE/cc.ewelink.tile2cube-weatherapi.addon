@@ -96,23 +96,14 @@ export interface ICardStyle {
 }
 
 export interface IForeCastMapping {
-    [code: number]: {
-        /** 白天天气 */
-        dayText: string;
-        /** 晚上天气 */
-        nightText: string;
-        /** 白天图标 */
-        dayIcon: string;
-        /** 晚上图标 */
-        nightIcon: string;
-    };
-}
-
-export interface IWindDirMapping{
-    [windDir:string]:{
-        /** 中文风向 */
-        zh_sc:string,
-        /** 英文风向 */
-        en_us:string,
-    }
+    /** 白天天气 */
+    day: string;
+    /** 晚上天气 */
+    night: string;
+    /** 图码 */
+    code: number;
+    /** 白天图标 */
+    dayIcon: string | number;
+    /** 夜晚图标 */
+    nightIcon: string | number;
 }
