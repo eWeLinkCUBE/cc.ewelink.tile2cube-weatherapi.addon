@@ -63,6 +63,8 @@ app.use((req, res, next) => {
 
 app.use('/api/v1', apiv1);
 
+app.use(express.static(path.join(process.cwd(), 'public')));
+
 app.listen(LISTEN_PORT, LISTEN_HOST, async () => {
     logger.info(`Server listen at port ${LISTEN_PORT}`);
 
