@@ -9,7 +9,7 @@ import Events from 'events';
 import { message } from 'ant-design-vue';
 import '@/assets/style/index.scss';
 import './assets/main.css'
-import './utils/rem.ts';
+import './utils/rem';
 import AntdImport from '@/utils/AntdImport';
 import SetupAntdIcon from "@/utils/AntdIcons";
 const app = createApp(App)

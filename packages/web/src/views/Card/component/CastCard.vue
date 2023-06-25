@@ -81,9 +81,9 @@ const formState = reactive<ISmallCardData>({
     cardWidth: 0,
 });
 
-window.addEventListener('resize', () => {
-    console.log('处理窗口缩放时要处理的逻辑操作！');
-});
+// window.addEventListener('resize', () => {
+//     console.log('处理窗口缩放时要处理的逻辑操作！');
+// });
 </script>
 
 <style scoped lang="scss">
@@ -162,8 +162,9 @@ window.addEventListener('resize', () => {
         color: #333333;
     }
 }
-@media screen and (min-width: 200px) {
+@media screen and (min-width: 130px) {
     .cast-card {
+        // background-color: red!important;
     }
 }
 </style>

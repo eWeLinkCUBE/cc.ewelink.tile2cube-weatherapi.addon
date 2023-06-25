@@ -1,10 +1,10 @@
 // 基准大小
-const baseSize = 16;
+let baseSize = 68;
 
 // 设置 rem 函数
-function setRem() {
+export function setRem() {
     // 大于1024 即进入平板时恢复到初始基准大小
-    if (document.documentElement.clientWidth >= 1024) {
+    if (document.documentElement.clientWidth >= 960) {
         document.documentElement.style.fontSize = `${baseSize}px`;
         return;
     }
