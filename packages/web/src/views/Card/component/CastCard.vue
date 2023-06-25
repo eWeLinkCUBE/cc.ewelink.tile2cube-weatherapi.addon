@@ -1,5 +1,6 @@
 <template>
-    <div class="cast-card" :style="{ width: formState.cardWidth + 'px' }">
+    <div class="cast-card">
+        <!--  :style="{ width: formState.cardWidth + 'px' }" -->
         <header>
             <div class="area-icon">
                 <img src="@/assets/img/area.png" alt="" />
@@ -80,88 +81,89 @@ const formState = reactive<ISmallCardData>({
     cardWidth: 0,
 });
 
-// window.addEventListener('resize', () => {
-//     console.log('处理窗口缩放时要处理的逻辑操作！');
-// });
+window.addEventListener('resize', () => {
+    console.log('处理窗口缩放时要处理的逻辑操作！');
+});
 </script>
 
 <style scoped lang="scss">
 .cast-card {
     margin: 0 auto;
     text-align: center;
-    padding: 8px;
-    border-radius: 6px;
+    padding: .5rem;
+    border-radius: .375rem;
+    width:100%;
+    min-height: 100vh;
     header {
         display: flex;
         align-items: center;
         text-align: left;
         .area-icon {
             img {
-                width: 14px;
-                height: 14px;
-                margin-right: 6px;
+                width: .875rem;
+                height: .875rem;
+                margin-right: .375rem;
             }
             span {
-                font-size: 12px;
+                font-size: .75rem;
             }
         }
     }
     section {
-        margin-top: 8px;
+        margin-top: .5rem;
         .temperature {
             display: flex;
             justify-content: space-between;
             align-items: center;
             img {
-                width: 52px;
-                height: 52px;
+                width: 3.25rem;
+                height: 3.25rem;
             }
             span {
                 color: #333333;
-                font-size: 28px;
+                font-size: 1.75rem;
             }
         }
         .weather {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-top: 10px;
+            margin-top: .625rem;
             .word {
                 display: inline-block;
                 white-space: nowrap;
-                width: 52px;
+                width: 3.25rem;
                 text-align: center;
                 color: #333333;
-                font-size: 16px;
+                font-size: 1rem;
             }
             .api {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 img {
-                    width: 12px;
-                    height: 15px;
-                    margin-right: 5px;
+                    width: .75rem;
+                    height: .9375rem;
+                    margin-right: .3125rem;
                 }
                 span {
-                    font-size: 12px;
+                    font-size: .75rem;
                     color: #333333;
                     text-align: right;
-                    line-height: 11px;
+                    line-height: .6875rem;
                 }
             }
         }
     }
     .update-time {
         text-align: left;
-        margin-top: 15px;
-        font-size: 14px;
+        margin-top: .9375rem;
+        font-size: .875rem;
         color: #333333;
     }
 }
-@media screen and (min-width: 960px) {
-    // .small-card {
-    //     background-color: red !important;;
-    // }
+@media screen and (min-width: 200px) {
+    .cast-card {
+    }
 }
 </style>

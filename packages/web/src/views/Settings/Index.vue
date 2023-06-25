@@ -46,9 +46,11 @@
                 <a-button :disabled="disabled" type="primary" @click="submitHandler">{{$t('FINISH')}}</a-button>
             </footer>
             <!-- <a-button type="primary" @click="getForeCastInfo">获取天气数据</a-button> -->
-            <iframe src="http://127.0.0.1:5173/#/card" class="scroll-bar" style="width: 170px; height: 170px;" />
+            <!-- <div class="test" style="width:170px;height: 170px;">
+                <iframe src="http://127.0.0.1:5173/#/card" class="scroll-bar" style="width: 100%; height: 100%;" />
+            </div> -->
             <!-- ?ihost_env=iHostWebCustomCardDrawer&language=en-us -->
-            <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCardDrawer&language=en-us" class="scroll-bar" style="max-width: 457px; height: 868px;" />
+            <!-- <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCardDrawer&language=en-us" class="scroll-bar" style="max-width: 457px; height: 868px;" /> -->
         </div>
     </a-spin>
 </template>
@@ -77,8 +79,9 @@ const indicator = h(LoadingOutlined, {
 });
 
 onMounted(async () => {
-    await getSaveDate();
-    return;
+    // await getSaveDate();
+    // return;
+
     const res = await api.GetTokenInfo();
     if (res.error === 0 && res.data?.cubeTokenValid) {
         await getSaveDate();

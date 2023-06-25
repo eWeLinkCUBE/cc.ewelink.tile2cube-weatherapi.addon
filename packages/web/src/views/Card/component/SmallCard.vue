@@ -87,6 +87,7 @@ const formState = reactive<ISmallCardData>({
 .small-card {
     margin: 0 auto;
     text-align: center;
+    user-select: none;
     padding: 8px;
     border-radius: 6px;
     header {
