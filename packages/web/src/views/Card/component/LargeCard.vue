@@ -160,6 +160,7 @@ const getMiniMaxTempByList = (days: IDays) => {
 .Large-card {
     user-select: none;
     margin: 0 auto;
+    width: 100%;
     text-align: center;
     padding: 8px 12px 2px 12px;
     height: 100vh;
@@ -259,7 +260,7 @@ const getMiniMaxTempByList = (days: IDays) => {
     background: rgba(255,255,255,0.2)!important;
     border-radius: 12px;
     opacity: 1;
-    width:433px!important;
+    width: 100%!important;
     height:auto!important;
     padding-top: 18px;
     padding-bottom: 15px;
