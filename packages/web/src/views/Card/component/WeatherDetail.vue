@@ -24,7 +24,7 @@ import { useEtcStore } from '@/store/etc';
 
 import FeelsLike from '@/assets/img/feelslike.png';
 import SunRise from '@/assets/img/sunrise.png';
-import SunSet from '@/assets/img/sunSet.png';
+import SunSet from '@/assets/img/sunset.png';
 import PressureMb from '@/assets/img/pressure_mb.png';
 import WindKph from '@/assets/img/wind_kph.png';
 import PrecipMm from '@/assets/img/precip_mm.png';
