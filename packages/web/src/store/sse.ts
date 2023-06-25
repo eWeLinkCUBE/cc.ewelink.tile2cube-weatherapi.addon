@@ -3,6 +3,8 @@ import { sseUrl } from '@/config';
 import { useEtcStore } from './etc';
 import { message } from 'ant-design-vue';
 import i18n from '@/i18n';
+import api from '@/api/Weather/index';
+import { useWeatherStore } from '@/store/weather';
 import type {
     ITokenInfo,
 } from '@/api/ts/interface/IWeatherInfo';
@@ -33,14 +35,19 @@ export const useSseStore = defineStore('sse', {
                 this.sseIsConnect = true;
             });
 
-            source.addEventListener('get_cube_token_start', (event: any) => {
-                console.log('get_cube_token_start------------>',JSON.parse(event));
-
+            source.addEventListener('get_cube_token_start', async (event: any) => {
+                console.log('get_cube_token_start------------>',JSON.parse(event.data));
+                const weatherStore = useWeatherStore();
+                await weatherStore.getTokenInfo();
+                // const tokenInfo = JSON.parse(event.data) as ITokenInfo;
+                // tokenInfo.cubeTokenValid = false;
+                // weatherStore.setTokenInfo(tokenInfo);
             });
 
-            source.addEventListener('get_cube_token_end', (event: any) => {
+            source.addEventListener('get_cube_token_end', async (event: any) => {
                 console.log('get_cube_token_end------------>',JSON.parse(event));
-
+                const weatherStore = useWeatherStore();
+                await weatherStore.getTokenInfo();
             });
 
             /** SSE失败 */

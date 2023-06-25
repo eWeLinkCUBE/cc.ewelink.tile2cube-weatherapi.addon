@@ -26,7 +26,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-
+    //TODO:进入card页面需要判断一下设置页面有没有配置完成
 });
 
 export default router

@@ -34,7 +34,7 @@ function getAuthSign(params: any) {
 
 //初始化axios设置
 axios.defaults.baseURL = env === EEnv.PROD ? '/api/v1' : apiUrl;
-axios.defaults.timeout = 15000;
+// axios.defaults.timeout = 15000;
 
 //生成随机数
 const chars = [
