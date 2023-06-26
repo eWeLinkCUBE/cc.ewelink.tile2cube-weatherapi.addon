@@ -86,7 +86,7 @@ apiv1.get('/cube-token', async (req, res) => {
             name: 'get_cube_token_start',
             data: { requestTokenTime: now }
         });
-        const tokenRes = await cubeApiClient.getBridgeToken();
+        const tokenRes = await cubeApiClient.getBridgeToken({ appName: process.env.APP_NAME });
         SSE.send({
             name: 'get_cube_token_end',
             data: { requestTokenTime: now }
