@@ -73,15 +73,6 @@ onMounted(async () => {
     }
 });
 
-watch(
-    () => weatherStore.tokenInfo.cubeTokenValid,
-    () => {
-        if (weatherStore.tokenInfo.cubeTokenValid) {
-            clearInterval(timer);
-        }
-    }
-);
-
 const tokenInfo = computed(() => weatherStore.tokenInfo);
 
 /** 开始倒计时 */
@@ -103,6 +94,7 @@ const setCutDownTimer = (seconds: number) => {
 /** 下一步 */
 const nextStep = () => {
     if (tokenInfo.value.cubeTokenValid) {
+        clearInterval(timer);
         router.push('/setting');
     }
 };
