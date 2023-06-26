@@ -13,7 +13,7 @@
                 <div class="form">
                     <a-form :model="formState" v-bind="layout" name="nest-messages" :validate-messages="validateMessages">
                         <a-form-item :name="['weather', 'weatherApiKey']" label="weatherApiKey" :rules="[{ required: true }]">
-                            <a-input v-model:value="formState.weather.weatherApiKey" :placeholder="$t('PLEASE_ENTER_API_KEY')" />
+                            <a-input @change="judgeDisabled" v-model:value="formState.weather.weatherApiKey" :placeholder="$t('PLEASE_ENTER_API_KEY')" />
                         </a-form-item>
                         <a-form-item :name="['weather', 'cityData']" label="cityData" :rules="[{ required: true }]">
                             <a-select
@@ -26,6 +26,7 @@
                                 :not-found-content="null"
                                 :disabled="!formState.weather.weatherApiKey.trim()"
                                 @search="(value:string)=>toggleDebounce(value)"
+                                @change="judgeDisabled"
                             >
                                 <a-select-option :key="select.id" :value="select.id" v-for="select in cityData">
                                     {{ select.display_name }}
@@ -33,7 +34,7 @@
                             </a-select>
                         </a-form-item>
                         <a-form-item :name="['weather', 'tempUnit']" label="tempUnit" :rules="[{ required: true }]">
-                            <a-select v-model:value="formState.weather.tempUnit" style="width: 350px" :placeholder="$t('PLEASE_ENTER_TEMPERATURE')">
+                            <a-select @change="judgeDisabled" v-model:value="formState.weather.tempUnit" style="width: 350px" :placeholder="$t('PLEASE_ENTER_TEMPERATURE')">
                                 <a-select-option :key="select.label" :value="select.value" v-for="select in temperatureData">
                                     {{ select.label }}
                                 </a-select-option>
@@ -45,7 +46,6 @@
             <footer class="footer">
                 <a-button :disabled="disabled" type="primary" @click="submitHandler">{{$t('FINISH')}}</a-button>
             </footer>
-            <!-- <a-button type="primary" @click="getForeCastInfo">获取天气数据</a-button> -->
             <!-- <div class="test" style="width:170px;height: 170px;">
                 <iframe src="http://127.0.0.1:5173/#/card" class="scroll-bar" style="width: 100%; height: 100%;" />
             </div> -->
@@ -79,9 +79,6 @@ const indicator = h(LoadingOutlined, {
 });
 
 onMounted(async () => {
-    // await getSaveDate();
-    // return;
-
     const res = await api.GetTokenInfo();
     if (res.error === 0 && res.data?.cubeTokenValid) {
         await getSaveDate();
@@ -104,12 +101,15 @@ const getSaveDate = async () => {
     loading.value = false;
     const res = await api.GetSaveData();
     if (res.error === 0 && res.data) {
-        cityData.value = [res.data?.cityData];
-        formState.weather.weatherApiKey = res.data?.weatherApiKey;
-        formState.weather.cityData = res.data?.cityData.id;
-        formState.weather.tempUnit = res.data?.tempUnit;
-        // weatherStore.setWeatherInfo(formState);
-        console.log('tempUnit------------>',weatherStore.weatherInfo.weather.tempUnit);
+        if(res.data.cityData){
+            cityData.value = [res.data?.cityData];
+            formState.weather.weatherApiKey = res.data?.weatherApiKey;
+            formState.weather.cityData = res.data?.cityData.id;
+            formState.weather.tempUnit = res.data?.tempUnit;
+            const tempVal = _.cloneDeep(formState);
+            weatherStore.setWeatherInfo(tempVal);
+            judgeDisabled();
+        }
     }
     setTimeout(()=>{
         loading.value=false;
@@ -137,29 +137,32 @@ const submitHandler = async () => {
             params.cityData = item;
         }
     }
-    console.log('params--------------->', params);
+    // console.log('params--------------->', params);
     const res = await api.setConfigData(params);
     if (res.error === 0 && res.data) {
-        console.log(res);
-        weatherStore.setWeatherInfo(formState);
-        console.log('提交存的数据---》',weatherStore.weatherInfo.weather);
+        const tempVal = _.cloneDeep(formState);
+        weatherStore.setWeatherInfo(tempVal);
+        judgeDisabled();
     }
 };
 
-/** 控制提交按钮是否可以点击 */
-const disabled = computed(() => {
-    //没有填完
-    if (!formState.weather.weatherApiKey || !formState.weather.cityData || !formState.weather.tempUnit) {
-        return true;
-    }
+/** 禁止填写按钮 */
+const disabled = ref(false);
 
+/** 控制提交按钮是否可以点击 */
+const judgeDisabled = () =>{
+    if (!formState.weather.weatherApiKey || !formState.weather.cityData || !formState.weather.tempUnit) {
+        disabled.value = true;
+        return;
+    }
     //与旧数据有异
     const weatherInfo = JSON.stringify(formState.weather);
     if (JSON.stringify(weatherStore.weatherInfo.weather) !== weatherInfo) {
-        return false;
+        disabled.value = false;
+        return;
     }
-    return true;
-});
+    disabled.value = true;
+}
 
 //城市数据
 const cityData = ref<ICityData[]>([]);
@@ -176,16 +179,6 @@ const getCityList = async (value: string) => {
     } else {
         cityData.value = [];
     }
-};
-
-/** 获取天气预报信息 */
-const getForeCastInfo = async () => {
-    const params: IRequestForeCastInfo = {
-        refresh: '1',
-        days: 3,
-    };
-    const res = await api.getForeCastInfo(params);
-    console.log('res-------------->', res);
 };
 
 /** 搜索城市防抖 */
