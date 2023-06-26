@@ -1,6 +1,6 @@
 <template>
-    <!-- 2*1卡片和详情内卡片复用 -->
-    <div class="Large-card" :style="{ width: formState.cardWidth + 'px' }" :class="isDetailCard ? 'isDetail-card' : ''">
+    <!-- 2*1卡片和详情内卡片复用  :style="{ width: formState.cardWidth + 'px' }"-->
+    <div class="Large-card" :class="isDetailCard ? 'isDetail-card' : ''">
         <header v-if="!isDetailCard">
             <div class="area-icon">
                 <img src="@/assets/img/area.png" alt="" />
@@ -13,7 +13,7 @@
         </header>
         <section class="section">
             <div class="left-area">
-                <img src="@/assets/img/sunny.png" alt="" />
+                <img :src="formState.imgSrc" alt="" />
                 <div class="describe">
                     <p>{{ formState.describe }}</p>
                     <div v-if="!isDetailCard">{{ $t('UPDATE') + ':' + formState.updateTime }}</div>
@@ -26,8 +26,7 @@
         <section class="forecast">
             <div class="card" v-for="(item, index) in formState.forecastday" :key="index">
                 <p class="weekday">{{ $t(`weekday.${getWeekByTimeStamp(item.date_epoch)}`) }}</p>
-                <!-- TODO:根据IMG_CODE进行图片映射 -->
-                <img src="@/assets/img/sunny.png" alt="" />
+                <img :src="imgMapping(item.day)" alt="" />
                 <p class="temperatrue">{{ getMiniMaxTempByList(item.day) }}</p>
             </div>
         </section>
@@ -39,14 +38,14 @@ import { ref, onMounted, computed, watch } from 'vue';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
 import { useWeatherStore } from '@/store/weather';
-import { formatTimeUtils, getWeekByTimeStamp, isEmptyObject, getQuery } from '@/utils/tools';
+import { formatTimeUtils, getWeekByTimeStamp, isEmptyObject, getQuery, FORECAST_SETTING_MAPPING } from '@/utils/tools';
 import moment from 'moment';
 import type { IForeCastResultInfo, ICardStyle } from '@/api/ts/interface/IWeatherInfo';
 const weatherStore = useWeatherStore();
 
 const props = defineProps<{
-    styleObject: ICardStyle;
     foreCastInfo: IForeCastResultInfo;
+    isDay:boolean
 }>();
 
 /** 2*1 卡片所需的数据 */
@@ -55,14 +54,10 @@ interface ILargeCardData {
     cityName: string;
     /** 天气 */
     describe: string;
-    /** 天气对应图标码 */
-    IMG_CODE: number;
     /** 温度 */
     temperature: number;
     /** 更新时间 */
     updateTime?: number | string;
-    /** 组件宽度 */
-    cardWidth: number;
     /** 未来四天的天气数据 */
     forecastday: {
         /** 日出日落时间 */
@@ -78,6 +73,8 @@ interface ILargeCardData {
     }[];
     /** 是白天 */
     isDay: boolean;
+    /** 当前天气的图片 */
+    imgSrc: string;
 }
 
 /** 当前天气数据，仅仅写了自己需要,数据太多有需要自取 */
@@ -90,17 +87,22 @@ interface IDays {
     mintemp_f: '';
     //最大华氏度
     maxtemp_f: '';
+    /** 天气 */
+    condition: {
+        code: number;
+        text: string;
+        icon: string;
+    };
 }
 
 const formState = reactive<ILargeCardData>({
     cityName: '',
     updateTime: 0,
-    cardWidth: 0,
     describe: '',
     temperature: 0,
     forecastday: [],
-    IMG_CODE: 1003, //多云
     isDay: false,
+    imgSrc: '',
 });
 
 /** 是否是摄氏度 */
@@ -114,9 +116,7 @@ onMounted(() => {
 const isDetailCard = ref(false);
 
 /** 获取页面参数 */
-const getPageData = () =>{
-    //页面宽度
-    formState.cardWidth = props.styleObject.width;
+const getPageData = () => {
     //城市名
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
     // //根据缓存取对应单位的温度
@@ -125,25 +125,27 @@ const getPageData = () =>{
     // //更新时间
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
     formState.updateTime = formatTimeUtils(time, 'HH:mm');
+    //当前是白天还是黑夜
+    formState.isDay = props.isDay;
     //当前天气
-    formState.describe = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'text'], '');
-    //当前天气对应的图标映射码
-    formState.IMG_CODE = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1003);
+    const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
+    const item = FORECAST_SETTING_MAPPING.find((item) => item.code === code);
+    if (item) {
+        formState.describe = formState.isDay ? item?.day : item?.night;
+        formState.imgSrc = formState.isDay ? item.dayIcon : item.nightIcon;
+    }
     //未来天气预报
     formState.forecastday = _.get(props.foreCastInfo, ['forecastData', 'forecast', 'forecastday'], []);
     //去除当日天气
     formState.forecastday = formState.forecastday.filter((i, d) => d !== 0);
-    //当前是白天还是黑夜
-    formState.isDay = _.get(props.foreCastInfo, ['forecastData', 'current', 'is_day'], 1) === 1;
 
     const params = getQuery(window.location.href);
-    console.log('large------------>',params.ihost_env);
-    if (params.ihost_env === 'iHostWebCustomCardDrawer'){
+    if (params.ihost_env === 'iHostWebCustomCardDrawer') {
         isDetailCard.value = true;
-    }else{
+    } else {
         isDetailCard.value = false;
     }
-}
+};
 
 /** 获取对应单位的最低和最高温度 */
 const getMiniMaxTempByList = (days: IDays) => {
@@ -153,6 +155,13 @@ const getMiniMaxTempByList = (days: IDays) => {
     } else {
         return days.mintemp_f + '-' + days.maxtemp_f + '°';
     }
+};
+
+/** 映射图片 */
+const imgMapping = (days: IDays) => {
+    const item = FORECAST_SETTING_MAPPING.find((item) => item.code === days.condition.code);
+    if (item)return formState.isDay ? item.dayIcon : item.nightIcon;
+    return '';
 };
 </script>
 
@@ -256,24 +265,24 @@ const getMiniMaxTempByList = (days: IDays) => {
     }
 }
 .isDetail-card {
-    border: 1px solid #ccc;
-    background: rgba(255,255,255,0.2)!important;
+    background: rgba(255, 255, 255, 0.2) !important;
     border-radius: 12px;
     opacity: 1;
-    width: 100%!important;
-    height:auto!important;
+    width: 100% !important;
+    height: auto !important;
     padding-top: 18px;
     padding-bottom: 15px;
-    .describe{
-        p{
-            color:#ffff!important;
+    .describe {
+        p {
+            color: #ffff !important;
         }
     }
-    .right-area{
-        color:#ffff!important;
+    .right-area {
+        color: #ffff !important;
     }
-    .weekday,.temperatrue{
-        color:#ffff!important;
+    .weekday,
+    .temperatrue {
+        color: #ffff !important;
     }
 }
 </style>

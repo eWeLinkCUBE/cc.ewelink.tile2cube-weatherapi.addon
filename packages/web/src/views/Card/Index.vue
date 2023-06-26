@@ -1,9 +1,9 @@
 <template>
-    <component :is="cardType" :styleObject="styleObject" :foreCastInfo="foreCastInfo" />
+    <component :is="cardType" :foreCastInfo="foreCastInfo" :isDay="isDay"/>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import SmallCard from '@/views/Card/component/SmallCard.vue';
 import LargeCard from '@/views/Card/component/LargeCard.vue';
 import DetailCard from '@/views/Card/component/DetailCard.vue';
@@ -11,18 +11,15 @@ import CastCard from '@/views/Card/component/CastCard.vue';
 import { getQuery } from '@/utils/tools';
 import api from '@/api/Weather/index';
 import type { IRequestForeCastInfo, IForeCastResultInfo, ICardStyle } from '@/api/ts/interface/IWeatherInfo';
+import _ from 'lodash';
+import { useWeatherStore } from '@/store/weather';
+const weatherStore = useWeatherStore();
 
 /** 当前的卡片类型 */
 const cardType = ref<any>();
 
 /** 天气数据 */
 const foreCastInfo = ref<IForeCastResultInfo>();
-
-/** 样式参数 */
-const styleObject = reactive<ICardStyle>({
-    width: 0,
-    height: 0,
-});
 
 /** 对应的映射卡片 */
 const relationMap: { [key: string]: any } = {
@@ -37,21 +34,8 @@ const relationMap: { [key: string]: any } = {
 };
 
 onMounted(async () => {
-    getIframeWidth();
     await judgeCardType();
-
-    // console.log('styleObject--------------->',window.innerWidth,window.innerHeight);
-    // await getForeCastInfo();
-    // cardType.value = CastCard;
 });
-
-/** 获取iframe容器的宽高 */
-const getIframeWidth = () => {
-    styleObject.width = window.innerWidth;
-    styleObject.height = window.innerHeight;
-};
-
-const isFiveDay = ref(false);
 
 /** 判断当前卡片类型 */
 const judgeCardType = async () => {
@@ -59,25 +43,32 @@ const judgeCardType = async () => {
     if (params.ihost_env) {
         await getForeCastInfo();
         cardType.value = relationMap[params.ihost_env];
-        console.log('------------------>', params.ihost_env);
         //2*1卡片
-        if (styleObject.width !== styleObject.height && params.ihost_env === 'iHostWebCustomCard') {
+        if (window.innerWidth !== window.innerHeight && params.ihost_env === 'iHostWebCustomCard') {
             cardType.value = relationMap['iHostWebCustomLargeCard'];
         }
     }
 };
 
+const isDay = ref(false);
+
 /** 获取天气预报信息 */
 const getForeCastInfo = async () => {
-    const params: IRequestForeCastInfo = {
-        refresh: '1',
-        days: 5,
+    const data: IRequestForeCastInfo = {
+        refresh: weatherStore.isChangeCity ? '1' :'0',
+        days:5
     };
-    const res = await api.getForeCastInfo(params);
+    const res = await api.getForeCastInfo(data);
     if(res.error === 0 && res.data){
+        console.log('res.data--------------->',res.data);
         foreCastInfo.value = res.data;
+        isDay.value = _.get(foreCastInfo.value, ['forecastData', 'current', 'is_day'], 1) === 1; //isDay 1:白天 0:黑夜
     }
 };
+
+window.addEventListener('resize', () => {
+    judgeCardType();
+});
 </script>
 
 <style scoped lang="scss"></style>

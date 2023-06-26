@@ -7,7 +7,7 @@
         <div class="card">
             <div class="item" v-for="(item, index) in HourData" :key="index">
                 <p>{{ index === 0 ? $t('NOW') : formatTimeUtils(item.time_epoch, 'HH:mm') }}</p>
-                <img src="@/assets/img/sunny.png" alt="" />
+                <img :src="imgMapping(item)" alt="" />
                 <p>{{ ( isCelsius ? item.temp_c : item.temp_f ) + '°' }}</p>
             </div>
         </div>
@@ -18,7 +18,7 @@
 import { ref, onMounted, computed } from 'vue';
 import _ from 'lodash';
 import { useWeatherStore } from '@/store/weather';
-import { formatTimeUtils} from '@/utils/tools';
+import { formatTimeUtils, FORECAST_SETTING_MAPPING } from '@/utils/tools';
 import moment from 'moment';
 import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 import i18n from '@/i18n/index';
@@ -26,6 +26,7 @@ const weatherStore = useWeatherStore();
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
+    isDay:boolean
 }>();
 
 /** 是否是摄氏度 */
@@ -73,6 +74,12 @@ const assembleData = () => {
         }
     }
 };
+
+const imgMapping = (hourData:IHourData) =>{
+    const item = FORECAST_SETTING_MAPPING.find((item)=>item.code ===hourData.condition.code );
+    if(item) return props.isDay ? item.dayIcon : item.nightIcon;
+    return '';
+}
 </script>
 
 <style scoped lang="scss">
@@ -85,7 +92,6 @@ const assembleData = () => {
     user-select: none;
     width: 100%;
     height: 129px;
-    border: 1px solid #ccc;
     background: rgba(255, 255, 255, 0.2) !important;
     border-radius: 12px;
     padding: 12px;

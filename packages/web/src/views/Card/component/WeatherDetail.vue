@@ -38,6 +38,7 @@ const etcStore = useEtcStore();
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
+    isDay:boolean
 }>();
 
 /** 是否是摄氏度 */
@@ -123,8 +124,6 @@ const initialAssignment = () => {
     margin: 0 auto;
     user-select: none;
     width: 100%;
-    // height: 427px;
-    border: 1px solid #ccc;
     background: rgba(255, 255, 255, 0.2) !important;
     border-radius: 12px;
     padding: 12px;

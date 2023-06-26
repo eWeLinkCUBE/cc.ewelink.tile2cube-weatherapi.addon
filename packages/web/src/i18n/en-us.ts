@@ -18,7 +18,22 @@ const en = {
     UPDATE: '更新',
     HOUR_FORECAST: '每小时天气预报',
     /** 天气预报翻译 */
-    FORECAST: {},
+    FORECAST: {
+        SUNNY:'Sunny',
+        CLEAR:'Clear(缺)',
+        SUNNY_CLOUDY:'Sunny and Cloudy',
+        CLOUDY:'Cloudy',
+        FOG:'Fog',
+        SHOWERS:'Showers',
+        TSTORMS:'T-Storms',
+        FLURRIES:'Flurries',
+        SNOW:'Snow',
+        SLEET:'Sleet',
+        RAIN_SNOW:'Rain and Snow',
+        HOT:'Hot',
+        COLD:'Cold',
+        WINDY:'Windy',
+    },
     /** 星期中英文 */
     weekday: {
         1: 'Mon',
