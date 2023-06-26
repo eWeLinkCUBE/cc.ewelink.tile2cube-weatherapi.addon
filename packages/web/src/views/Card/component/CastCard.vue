@@ -72,7 +72,7 @@ interface ISmallCardData {
     cardWidth: number;
 }
 
-/** 1*1卡片所需的数据 */
+/** cast卡片所需的数据 */
 const formState = reactive<ISmallCardData>({
     cityName: '',
     temperature: 0,
@@ -162,9 +162,10 @@ const formState = reactive<ISmallCardData>({
         color: #333333;
     }
 }
-@media screen and (min-width: 130px) {
-    .cast-card {
-        // background-color: red!important;
-    }
-}
+
+// @media screen and (min-width: 103px) and (max-width: 104px) {
+//     .cast-card {
+//         background-color: red!important;
+//     }
+// }
 </style>

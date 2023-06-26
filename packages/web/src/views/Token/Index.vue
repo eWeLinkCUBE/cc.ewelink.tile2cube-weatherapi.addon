@@ -63,7 +63,14 @@ const en_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_zh }, { i
 const zh_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_en }, { imgSrc: Confirm_en }];
 
 onMounted(async () => {
-    await weatherStore.getTokenInfo();
+    const res = await weatherStore.getTokenInfo();
+    if(res.data && res.error ===0){
+        clearInterval(timer);
+        const seconds = moment(moment()).diff(moment(res.data.requestTokenTime), 'seconds');
+        if(seconds>=0 && seconds<=300){
+            setCutDownTimer(seconds);
+        }
+    }
 });
 
 watch(
