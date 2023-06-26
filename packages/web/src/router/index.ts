@@ -5,7 +5,7 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: '/token'
+            redirect: '/setting'
         },
         {
             path:'/token',

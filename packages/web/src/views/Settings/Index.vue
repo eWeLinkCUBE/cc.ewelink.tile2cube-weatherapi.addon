@@ -104,12 +104,14 @@ const getSaveDate = async () => {
     loading.value = false;
     const res = await api.GetSaveData();
     if (res.error === 0 && res.data) {
-        cityData.value = [res.data?.cityData];
-        formState.weather.weatherApiKey = res.data?.weatherApiKey;
-        formState.weather.cityData = res.data?.cityData.id;
-        formState.weather.tempUnit = res.data?.tempUnit;
+        if(res.data.cityData){
+            cityData.value = [res.data?.cityData];
+            formState.weather.weatherApiKey = res.data?.weatherApiKey;
+            formState.weather.cityData = res.data?.cityData.id;
+            formState.weather.tempUnit = res.data?.tempUnit;
+            console.log('tempUnit------------>',weatherStore.weatherInfo.weather.tempUnit);
+        }
         // weatherStore.setWeatherInfo(formState);
-        console.log('tempUnit------------>',weatherStore.weatherInfo.weather.tempUnit);
     }
     setTimeout(()=>{
         loading.value=false;
@@ -152,7 +154,6 @@ const disabled = computed(() => {
     if (!formState.weather.weatherApiKey || !formState.weather.cityData || !formState.weather.tempUnit) {
         return true;
     }
-
     //与旧数据有异
     const weatherInfo = JSON.stringify(formState.weather);
     if (JSON.stringify(weatherStore.weatherInfo.weather) !== weatherInfo) {
@@ -176,16 +177,6 @@ const getCityList = async (value: string) => {
     } else {
         cityData.value = [];
     }
-};
-
-/** 获取天气预报信息 */
-const getForeCastInfo = async () => {
-    const params: IRequestForeCastInfo = {
-        refresh: '1',
-        days: 3,
-    };
-    const res = await api.getForeCastInfo(params);
-    console.log('res-------------->', res);
 };
 
 /** 搜索城市防抖 */
