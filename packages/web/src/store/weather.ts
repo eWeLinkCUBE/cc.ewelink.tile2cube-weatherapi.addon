@@ -10,6 +10,8 @@ interface IWeatherState {
     tokenInfo: ITokenInfo;
     /** 保存的配置信息 */
     weatherInfo: IFormState;
+    /** 是否改变了城市 */
+    isChangeCity:boolean,
 }
 
 export const useWeatherStore = defineStore('weather', {
@@ -26,6 +28,7 @@ export const useWeatherStore = defineStore('weather', {
                 requestTokenTime: 0,
                 cubeTokenValid: false,
             },
+            isChangeCity:false,
         };
     },
     actions: {
@@ -48,13 +51,17 @@ export const useWeatherStore = defineStore('weather', {
         /** 设置token信息 */
         setTokenInfo(info:ITokenInfo){
             this.tokenInfo = info;
-            console.log('------------------>',this.tokenInfo);
+        },
+
+        /** 修改了城市 */
+        setIsChangeCity(isChange:boolean){
+            this.isChangeCity = isChange;
         }
     },
     getters: {
         countdownStatus(state){
             const seconds = moment(moment()).diff(moment(state.tokenInfo.requestTokenTime), 'seconds');
-            console.log('second------------>', seconds);
+            console.log('getters second------------>', seconds);
             return seconds >= 300 || state.tokenInfo.cubeTokenValid ? false : true;
         }
     },

@@ -45,7 +45,7 @@ export const useSseStore = defineStore('sse', {
             });
 
             source.addEventListener('get_cube_token_end', async (event: any) => {
-                console.log('get_cube_token_end------------>',JSON.parse(event));
+                console.log('get_cube_token_end------------>',JSON.parse(event.data));
                 const weatherStore = useWeatherStore();
                 await weatherStore.getTokenInfo();
             });

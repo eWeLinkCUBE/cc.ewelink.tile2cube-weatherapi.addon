@@ -1,12 +1,12 @@
 <template>
-    <div class="detail scroll-bar">
+    <div class="detail scroll-bar" :class="{'isNight':!isDay}">
         <Header :foreCastInfo="foreCastInfo" />
         <!-- 未来几天天气 -->
-        <LargeCard :foreCastInfo="foreCastInfo" :styleObject="styleObject" />
+        <LargeCard :foreCastInfo="foreCastInfo" :isDay="isDay"/>
         <!-- 当天小时天气数据 -->
-        <HourForeCastCard :foreCastInfo="foreCastInfo"/>
+        <HourForeCastCard :foreCastInfo="foreCastInfo" :isDay="isDay"/>
         <!-- 天气参数 -->
-        <WeatherDetail :foreCastInfo="foreCastInfo" />
+        <WeatherDetail :foreCastInfo="foreCastInfo" :isDay="isDay"/>
     </div>
 </template>
 
@@ -20,8 +20,8 @@ import _ from 'lodash';
 import type { IForeCastResultInfo, ICardStyle } from '@/api/ts/interface/IWeatherInfo';
 
 const props = defineProps<{
-    styleObject: ICardStyle;
     foreCastInfo: IForeCastResultInfo;
+    isDay:boolean
 }>();
 </script>
 
@@ -37,6 +37,10 @@ const props = defineProps<{
     padding: 0 12px;
     padding-bottom: 15px;
     padding-top:57px;
+}
+.isNight{
+    background: url(../../../assets/img/night_bg.png) no-repeat;
+    background-size: 100% 100%;
 }
 .Scroll-bar::-webkit-scrollbar {
     /*滚动条整体样式*/

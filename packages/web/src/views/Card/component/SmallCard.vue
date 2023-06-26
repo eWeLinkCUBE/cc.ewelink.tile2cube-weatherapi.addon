@@ -1,5 +1,6 @@
 <template>
-    <div class="small-card" :style="{ width: formState.cardWidth + 'px' }">
+    <!--  :style="{ width: formState.cardWidth + 'px' }" -->
+    <div class="small-card">
         <header>
             <div class="area-icon">
                 <img src="@/assets/img/area.png" alt="" />
@@ -8,8 +9,8 @@
         </header>
         <section>
             <div class="temperature">
-                <img src="@/assets/img/sunny.png" alt="" />
-                <span>{{ formState.temperature + '°'}}</span>
+                <img :src="formState.imgSrc" alt="" />
+                <span>{{ formState.temperature + '°' }}</span>
             </div>
             <div class="weather">
                 <span class="word">
@@ -26,24 +27,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
+import { onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
 import type { IForeCastResultInfo, ICardStyle } from '@/api/ts/interface/IWeatherInfo';
 import { useWeatherStore } from '@/store/weather';
-import { formatTimeUtils } from '@/utils/tools';
+import { formatTimeUtils, FORECAST_SETTING_MAPPING } from '@/utils/tools';
 const weatherStore = useWeatherStore();
 
 const props = defineProps<{
-    styleObject: ICardStyle;
     foreCastInfo: IForeCastResultInfo;
+    isDay:boolean
 }>();
 
 onMounted(() => {
-    console.log('屏幕的宽度----------------》',window.screen.height,window.screen.width);
-    //页面宽度
-    formState.cardWidth = props.styleObject.width;
     //城市名称
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
     //根据缓存取对应单位的温度
@@ -52,8 +50,16 @@ onMounted(() => {
     //天气更新时间
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
     formState.updateTime = formatTimeUtils(time, 'HH:mm');
+    //是否是白天
+    const isDay = props.isDay;
     //当前天气
-    formState.describe = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'text'], '');
+    const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
+
+    const item = FORECAST_SETTING_MAPPING.find((item)=>item.code === code);
+    if(item){
+        formState.describe = isDay ? item?.day :item?.night
+        formState.imgSrc = isDay ? item?.dayIcon:item?.nightIcon;
+    }
 });
 
 interface ISmallCardData {
@@ -65,8 +71,8 @@ interface ISmallCardData {
     describe: string;
     /** 更新时间 */
     updateTime?: number | string;
-    /** 组件宽度 */
-    cardWidth: number;
+    /** 图标 */
+    imgSrc:string,
 }
 
 /** 1*1卡片所需的数据 */
@@ -75,12 +81,8 @@ const formState = reactive<ISmallCardData>({
     temperature: 0,
     describe: '',
     updateTime: 0,
-    cardWidth: 0,
+    imgSrc:''
 });
-
-// window.addEventListener('resize', () => {
-//     console.log('处理窗口缩放时要处理的逻辑操作！');
-// });
 </script>
 
 <style scoped lang="scss">

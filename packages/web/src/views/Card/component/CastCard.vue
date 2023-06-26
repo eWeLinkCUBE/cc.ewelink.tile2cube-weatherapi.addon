@@ -36,8 +36,8 @@ import { formatTimeUtils } from '@/utils/tools';
 const weatherStore = useWeatherStore();
 
 const props = defineProps<{
-    styleObject: ICardStyle;
     foreCastInfo: IForeCastResultInfo;
+    isDay:boolean
 }>();
 
 onMounted(() => {
@@ -45,8 +45,6 @@ onMounted(() => {
 });
 
 const init = () =>{
-    //页面宽度
-    formState.cardWidth = props.styleObject.width;
     //城市名称
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
     //根据缓存取对应单位的温度
@@ -68,8 +66,6 @@ interface ISmallCardData {
     describe: string;
     /** 更新时间 */
     updateTime?: number | string;
-    /** 组件宽度 */
-    cardWidth: number;
 }
 
 /** cast卡片所需的数据 */
@@ -78,12 +74,7 @@ const formState = reactive<ISmallCardData>({
     temperature: 0,
     describe: '',
     updateTime: 0,
-    cardWidth: 0,
 });
-
-// window.addEventListener('resize', () => {
-//     console.log('处理窗口缩放时要处理的逻辑操作！');
-// });
 </script>
 
 <style scoped lang="scss">

@@ -67,13 +67,20 @@ onMounted(async () => {
     if(res.data && res.error ===0){
         clearInterval(timer);
         const seconds = moment(moment()).diff(moment(res.data.requestTokenTime), 'seconds');
-        if(seconds>=0 && seconds<=300){
+        if(seconds>=0 && seconds<=300 && !res.data.cubeTokenValid){
             setCutDownTimer(seconds);
         }
     }
 });
 
 const tokenInfo = computed(() => weatherStore.tokenInfo);
+
+watch(()=>weatherStore.countdownStatus,(newValue, oldValue) => {
+    if(!newValue){
+        console.log('!newValue--------->',!newValue);
+        clearInterval(timer);
+    }
+});
 
 /** 开始倒计时 */
 const setCutDownTimer = (seconds: number) => {
@@ -106,8 +113,8 @@ const getToken = async () => {
     setCutDownTimer(0);
     // 开始获取token
     await api.GetToken();
-    // 获取token信息
-    await weatherStore.getTokenInfo();
+    // // 获取token信息
+    // await weatherStore.getTokenInfo();
 };
 
 /** 格式化时间 */

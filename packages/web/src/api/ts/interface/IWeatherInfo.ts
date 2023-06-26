@@ -61,9 +61,9 @@ export interface IRequestConfigInfo {
 /** 请求天气预报参数 */
 export interface IRequestForeCastInfo {
     /** 天气预报的天数 */
-    days: number;
+    days?: number;
     /** 是否强制刷新天气 */
-    refresh: string;
+    refresh?: string;
 }
 
 /** 返回的天气预报信息 */
@@ -103,7 +103,7 @@ export interface IForeCastMapping {
     /** 图码 */
     code: number;
     /** 白天图标 */
-    dayIcon: string | number;
+    dayIcon: string;
     /** 夜晚图标 */
-    nightIcon: string | number;
+    nightIcon: string;
 }
