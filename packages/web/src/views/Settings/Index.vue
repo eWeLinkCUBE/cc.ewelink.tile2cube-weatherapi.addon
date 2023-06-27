@@ -47,14 +47,14 @@
                 <a-button :disabled="disabled" type="primary" @click="submitHandler">{{$t('FINISH')}}</a-button>
             </footer>
 
-            <!-- <div class="test" style="width:180px;height: 180px;">
+            <div class="test" style="width:180px;height: 180px;">
                 <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCard&language=en-us" class="scroll-bar" style="width: 100%; height: 100%" />
             </div>
             <div class="test" style="width:170px;height: 170px;">
                 <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCard&language=en-us" class="scroll-bar" style="width: 360px; height: 180px" />
-            </div> -->
+            </div>
             <!-- ?ihost_env=iHostWebCustomCardDrawer&language=en-us -->
-            <!-- <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCardDrawer&language=en-us" class="scroll-bar" style="max-width: 457px; height: 868px;" /> -->
+            <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCardDrawer&language=en-us" class="scroll-bar" style="max-width: 457px; height: 868px;" />
         </div>
     </a-spin>
 </template>
@@ -143,10 +143,13 @@ const submitHandler = async () => {
     }
     // console.log('params--------------->', params);
     const res = await api.setConfigData(params);
+    weatherStore.setWeatherInfo(_.cloneDeep(formState));
     if (res.error === 0 && res.data) {
         message.success('success');
-        weatherStore.setWeatherInfo(_.cloneDeep(formState));
         judgeDisabled();
+    }
+    if(res.error >3000 ){
+        message.error('error');
     }
 };
 

@@ -10,21 +10,23 @@
         <section>
             <div class="temperature">
                 <img src="@/assets/img/sunny.png" alt="" />
-                <span>{{ formState.temperature + '°'}}</span>
+                <span>{{ formState.temperature + '°' }}</span>
             </div>
             <div class="weather">
                 <span class="word">
                     {{ formState.describe }}
                 </span>
-                <div class="api">
-                    <img alt="" src="@/assets/img/area.png" />
-                    <span>weather<br />api</span>
-                </div>
             </div>
         </section>
-        <div class="update-time">{{ $t('UPDATE') + ':' + formState.updateTime }}</div>
+        <div class="update-time">
+            <span>{{ $t('UPDATE') + ':' + formState.updateTime }}</span>
+            <div class="api">
+                <img alt="" src="@/assets/img/area.png" />
+                <span>weather<br />api</span>
+            </div>
+        </div>
     </div>
- </template>
+</template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
@@ -37,25 +39,30 @@ const weatherStore = useWeatherStore();
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
-    isDay:boolean
+    isDay: boolean;
+    tempUnit: boolean;
 }>();
 
 onMounted(() => {
     init();
 });
 
-const init = () =>{
+watch(()=>props.foreCastInfo,()=>{
+    init();
+});
+
+const init = () => {
     //城市名称
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
     //根据缓存取对应单位的温度
-    const tempUnit = weatherStore.weatherInfo.weather.tempUnit === 'C' ? 'temp_c' : 'temp_f';
+    const tempUnit = props.tempUnit ? 'temp_c' : 'temp_f';
     formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
     //天气更新时间
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
     formState.updateTime = formatTimeUtils(time, 'HH:mm');
     //当前天气
     formState.describe = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'text'], '');
-}
+};
 
 interface ISmallCardData {
     /** 城市名称 */
@@ -81,27 +88,27 @@ const formState = reactive<ISmallCardData>({
 .cast-card {
     margin: 0 auto;
     text-align: center;
-    padding: .5rem;
-    border-radius: .375rem;
-    width:100%;
-    min-height: 100vh;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    width: 100%;
+    min-height: 100%;
     header {
         display: flex;
         align-items: center;
         text-align: left;
         .area-icon {
             img {
-                width: .875rem;
-                height: .875rem;
-                margin-right: .375rem;
+                width: 0.875rem;
+                height: 0.875rem;
+                margin-right: 0.375rem;
             }
             span {
-                font-size: .75rem;
+                font-size: 0.75rem;
             }
         }
     }
     section {
-        margin-top: .5rem;
+        margin-top: 0.5rem;
         .temperature {
             display: flex;
             justify-content: space-between;
@@ -118,8 +125,8 @@ const formState = reactive<ISmallCardData>({
         .weather {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-top: .625rem;
+            justify-content: flex-start;
+            margin-top: 0.625rem;
             .word {
                 display: inline-block;
                 white-space: nowrap;
@@ -128,35 +135,32 @@ const formState = reactive<ISmallCardData>({
                 color: #333333;
                 font-size: 1rem;
             }
-            .api {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                img {
-                    width: .75rem;
-                    height: .9375rem;
-                    margin-right: .3125rem;
-                }
-                span {
-                    font-size: .75rem;
-                    color: #333333;
-                    text-align: right;
-                    line-height: .6875rem;
-                }
-            }
         }
     }
     .update-time {
-        text-align: left;
-        margin-top: .9375rem;
-        font-size: .875rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 0.9375rem;
+        font-size: 0.875rem;
         color: #333333;
+        white-space: nowrap;
+        .api {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            img {
+                width: 0.75rem;
+                height: 0.9375rem;
+                margin-right: 0.3125rem;
+            }
+            span {
+                font-size: 0.75rem;
+                color: #333333;
+                text-align: right;
+                line-height: 0.6875rem;
+            }
+        }
     }
 }
-
-// @media screen and (min-width: 103px) and (max-width: 104px) {
-//     .cast-card {
-//         background-color: red!important;
-//     }
-// }
 </style>

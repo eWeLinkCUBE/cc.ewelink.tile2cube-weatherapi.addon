@@ -39,10 +39,8 @@ const etcStore = useEtcStore();
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
     isDay:boolean
+    tempUnit:boolean
 }>();
-
-/** 是否是摄氏度 */
-const isCelsius = computed(() => weatherStore.weatherInfo.weather.tempUnit === 'C');
 
 /** 仅取自己所需要的详情数据 */
 interface IWeatherDetail {
@@ -83,10 +81,11 @@ interface IItemData {
 onMounted(() => {
     initialAssignment();
 });
+watch(()=>props.foreCastInfo,()=>{
+    initialAssignment();
+});
 
 const itemData = ref<IItemData[]>([]);
-
-const isZhCn = computed(() => etcStore.language === 'zh-cn');
 
 /** 初始化赋值 */
 const initialAssignment = () => {
@@ -105,7 +104,7 @@ const initialAssignment = () => {
     };
 
     itemData.value = [
-        { imgSrc: FeelsLike, value: (isCelsius.value ? formState.feelslike_c : formState.feelslike_f) + '°', describe: i18n.global.t('FEELS_LIKE') },
+        { imgSrc: FeelsLike, value: (props.tempUnit ? formState.feelslike_c : formState.feelslike_f) + '°', describe: i18n.global.t('FEELS_LIKE') },
         { imgSrc: SunRise, value: formState.sunrise, describe: i18n.global.t('SUNRISE') },
         { imgSrc: SunSet, value: formState.sunset, describe: i18n.global.t('SUNSET') },
         { imgSrc: PressureMb, value: formState.pressure_mb + ' hPa', describe: i18n.global.t('PRESSURE_MB') },

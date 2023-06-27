@@ -3,11 +3,11 @@
         <!-- 头部时间 -->
         <Header :foreCastInfo="foreCastInfo" />
         <!-- 未来几天天气 -->
-        <LargeCard :foreCastInfo="foreCastInfo" :isDay="isDay"/>
+        <LargeCard :foreCastInfo="foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
         <!-- 当天小时天气数据 -->
-        <HourForeCastCard :foreCastInfo="foreCastInfo" :isDay="isDay"/>
+        <HourForeCastCard :foreCastInfo="foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
         <!-- 天气参数 -->
-        <WeatherDetail :foreCastInfo="foreCastInfo" :isDay="isDay"/>
+        <WeatherDetail :foreCastInfo="foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
     </div>
 </template>
 
@@ -22,7 +22,8 @@ import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
-    isDay:boolean
+    isDay:boolean;
+    tempUnit:boolean
 }>();
 </script>
 
