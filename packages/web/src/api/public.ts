@@ -2,7 +2,7 @@ import axios, { type AxiosRequestConfig } from 'axios';
 import api from './index';
 import EReqMethod from './ts/enum/EReqMethod';
 import type IResponse from './ts/class/CResponse';
-import { apiUrl, appSecret, appId, env } from '@/config';
+import { apiUrl, appSecret, env } from '@/config';
 import { useEtcStore } from '@/store/etc';
 import cryptoJS from 'crypto-js';
 import _ from 'lodash';
@@ -108,10 +108,10 @@ async function _httpGetPOSTPutDeleteRequest<T>(url: string, params: object, meth
 
     const ts = Date.now();
     if (methodType === 'GET') {
-        axiosConfig.params.appid = appId;
+        // axiosConfig.params.appid = appId;
         axiosConfig.params.ts = ts;
     } else {
-        axiosConfig.params = Object.assign(axiosConfig.params, { ts, appid: appId });
+        axiosConfig.params = Object.assign(axiosConfig.params, { ts});
     }
 
     let headers = createCommonHeader(methodType, params);

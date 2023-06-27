@@ -34,13 +34,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
 import { useWeatherStore } from '@/store/weather';
 import { formatTimeUtils, getWeekByTimeStamp, isEmptyObject, getQuery, FORECAST_SETTING_MAPPING } from '@/utils/tools';
 import moment from 'moment';
-import type { IForeCastResultInfo, ICardStyle } from '@/api/ts/interface/IWeatherInfo';
+import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 const weatherStore = useWeatherStore();
 
 const props = defineProps<{
@@ -71,8 +71,6 @@ interface ILargeCardData {
         /** 精确时间数据 */
         hour: any[];
     }[];
-    /** 是白天 */
-    isDay: boolean;
     /** 当前天气的图片 */
     imgSrc: string;
 }
@@ -101,7 +99,6 @@ const formState = reactive<ILargeCardData>({
     describe: '',
     temperature: 0,
     forecastday: [],
-    isDay: false,
     imgSrc: '',
 });
 
@@ -125,27 +122,31 @@ const getPageData = () => {
     // //更新时间
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
     formState.updateTime = formatTimeUtils(time, 'HH:mm');
-    //当前是白天还是黑夜
-    formState.isDay = props.isDay;
     //当前天气
     const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
-    const item = FORECAST_SETTING_MAPPING.find((item) => item.code === code);
-    if (item) {
-        formState.describe = formState.isDay ? item?.day : item?.night;
-        formState.imgSrc = formState.isDay ? item.dayIcon : item.nightIcon;
+    for(const item of FORECAST_SETTING_MAPPING){
+        if(item.code === code){
+            formState.describe = props.isDay ? item.day :item.night;
+            formState.imgSrc = props.isDay ? item.dayIcon:item.nightIcon;
+        }
     }
     //未来天气预报
     formState.forecastday = _.get(props.foreCastInfo, ['forecastData', 'forecast', 'forecastday'], []);
     //去除当日天气
     formState.forecastday = formState.forecastday.filter((i, d) => d !== 0);
 
+    judgeCardType();
+};
+
+/** 判断是2*1卡片还是详情抽屉卡片 */
+const judgeCardType = () =>{
     const params = getQuery(window.location.href);
     if (params.ihost_env === 'iHostWebCustomCardDrawer') {
         isDetailCard.value = true;
     } else {
         isDetailCard.value = false;
     }
-};
+}
 
 /** 获取对应单位的最低和最高温度 */
 const getMiniMaxTempByList = (days: IDays) => {
@@ -160,7 +161,7 @@ const getMiniMaxTempByList = (days: IDays) => {
 /** 映射图片 */
 const imgMapping = (days: IDays) => {
     const item = FORECAST_SETTING_MAPPING.find((item) => item.code === days.condition.code);
-    if (item)return formState.isDay ? item.dayIcon : item.nightIcon;
+    if (item) return props.isDay ? item.dayIcon : item.nightIcon;
     return '';
 };
 </script>

@@ -3,15 +3,15 @@ import api from '@/api/Weather/index';
 import _ from 'lodash';
 import router from '@/router';
 import moment from 'moment';
-import type { ITokenInfo ,IFormState } from '@/api/ts/interface/IWeatherInfo';
+import type { ITokenInfo ,IFormState ,IForeCastResultInfo} from '@/api/ts/interface/IWeatherInfo';
 
 interface IWeatherState {
     /** token信息 */
     tokenInfo: ITokenInfo;
     /** 保存的配置信息 */
     weatherInfo: IFormState;
-    /** 是否改变了城市 */
-    isChangeCity:boolean,
+    /** 天气预报数据 */
+    foreCastInfo:IForeCastResultInfo;
 }
 
 export const useWeatherStore = defineStore('weather', {
@@ -28,7 +28,15 @@ export const useWeatherStore = defineStore('weather', {
                 requestTokenTime: 0,
                 cubeTokenValid: false,
             },
-            isChangeCity:false,
+            foreCastInfo:{
+                forecastData:{
+                    alerts: {},
+                    current: {},
+                    forecast: {},
+                    location: {},
+                },
+                updateTime:0
+            }
         };
     },
     actions: {
@@ -43,6 +51,16 @@ export const useWeatherStore = defineStore('weather', {
             return res;
         },
 
+        /** 获取天气预报数据 */
+        async getForeCastInfo(){
+            const res = await api.getForeCastInfo({days:5,refresh: '1'});
+            if(res.error === 0 && res.data){
+                this.foreCastInfo = res.data;
+                console.log('foreCastInfo--------------->', res.data);
+            }
+            return res;
+        },
+
         /** 设置配置信息 */
         setWeatherInfo(weatherInfo: IFormState) {
             this.weatherInfo = weatherInfo;
@@ -52,11 +70,6 @@ export const useWeatherStore = defineStore('weather', {
         setTokenInfo(info:ITokenInfo){
             this.tokenInfo = info;
         },
-
-        /** 修改了城市 */
-        setIsChangeCity(isChange:boolean){
-            this.isChangeCity = isChange;
-        }
     },
     getters: {
         countdownStatus(state){
