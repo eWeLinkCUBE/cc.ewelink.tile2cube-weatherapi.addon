@@ -30,6 +30,16 @@ export const ERR_PARAM_NO_CITY_NAME = {
     msg: 'No city name'
 };
 
+export const ERR_PARAM_NO_CITY_DATA = {
+    error: 2002,
+    msg: 'No city data'
+};
+
+export const ERR_PARAM_NO_TEMP_UNIT = {
+    error: 2003,
+    msg: 'No temperature unit'
+};
+
 export const ERR_WEATHER_API_KEY_NOT_PROVIDED = {
     error: 3000,
     msg: 'Weather API key not provided'
