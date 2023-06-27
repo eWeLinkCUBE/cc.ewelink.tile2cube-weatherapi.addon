@@ -246,7 +246,7 @@ apiv1.post('/config', async (req, res) => {
         }
 
         if (shouldCreateWeatherUiCard) {
-            const HOST = `${process.env.CONFIG_CUBE_HOST}:${LISTEN_PORT}`;
+            const HOST = `ihost.local:${LISTEN_PORT}`;
             const addRes = await cubeApiClient.addUiCardList({
                 label: 'Weather Card',
                 web_settings: {
