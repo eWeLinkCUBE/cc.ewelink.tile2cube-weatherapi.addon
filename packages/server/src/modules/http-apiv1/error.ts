@@ -16,38 +16,8 @@ export const ERR_NO_CUBE_API_TOKEN = {
 };
 
 export const ERR_GET_BRIDGE_TOKEN_TIMEOUT = {
-    error: 1002,
-    msg: 'Get bridge token timeout'
-};
-
-export const ERR_WEATHER_API_KEY_NOT_PROVIDED = {
     error: 1003,
-    msg: 'Weather API key not provided'
-};
-
-export const ERR_WEATHER_API_KEY_INVALID = {
-    error: 1004,
-    msg: 'Weather API key invalid'
-};
-
-export const ERR_WEATHER_API_EXCEEDED_CALL = {
-    error: 1005,
-    msg: 'Weather API key has exceeded calls per month quota'
-};
-
-export const ERR_WEATHER_API_KEY_DISABLED = {
-    error: 1006,
-    msg: 'Weather API key has been disabled'
-};
-
-export const ERR_WEATHER_API_INTERNAL = {
-    error: 1007,
-    msg: 'Weather API internal error'
-};
-
-export const ERR_WEATHER_API_NO_CITY_DATA = {
-    error: 1008,
-    msg: 'Weather API no city data'
+    msg: 'Get bridge token timeout'
 };
 
 export const ERR_PARAM_NO_WEATHER_API_KEY = {
@@ -58,6 +28,36 @@ export const ERR_PARAM_NO_WEATHER_API_KEY = {
 export const ERR_PARAM_NO_CITY_NAME = {
     error: 2001,
     msg: 'No city name'
+};
+
+export const ERR_WEATHER_API_KEY_NOT_PROVIDED = {
+    error: 3000,
+    msg: 'Weather API key not provided'
+};
+
+export const ERR_WEATHER_API_KEY_INVALID = {
+    error: 3001,
+    msg: 'Weather API key invalid'
+};
+
+export const ERR_WEATHER_API_EXCEEDED_CALL = {
+    error: 3002,
+    msg: 'Weather API key has exceeded calls per month quota'
+};
+
+export const ERR_WEATHER_API_KEY_DISABLED = {
+    error: 3003,
+    msg: 'Weather API key has been disabled'
+};
+
+export const ERR_WEATHER_API_INTERNAL = {
+    error: 3004,
+    msg: 'Weather API internal error'
+};
+
+export const ERR_WEATHER_API_NO_CITY_DATA = {
+    error: 3005,
+    msg: 'Weather API no city data'
 };
 
 export function createErrorRes(errRes: any, newErrMsg?: string) {
