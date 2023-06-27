@@ -28,7 +28,6 @@
 
 <script setup lang="ts">
 import { onMounted} from 'vue';
-import { useRouter } from 'vue-router';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
 import type { IForeCastResultInfo, ICardStyle } from '@/api/ts/interface/IWeatherInfo';
@@ -40,27 +39,6 @@ const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
     isDay:boolean
 }>();
-
-onMounted(() => {
-    //城市名称
-    formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
-    //根据缓存取对应单位的温度
-    const tempUnit = weatherStore.weatherInfo.weather.tempUnit === 'C' ? 'temp_c' : 'temp_f';
-    formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
-    //天气更新时间
-    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
-    formState.updateTime = formatTimeUtils(time, 'HH:mm');
-    //是否是白天
-    const isDay = props.isDay;
-    //当前天气
-    const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
-
-    const item = FORECAST_SETTING_MAPPING.find((item)=>item.code === code);
-    if(item){
-        formState.describe = isDay ? item?.day :item?.night
-        formState.imgSrc = isDay ? item?.dayIcon:item?.nightIcon;
-    }
-});
 
 interface ISmallCardData {
     /** 城市名称 */
@@ -83,6 +61,30 @@ const formState = reactive<ISmallCardData>({
     updateTime: 0,
     imgSrc:''
 });
+
+onMounted(() => {
+    init();
+});
+
+const init = () =>{
+    //城市名称
+    formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
+    //根据缓存取对应单位的温度
+    const tempUnit = weatherStore.weatherInfo.weather.tempUnit === 'C' ? 'temp_c' : 'temp_f';
+    formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
+    //天气更新时间
+    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
+    formState.updateTime = formatTimeUtils(time, 'HH:mm');
+    //当前天气
+    const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
+    //根据code获取对应中英文、白天黑夜图标
+    for(const item of FORECAST_SETTING_MAPPING){
+        if(item.code === code){
+            formState.describe = props.isDay ? item.day :item.night;
+            formState.imgSrc = props.isDay ? item.dayIcon:item.nightIcon;
+        }
+    }
+}
 </script>
 
 <style scoped lang="scss">
@@ -159,10 +161,5 @@ const formState = reactive<ISmallCardData>({
         font-size: 14px;
         color: #333333;
     }
-}
-@media screen and (min-width: 960px) {
-    // .small-card {
-    //     background-color: red !important;;
-    // }
 }
 </style>

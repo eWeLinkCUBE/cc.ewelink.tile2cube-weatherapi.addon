@@ -1,5 +1,6 @@
 <template>
     <div class="detail scroll-bar" :class="{'isNight':!isDay}">
+        <!-- 头部时间 -->
         <Header :foreCastInfo="foreCastInfo" />
         <!-- 未来几天天气 -->
         <LargeCard :foreCastInfo="foreCastInfo" :isDay="isDay"/>
@@ -17,7 +18,7 @@ import WeatherDetail from '@/views/Card/component/WeatherDetail.vue';
 import Header from '@/views/Card/component/header.vue'
 import i18n from '@/i18n/index';
 import _ from 'lodash';
-import type { IForeCastResultInfo, ICardStyle } from '@/api/ts/interface/IWeatherInfo';
+import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;

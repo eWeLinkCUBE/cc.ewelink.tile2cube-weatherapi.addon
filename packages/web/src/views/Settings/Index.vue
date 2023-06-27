@@ -110,8 +110,8 @@ const getSaveDate = async () => {
             formState.weather.weatherApiKey = res.data?.weatherApiKey;
             formState.weather.cityData = res.data?.cityData.id;
             formState.weather.tempUnit = res.data?.tempUnit;
-            const tempVal = _.cloneDeep(formState);
-            weatherStore.setWeatherInfo(tempVal);
+            weatherStore.setWeatherInfo(_.cloneDeep(formState));
+            console.log('------tempUnittempUnit----------->',weatherStore.weatherInfo.weather.tempUnit);
             judgeDisabled();
         }
     }
@@ -144,14 +144,8 @@ const submitHandler = async () => {
     // console.log('params--------------->', params);
     const res = await api.setConfigData(params);
     if (res.error === 0 && res.data) {
-        //判断是否改变了城市
-        if(weatherStore.weatherInfo.weather.cityData === formState.weather.cityData){
-            weatherStore.setIsChangeCity(false);
-        }else{
-            weatherStore.setIsChangeCity(true);
-        }
-        const tempVal = _.cloneDeep(formState);
-        weatherStore.setWeatherInfo(tempVal);
+        message.success('success');
+        weatherStore.setWeatherInfo(_.cloneDeep(formState));
         judgeDisabled();
     }
 };

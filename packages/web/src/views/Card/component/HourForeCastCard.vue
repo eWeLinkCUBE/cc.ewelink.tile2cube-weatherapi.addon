@@ -57,10 +57,10 @@ onMounted(() => {
 
 /** 组装小时数据 */
 const assembleData = () => {
-    const forecastday = _.get(props.foreCastInfo, ['forecastData', 'forecast', 'forecastday'], []);
-    if (forecastday.length > 0) {
+    const foreCastDay = _.get(props.foreCastInfo, ['forecastData', 'forecast', 'forecastday'], []);
+    if (foreCastDay.length > 1) {
         //考虑到当天例如23：00之后四小时时间,目前总共获取两天共48小时的数据;
-        const twoDaysHourData: IHourData[] = _.concat(forecastday[0].hour, forecastday[1].hour);
+        const twoDaysHourData: IHourData[] = _.concat(foreCastDay[0].hour, foreCastDay[1].hour);
         if (twoDaysHourData.length > 0) {
             let index = 0; //当前小时
             for (let i = 0; i <= twoDaysHourData.length - 1; i++) {
@@ -71,6 +71,7 @@ const assembleData = () => {
             }
             //获取五小时的天气数据
             HourData.value = _.slice(twoDaysHourData, index, index + 5);
+            console.log('index------------>',index,HourData.value);
         }
     }
 };
