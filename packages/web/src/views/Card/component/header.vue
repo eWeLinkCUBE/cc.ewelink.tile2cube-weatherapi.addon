@@ -28,10 +28,17 @@ const formState = reactive<IFormState>({
     updateTime: '',
 });
 onMounted(() => {
+    init();
+});
+watch(()=>props.foreCastInfo,()=>{
+    init();
+});
+
+const init = () =>{
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
     formState.updateTime = formatTimeUtils(time, 'HH:mm');
-});
+}
 </script>
 
 <style scoped lang="scss">
@@ -41,6 +48,7 @@ header {
     display: flex;
     justify-content: space-between;
     font-size: 14px;
+    user-select: none;
     font-weight: 400;
     color: #FFFFFF;
     img {

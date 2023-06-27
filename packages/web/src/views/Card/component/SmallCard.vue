@@ -30,14 +30,13 @@
 import { onMounted} from 'vue';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
-import type { IForeCastResultInfo, ICardStyle } from '@/api/ts/interface/IWeatherInfo';
-import { useWeatherStore } from '@/store/weather';
+import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 import { formatTimeUtils, FORECAST_SETTING_MAPPING } from '@/utils/tools';
-const weatherStore = useWeatherStore();
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
-    isDay:boolean
+    isDay:boolean;
+    tempUnit:boolean
 }>();
 
 interface ISmallCardData {
@@ -66,11 +65,15 @@ onMounted(() => {
     init();
 });
 
+watch(()=>props.foreCastInfo,()=>{
+    init();
+});
+
 const init = () =>{
     //城市名称
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
     //根据缓存取对应单位的温度
-    const tempUnit = weatherStore.weatherInfo.weather.tempUnit === 'C' ? 'temp_c' : 'temp_f';
+    const tempUnit = props.tempUnit ? 'temp_c' : 'temp_f';
     formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
     //天气更新时间
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);

@@ -35,6 +35,7 @@ export const useSseStore = defineStore('sse', {
                 this.sseIsConnect = true;
             });
 
+            /** 开始获取token */
             source.addEventListener('get_cube_token_start', async (event: any) => {
                 console.log('get_cube_token_start------------>',JSON.parse(event.data));
                 const weatherStore = useWeatherStore();
@@ -44,10 +45,18 @@ export const useSseStore = defineStore('sse', {
                 // weatherStore.setTokenInfo(tokenInfo);
             });
 
+            /** 获取token结束 */
             source.addEventListener('get_cube_token_end', async (event: any) => {
                 console.log('get_cube_token_end------------>',JSON.parse(event.data));
                 const weatherStore = useWeatherStore();
                 await weatherStore.getTokenInfo();
+            });
+
+            /** 更改配置刷新天气 */
+            source.addEventListener('user_config_updated', async (event: any) => {
+                console.log('user_config_updated------------>',JSON.parse(event.data));
+                const weatherStore = useWeatherStore();
+                await weatherStore.getForeCastInfo();
             });
 
             /** SSE失败 */

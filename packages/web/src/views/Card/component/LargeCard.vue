@@ -45,7 +45,8 @@ const weatherStore = useWeatherStore();
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
-    isDay:boolean
+    isDay:boolean;
+    tempUnit:boolean
 }>();
 
 /** 2*1 卡片所需的数据 */
@@ -102,10 +103,11 @@ const formState = reactive<ILargeCardData>({
     imgSrc: '',
 });
 
-/** 是否是摄氏度 */
-const isCelsius = computed(() => weatherStore.weatherInfo.weather.tempUnit === 'C');
-
 onMounted(() => {
+    getPageData();
+});
+
+watch(()=>props.foreCastInfo,()=>{
     getPageData();
 });
 
@@ -117,7 +119,7 @@ const getPageData = () => {
     //城市名
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
     // //根据缓存取对应单位的温度
-    const tempUnit = isCelsius.value ? 'temp_c' : 'temp_f';
+    const tempUnit = props.tempUnit ? 'temp_c' : 'temp_f';
     formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
     // //更新时间
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
@@ -151,7 +153,7 @@ const judgeCardType = () =>{
 /** 获取对应单位的最低和最高温度 */
 const getMiniMaxTempByList = (days: IDays) => {
     if (isEmptyObject(days)) return '';
-    if (isCelsius.value) {
+    if (props.tempUnit) {
         return days.mintemp_c + '-' + days.maxtemp_c + '°';
     } else {
         return days.mintemp_f + '-' + days.maxtemp_f + '°';

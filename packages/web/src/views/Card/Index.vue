@@ -1,11 +1,13 @@
 <template>
-    <a-spin style="min-height: 100vh;min-width:100vw;background-color: rgba(34, 34, 34, 0.6); color: #ffff" :spinning="loading" :indicator="indicator" :tip="'loading'" size="large">
-        <component :is="cardType" :foreCastInfo="weatherStore.foreCastInfo" :isDay="isDay" />
+    <a-spin style="min-height: 100vh;min-width:100vw;background-color: rgba(34,34,34,0.6); color: #ffff" :spinning="loading" :indicator="indicator" :tip="'loading'" size="large">
+        <div style="min-height: 100vh;min-width:100vw;">
+            <component :is="cardType" :foreCastInfo="weatherStore.foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
+        </div>
     </a-spin>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted ,onBeforeUnmount } from 'vue';
+import { ref, onMounted ,onBeforeUnmount ,computed } from 'vue';
 import SmallCard from '@/views/Card/component/SmallCard.vue';
 import LargeCard from '@/views/Card/component/LargeCard.vue';
 import DetailCard from '@/views/Card/component/DetailCard.vue';
@@ -13,7 +15,6 @@ import CastCard from '@/views/Card/component/CastCard.vue';
 import { LoadingOutlined } from '@ant-design/icons-vue';
 import { getQuery } from '@/utils/tools';
 import api from '@/api/Weather/index';
-import type { IRequestForeCastInfo } from '@/api/ts/interface/IWeatherInfo';
 import _ from 'lodash';
 import { useWeatherStore } from '@/store/weather';
 const weatherStore = useWeatherStore();
@@ -25,7 +26,7 @@ const indicator = h(LoadingOutlined, {
     spin: true,
 });
 /** 当前的卡片类型 */
-const cardType = ref<any>();
+const cardType = shallowRef<any>();
 /** 请求接口loading */
 const loading = ref(false);
 /** 白天或黑夜 */
@@ -47,6 +48,7 @@ const relationMap: { [key: string]: any } = {
 const timer = ref<any>();
 
 onMounted(async () => {
+    await getTempUnit();
     await judgeCardType();
     timer.value = setInterval(()=>{
         weatherStore.getForeCastInfo();
@@ -70,14 +72,26 @@ const judgeCardType = async () => {
             if (window.innerWidth !== window.innerHeight && params.ihost_env === 'iHostWebCustomCard') {
                 cardType.value = relationMap['iHostWebCustomLargeCard'];
             }
+            loading.value = false;
         }
-        loading.value = false;
     }
 };
+/** true:摄氏度,false:华氏度 */
+const tempUnit = ref<boolean>(true);
+/** 从配置获取单位 */
+const getTempUnit = async () =>{
+    const res = await api.GetSaveData();
+    if(res.data && res.error === 0){
+        tempUnit.value = res.data.tempUnit === 'C';
+    }
+}
 
 /** 屏幕尺寸变化重新判断 */
 window.addEventListener('resize', () => {
-    resizeDebounce();
+    const params = getQuery(window.location.href);
+    if (params.ihost_env && params.ihost_env !== 'iHostCastThingCard') {
+        resizeDebounce();
+    }
 });
 
 /** resize防抖 */
@@ -86,3 +100,9 @@ const resizeDebounce = _.debounce(judgeCardType, 1000, {
     trailing: true,
 });
 </script>
+
+<style>
+.ant-spin-nested-loading > div > .ant-spin .ant-spin-text{
+    text-shadow: none;
+}
+</style>

@@ -8,7 +8,7 @@
             <div class="item" v-for="(item, index) in HourData" :key="index">
                 <p>{{ index === 0 ? $t('NOW') : formatTimeUtils(item.time_epoch, 'HH:mm') }}</p>
                 <img :src="imgMapping(item)" alt="" />
-                <p>{{ ( isCelsius ? item.temp_c : item.temp_f ) + '°' }}</p>
+                <p>{{ ( tempUnit ? item.temp_c : item.temp_f ) + '°' }}</p>
             </div>
         </div>
     </div>
@@ -26,11 +26,9 @@ const weatherStore = useWeatherStore();
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
-    isDay:boolean
+    isDay:boolean;
+    tempUnit:boolean
 }>();
-
-/** 是否是摄氏度 */
-const isCelsius = computed(() => weatherStore.weatherInfo.weather.tempUnit === 'C');
 
 /** 天气小时数据 */
 const HourData = ref<IHourData[]>([]);
@@ -52,6 +50,9 @@ interface IHourData {
 }
 
 onMounted(() => {
+    assembleData();
+});
+watch(()=>props.foreCastInfo,()=>{
     assembleData();
 });
 
