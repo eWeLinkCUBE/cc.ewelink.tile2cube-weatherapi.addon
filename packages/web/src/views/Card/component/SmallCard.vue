@@ -16,27 +16,29 @@
                 <span class="word">
                     {{ formState.describe }}
                 </span>
-                <div class="api">
-                    <img alt="" src="@/assets/img/area.png" />
-                    <span>weather<br />api</span>
-                </div>
             </div>
         </section>
-        <div class="update-time">{{ $t('UPDATE') + ':' + formState.updateTime }}</div>
+        <div class="update-time">
+            <span>{{ $t('UPDATE') + ':' + formState.updateTime }}</span>
+            <div class="api">
+                <img alt="" src="@/assets/img/area.png" />
+                <span>weather<br />api</span>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted} from 'vue';
+import { onMounted } from 'vue';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
 import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
-import { formatTimeUtils, FORECAST_SETTING_MAPPING } from '@/utils/tools';
+import { formatTimeUtils, FORECAST_SETTING_MAPPING,translateByCode } from '@/utils/tools';
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
-    isDay:boolean;
-    tempUnit:boolean
+    isDay: boolean;
+    tempUnit: boolean;
 }>();
 
 interface ISmallCardData {
@@ -49,7 +51,7 @@ interface ISmallCardData {
     /** 更新时间 */
     updateTime?: number | string;
     /** 图标 */
-    imgSrc:string,
+    imgSrc: string;
 }
 
 /** 1*1卡片所需的数据 */
@@ -58,18 +60,21 @@ const formState = reactive<ISmallCardData>({
     temperature: 0,
     describe: '',
     updateTime: 0,
-    imgSrc:''
+    imgSrc: '',
 });
 
 onMounted(() => {
     init();
 });
 
-watch(()=>props.foreCastInfo,()=>{
-    init();
-});
+watch(
+    () => [props.foreCastInfo,props.tempUnit,props.isDay],
+    () => {
+        init();
+    }
+);
 
-const init = () =>{
+const init = () => {
     //城市名称
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
     //根据缓存取对应单位的温度
@@ -81,13 +86,10 @@ const init = () =>{
     //当前天气
     const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
     //根据code获取对应中英文、白天黑夜图标
-    for(const item of FORECAST_SETTING_MAPPING){
-        if(item.code === code){
-            formState.describe = props.isDay ? item.day :item.night;
-            formState.imgSrc = props.isDay ? item.dayIcon:item.nightIcon;
-        }
-    }
-}
+    const item = FORECAST_SETTING_MAPPING[code];
+    formState.describe = translateByCode(code,props.isDay);
+    formState.imgSrc = props.isDay ? item.dayIcon : item.nightIcon;
+};
 </script>
 
 <style scoped lang="scss">
@@ -140,29 +142,31 @@ const init = () =>{
                 color: #333333;
                 font-size: 16px;
             }
-            .api {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                img {
-                    width: 12px;
-                    height: 15px;
-                    margin-right: 5px;
-                }
-                span {
-                    font-size: 12px;
-                    color: #333333;
-                    text-align: right;
-                    line-height: 11px;
-                }
-            }
         }
     }
     .update-time {
-        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         margin-top: 15px;
         font-size: 14px;
         color: #333333;
+        .api {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            img {
+                width: 12px;
+                height: 15px;
+                margin-right: 5px;
+            }
+            span {
+                font-size: 12px;
+                color: #333333;
+                text-align: right;
+                line-height: 11px;
+            }
+        }
     }
 }
 </style>

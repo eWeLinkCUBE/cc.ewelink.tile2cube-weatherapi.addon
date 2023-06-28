@@ -13,13 +13,12 @@ const router = useRouter();
 const sseStore = useSseStore();
 
 onMounted(() => {
-    sseStore.startSse();
     judgeLangue();
+    sseStore.startSse();
 });
 
 /** 判断当前语言 */
 const judgeLangue = () => {
-    // console.log('ffffffffffffff',getQuery('http://192.168.31.212:5173/#/card?ihost_env=iHostWebCustomCard&language=en-us'));
     let browserLanguage = window.location.href;
     if (!browserLanguage) {
         browserLanguage = navigator.language;

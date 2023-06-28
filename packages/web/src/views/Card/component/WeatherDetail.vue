@@ -81,7 +81,7 @@ interface IItemData {
 onMounted(() => {
     initialAssignment();
 });
-watch(()=>props.foreCastInfo,()=>{
+watch(()=>[props.foreCastInfo,props.tempUnit,props.isDay],()=>{
     initialAssignment();
 });
 
@@ -110,7 +110,7 @@ const initialAssignment = () => {
         { imgSrc: PressureMb, value: formState.pressure_mb + ' hPa', describe: i18n.global.t('PRESSURE_MB') },
         { imgSrc: WindKph, value: kmToMs(formState.wind_kph) + 'm/s', describe: i18n.global.t('WIND_KPH') },
         { imgSrc: PrecipMm, value: formState.precip_mm + ' mm', describe: i18n.global.t('PRE_CIP_MM') },
-        { imgSrc: WindDir, value: WIND_DIR_MAPPING[formState.wind_dir], describe: i18n.global.t('WIND_DIR') },
+        { imgSrc: WindDir, value: i18n.global.t(WIND_DIR_MAPPING[formState.wind_dir]), describe: i18n.global.t('WIND_DIR') },
         { imgSrc: AirQuality, value: judgeAirQuality(formState.air_quality), describe: i18n.global.t('AIR_QUALITY') },
         { imgSrc: Uv, value: formState.uv + judgeUv(formState.uv), describe: i18n.global.t('UV') },
         { imgSrc: Avg_vis_km, value: formState.avgvis_km+'km', describe: i18n.global.t('AVG_VIS_KM') },

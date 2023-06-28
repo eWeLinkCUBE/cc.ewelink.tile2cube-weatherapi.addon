@@ -53,7 +53,7 @@ export const useWeatherStore = defineStore('weather', {
 
         /** 获取天气预报数据 */
         async getForeCastInfo(){
-            const res = await api.getForeCastInfo({days:5,refresh: '1'});
+            const res = await api.getForeCastInfo({days:5});
             if(res.error === 0 && res.data){
                 this.foreCastInfo = res.data;
                 console.log('foreCastInfo--------------->', res.data);
