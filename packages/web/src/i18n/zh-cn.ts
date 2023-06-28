@@ -26,7 +26,7 @@ const cn = {
     /** 天气预报翻译 */
     FORECAST: {
         SUNNY:'晴',
-        CLEAR:'Clear',
+        CLEAR:'晴',
         SUNNY_CLOUDY:'晴天多云',
         CLOUDY:'多云',
         FOG:'雾',
