@@ -22,6 +22,7 @@ export const useEtcStore = defineStore('addon_etc', {
         },
         languageChange(language:'zh-cn' | 'en-us'){
             this.language = language;
+            i18n.global.locale = language;
         }
     },
     persist: true,

@@ -96,14 +96,14 @@ export interface ICardStyle {
 }
 
 export interface IForeCastMapping {
-    /** 白天天气 */
-    day: string;
-    /** 晚上天气 */
-    night: string;
-    /** 图码 */
-    code: number;
-    /** 白天图标 */
-    dayIcon: string;
-    /** 夜晚图标 */
-    nightIcon: string;
+    [propsName: number]: {
+        /** 白天天气 */
+        day: string;
+        /** 晚上天气 */
+        night: string;
+        /** 白天图标 */
+        dayIcon: string;
+        /** 夜晚图标 */
+        nightIcon: string;
+    };
 }

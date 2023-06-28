@@ -29,7 +29,7 @@ async function setConfigData(params:IRequestConfigInfo){
 
 /** 获取天气预报 */
 async function getForeCastInfo(params:IRequestForeCastInfo){
-    return await request<IForeCastResultInfo>(`/forecast?days=${params.days}&refresh=${params.refresh}`, {}, EReqMethod.GET);
+    return await request<IForeCastResultInfo>(`/forecast?days=${params.days}`, {}, EReqMethod.GET);
 }
 
 export default {

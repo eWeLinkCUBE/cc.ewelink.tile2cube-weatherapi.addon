@@ -1,15 +1,13 @@
 <template>
-    <a-spin
-        style="min-height: 100vh; background-color: rgba(34, 34, 34, 0.6); color: #ffff"
-        :spinning="loading"
-        :indicator="indicator"
-        :tip="'loading'"
-        size="large"
-    >
+    <a-spin style="min-height: 100vh; background-color: rgba(34, 34, 34, 0.6); color: #ffff" :spinning="loading" :indicator="indicator" :tip="'loading'" size="large">
         <div class="setting">
             <section>
                 <h2 class="foreCast-setting">{{ $t('FORECAST_SETTING') }}</h2>
-                <h3 class="forecast-describe">{{ $t('FORECAST_DESCRIBE') }}</h3>
+                <h3 class="forecast-describe">
+                    {{ $t('FORECAST_WEATHER_API') }}
+                    <a href="https://www.weatherapi.com/" target="_blank">https://www.weatherapi.com/</a>
+                    {{ $t('FORECAST_API_KEY') }}
+                </h3>
                 <div class="form">
                     <a-form :model="formState" v-bind="layout" name="nest-messages" :validate-messages="validateMessages">
                         <a-form-item :name="['weather', 'weatherApiKey']" label="weatherApiKey" :rules="[{ required: true }]">
@@ -44,17 +42,17 @@
                 </div>
             </section>
             <footer class="footer">
-                <a-button :disabled="disabled" type="primary" @click="submitHandler">{{$t('FINISH')}}</a-button>
+                <a-button :disabled="disabled" :class="{ 'disabled-btn': disabled}" type="primary" @click="submitHandler">{{ $t('FINISH') }}</a-button>
             </footer>
 
-            <div class="test" style="width:180px;height: 180px;">
+            <!--<div class="test" style="width:180px;height: 180px;">
                 <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCard&language=en-us" class="scroll-bar" style="width: 100%; height: 100%" />
             </div>
             <div class="test" style="width:170px;height: 170px;">
                 <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCard&language=en-us" class="scroll-bar" style="width: 360px; height: 180px" />
-            </div>
+            </div> -->
             <!-- ?ihost_env=iHostWebCustomCardDrawer&language=en-us -->
-            <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCardDrawer&language=en-us" class="scroll-bar" style="max-width: 457px; height: 868px;" />
+            <!-- <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCardDrawer&language=en-us" class="scroll-bar" style="max-width: 457px; height: 868px;" /> -->
         </div>
     </a-spin>
 </template>
@@ -94,7 +92,7 @@ onMounted(async () => {
 /** 表单数据 */
 const formState = reactive<IFormState>({
     weather: {
-        weatherApiKey: '', //da6d2169b711424dac184721231206
+        weatherApiKey: '',
         cityData: undefined,
         tempUnit: undefined,
     },
@@ -105,19 +103,18 @@ const getSaveDate = async () => {
     loading.value = false;
     const res = await api.GetSaveData();
     if (res.error === 0 && res.data) {
-        if(res.data.cityData){
+        if (res.data.cityData) {
             cityData.value = [res.data?.cityData];
             formState.weather.weatherApiKey = res.data?.weatherApiKey;
             formState.weather.cityData = res.data?.cityData.id;
             formState.weather.tempUnit = res.data?.tempUnit;
             weatherStore.setWeatherInfo(_.cloneDeep(formState));
-            console.log('------tempUnittempUnit----------->',weatherStore.weatherInfo.weather.tempUnit);
             judgeDisabled();
         }
     }
-    setTimeout(()=>{
-        loading.value=false;
-    },200)
+    setTimeout(() => {
+        loading.value = false;
+    }, 200);
 };
 
 /** form表单的长度 */
@@ -141,15 +138,14 @@ const submitHandler = async () => {
             params.cityData = item;
         }
     }
-    // console.log('params--------------->', params);
     const res = await api.setConfigData(params);
     weatherStore.setWeatherInfo(_.cloneDeep(formState));
     if (res.error === 0 && res.data) {
         message.success('success');
         judgeDisabled();
     }
-    if(res.error >3000 ){
-        message.error('error');
+    if (res.error > 3000 && res.error < 3005) {
+        message.error(`${i18n.global.t(`ERROR.${res.error}`)}`);
     }
 };
 
@@ -157,7 +153,7 @@ const submitHandler = async () => {
 const disabled = ref(false);
 
 /** 控制提交按钮是否可以点击 */
-const judgeDisabled = () =>{
+const judgeDisabled = () => {
     if (!formState.weather.weatherApiKey || !formState.weather.cityData || !formState.weather.tempUnit) {
         disabled.value = true;
         return;
@@ -169,7 +165,7 @@ const judgeDisabled = () =>{
         return;
     }
     disabled.value = true;
-}
+};
 
 //城市数据
 const cityData = ref<ICityData[]>([]);
@@ -197,9 +193,11 @@ const toggleDebounce = _.debounce(getCityList, 800, {
 
 <style scoped lang="scss">
 .setting {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 18px;
     margin: 0 auto;
-    // width:100%;
     .title {
         font-size: 16px;
         font-weight: 600;
@@ -208,11 +206,13 @@ const toggleDebounce = _.debounce(getCityList, 800, {
         text-align: center;
     }
     .forecast-describe {
-        max-width: 600px;
+        max-width: 470px;
+        line-height: 26px;
         margin: 0 auto;
         text-align: center;
         margin-top: 20px;
         margin-bottom: 20px;
+        word-break: break-all;
     }
     .form {
         width: 600px;
@@ -225,15 +225,15 @@ const toggleDebounce = _.debounce(getCityList, 800, {
         text-align: right;
         margin-top: 100px;
         :deep(.ant-btn) {
-            background-color: transparent;
-            border:none;
+            height: 32px;
+            background: rgba(24, 144, 255, 0.2);
+            border-radius: 4px;
+            border: none;
             font-size: 16px;
+            color:#1890ff;
         }
-        :deep(.ant-btn-primary){
-            background-color: transparent;
-            border:none;
-            color: #1890ff;
-            box-shadow: none;
+        .disabled-btn{
+            opacity: 0.5;
         }
     }
 }

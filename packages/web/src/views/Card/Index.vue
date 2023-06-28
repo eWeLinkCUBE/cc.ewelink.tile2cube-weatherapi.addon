@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted ,onBeforeUnmount ,computed } from 'vue';
+import { ref, onMounted ,onBeforeUnmount ,watch } from 'vue';
 import SmallCard from '@/views/Card/component/SmallCard.vue';
 import LargeCard from '@/views/Card/component/LargeCard.vue';
 import DetailCard from '@/views/Card/component/DetailCard.vue';
@@ -50,14 +50,19 @@ const timer = ref<any>();
 onMounted(async () => {
     await getTempUnit();
     await judgeCardType();
-    timer.value = setInterval(()=>{
-        weatherStore.getForeCastInfo();
-    },60*60*1000);
+    setInterValHandler();
 });
 
 onBeforeUnmount(()=>{
     clearInterval(timer.value);
 });
+
+/** 天气预报轮询 */
+const setInterValHandler = () =>{
+    timer.value = setInterval(()=>{
+        weatherStore.getForeCastInfo();
+    },60*60*1000);
+}
 
 /** 判断当前卡片类型 */
 const judgeCardType = async () => {
@@ -76,8 +81,10 @@ const judgeCardType = async () => {
         }
     }
 };
+
 /** true:摄氏度,false:华氏度 */
 const tempUnit = ref<boolean>(true);
+
 /** 从配置获取单位 */
 const getTempUnit = async () =>{
     const res = await api.GetSaveData();
@@ -86,10 +93,15 @@ const getTempUnit = async () =>{
     }
 }
 
+watch(()=>weatherStore.foreCastInfo,()=>{
+    getTempUnit();
+    isDay.value = _.get(weatherStore.foreCastInfo, ['forecastData', 'current', 'is_day'], 1) === 1;
+})
+
 /** 屏幕尺寸变化重新判断 */
 window.addEventListener('resize', () => {
     const params = getQuery(window.location.href);
-    if (params.ihost_env && params.ihost_env !== 'iHostCastThingCard') {
+    if (params.ihost_env && params.ihost_env === 'iHostWebCustomCard') {
         resizeDebounce();
     }
 });

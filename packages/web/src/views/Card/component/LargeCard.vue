@@ -38,15 +38,15 @@ import { ref, onMounted, computed } from 'vue';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
 import { useWeatherStore } from '@/store/weather';
-import { formatTimeUtils, getWeekByTimeStamp, isEmptyObject, getQuery, FORECAST_SETTING_MAPPING } from '@/utils/tools';
+import { formatTimeUtils, getWeekByTimeStamp, isEmptyObject, getQuery, FORECAST_SETTING_MAPPING ,translateByCode } from '@/utils/tools';
 import moment from 'moment';
 import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 const weatherStore = useWeatherStore();
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
-    isDay:boolean;
-    tempUnit:boolean
+    isDay: boolean;
+    tempUnit: boolean;
 }>();
 
 /** 2*1 卡片所需的数据 */
@@ -60,20 +60,22 @@ interface ILargeCardData {
     /** 更新时间 */
     updateTime?: number | string;
     /** 未来四天的天气数据 */
-    forecastday: {
-        /** 日出日落时间 */
-        astro: object;
-        /** 时间 */
-        date: string;
-        /** 时间戳 */
-        date_epoch: number;
-        /** 当天准确数据 */
-        day: IDays;
-        /** 精确时间数据 */
-        hour: any[];
-    }[];
+    forecastday: IForeCastDay[];
     /** 当前天气的图片 */
     imgSrc: string;
+}
+
+interface IForeCastDay {
+    /** 日出日落时间 */
+    astro: object;
+    /** 时间 */
+    date: string;
+    /** 时间戳 */
+    date_epoch: number;
+    /** 当天准确数据 */
+    day: IDays;
+    /** 精确时间数据 */
+    hour: any[];
 }
 
 /** 当前天气数据，仅仅写了自己需要,数据太多有需要自取 */
@@ -107,9 +109,12 @@ onMounted(() => {
     getPageData();
 });
 
-watch(()=>props.foreCastInfo,()=>{
-    getPageData();
-});
+watch(
+    () => [props.foreCastInfo,props.tempUnit,props.isDay],
+    () => {
+        getPageData();
+    }
+);
 
 /**判断当前是否是2*1卡片还是详情内 */
 const isDetailCard = ref(false);
@@ -126,14 +131,28 @@ const getPageData = () => {
     formState.updateTime = formatTimeUtils(time, 'HH:mm');
     //当前天气
     const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
-    for(const item of FORECAST_SETTING_MAPPING){
-        if(item.code === code){
-            formState.describe = props.isDay ? item.day :item.night;
-            formState.imgSrc = props.isDay ? item.dayIcon:item.nightIcon;
-        }
-    }
+    // const item = FORECAST_SETTING_MAPPING[code];
+    formState.describe =translateByCode(code,props.isDay);
+    formState.imgSrc = props.isDay ? FORECAST_SETTING_MAPPING[code].dayIcon : FORECAST_SETTING_MAPPING[code].nightIcon;
     //未来天气预报
     formState.forecastday = _.get(props.foreCastInfo, ['forecastData', 'forecast', 'forecastday'], []);
+    //不足五天用缺省图补全五天;
+    try {
+        if (formState.forecastday && formState.forecastday.length === 3) {
+            for (let i = 0; i < 2; i++) {
+                const item: IForeCastDay = {
+                    astro: {},date: '',date_epoch: formState.forecastday[2].date_epoch + 86400 * (i + 1),
+                    day: {maxtemp_c: '',mintemp_c: '',mintemp_f: '',maxtemp_f: '',condition: {code: 0,text: '',icon: ''}},
+                    hour: [],
+                };
+                formState.forecastday.push(item);
+            }
+            console.log('formState.forecastday--------->', formState.forecastday);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+
     //去除当日天气
     formState.forecastday = formState.forecastday.filter((i, d) => d !== 0);
 
@@ -141,18 +160,23 @@ const getPageData = () => {
 };
 
 /** 判断是2*1卡片还是详情抽屉卡片 */
-const judgeCardType = () =>{
+const judgeCardType = () => {
     const params = getQuery(window.location.href);
     if (params.ihost_env === 'iHostWebCustomCardDrawer') {
         isDetailCard.value = true;
     } else {
         isDetailCard.value = false;
     }
-}
+};
 
 /** 获取对应单位的最低和最高温度 */
 const getMiniMaxTempByList = (days: IDays) => {
     if (isEmptyObject(days)) return '';
+    //不足五天补全时的展示
+    if (!days.mintemp_c && !days.mintemp_f) {
+        return '--';
+    }
+    //判断温度单位
     if (props.tempUnit) {
         return days.mintemp_c + '-' + days.maxtemp_c + '°';
     } else {
@@ -162,7 +186,7 @@ const getMiniMaxTempByList = (days: IDays) => {
 
 /** 映射图片 */
 const imgMapping = (days: IDays) => {
-    const item = FORECAST_SETTING_MAPPING.find((item) => item.code === days.condition.code);
+    const item = FORECAST_SETTING_MAPPING[days.condition.code];
     if (item) return props.isDay ? item.dayIcon : item.nightIcon;
     return '';
 };

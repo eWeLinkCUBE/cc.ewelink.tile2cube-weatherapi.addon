@@ -52,7 +52,7 @@ interface IHourData {
 onMounted(() => {
     assembleData();
 });
-watch(()=>props.foreCastInfo,()=>{
+watch(()=>[props.foreCastInfo,props.tempUnit,props.isDay],()=>{
     assembleData();
 });
 
@@ -78,7 +78,7 @@ const assembleData = () => {
 };
 
 const imgMapping = (hourData:IHourData) =>{
-    const item = FORECAST_SETTING_MAPPING.find((item)=>item.code ===hourData.condition.code );
+    const item = FORECAST_SETTING_MAPPING[hourData.condition.code];
     if(item) return props.isDay ? item.dayIcon : item.nightIcon;
     return '';
 }

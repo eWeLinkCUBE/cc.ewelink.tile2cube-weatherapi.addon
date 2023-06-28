@@ -47,7 +47,7 @@ onMounted(() => {
     init();
 });
 
-watch(()=>props.foreCastInfo,()=>{
+watch(()=>[props.foreCastInfo,props.tempUnit,props.isDay],()=>{
     init();
 });
 

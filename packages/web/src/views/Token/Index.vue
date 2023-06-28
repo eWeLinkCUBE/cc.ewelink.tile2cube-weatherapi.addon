@@ -24,10 +24,8 @@
                 <span v-else>{{ tokenInfo.cubeTokenValid ? $t('ALREADY_GET_TOKEN') : $t('GET_TOKEN') }}</span>
             </a-button>
         </section>
-        <footer>
-            <div class="next-step" :class="tokenInfo.cubeTokenValid ? 'enable-btn' : ''">
-                <a @click="nextStep" :class="tokenInfo.cubeTokenValid ? '' : 'disabled-btn'">{{ $t('NEXT') }} > </a>
-            </div>
+        <footer class="footer">
+            <a-button :disabled="!tokenInfo.cubeTokenValid" :class="{ 'disabled-btn': !tokenInfo.cubeTokenValid}" type="primary" @click="nextStep">{{ $t('NEXT') }} > </a-button>
         </footer>
     </div>
 </template>
@@ -187,35 +185,19 @@ const formatCount = (count: number) => {
             font-size: 16px;
         }
     }
-    footer {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        margin-top: 71px;
-        .next-step {
-            font-size: 16px;
-            font-weight: 600;
-            color: #ffff;
-            text-align: center;
-            a {
-                height: 32px;
-                line-height: 32px;
-            }
-            .disabled-btn {
-                pointer-events: none;
-                -webkit-filter: grayscale(100%);
-                -moz-filter: grayscale(100%);
-                -ms-filter: grayscale(100%);
-                -o-filter: grayscale(100%);
-                filter: grayscale(100%);
-                user-select: none;
-            }
-        }
-        .enable-btn {
-            width: 106px;
+    .footer {
+        text-align: right;
+        margin-top: 100px;
+        :deep(.ant-btn) {
             height: 32px;
             background: rgba(24, 144, 255, 0.2);
-            border-radius: 8px 8px 8px 8px;
+            border-radius: 4px;
+            border: none;
+            font-size: 16px;
+            color:#1890ff;
+        }
+        .disabled-btn{
+            opacity: 0.5;
         }
     }
 }

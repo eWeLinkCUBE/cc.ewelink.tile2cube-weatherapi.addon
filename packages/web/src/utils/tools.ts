@@ -17,7 +17,7 @@ import ColdIcon_night from '@/assets/img/forecast/night/coldIcon-night.png';
 import RainSnowIcon_day from '@/assets/img/forecast/day/rainSnowIcon-day.png';
 import RainSnowIcon_night from '@/assets/img/forecast/night/rainSnowIcon-night.png';
 //风
-import WindyIcon from '@/assets/img/forecast/day/windyIcon.png'
+import WindyIcon from '@/assets/img/forecast/day/windyIcon.png';
 //晴转多云
 import SunnyCloudyIcon_day from '@/assets/img/forecast/day/sunnyCloudyIcon-day.png';
 import SunnyCloudyIcon_night from '@/assets/img/forecast/night/sunnyCloudyIcon-night.png';
@@ -25,24 +25,25 @@ import SunnyCloudyIcon_night from '@/assets/img/forecast/night/sunnyCloudyIcon-n
 import SleetIcon_day from '@/assets/img/forecast/day/sleetIcon-day.png';
 import SleetIcon_night from '@/assets/img/forecast/night/sleetIcon-night.png';
 //多云
-import CloudyIcon_day  from '@/assets/img/forecast/day/cloudyIcon-day.png';
-import CloudyIcon_night  from '@/assets/img/forecast/night/cloudyIcon-night.png';
+import CloudyIcon_day from '@/assets/img/forecast/day/cloudyIcon-day.png';
+import CloudyIcon_night from '@/assets/img/forecast/night/cloudyIcon-night.png';
 //雾
-import FogIcon_day  from '@/assets/img/forecast/day/fogIcon-day.png';
-import FogIcon_night  from '@/assets/img/forecast/night/fogIcon-night.png';
+import FogIcon_day from '@/assets/img/forecast/day/fogIcon-day.png';
+import FogIcon_night from '@/assets/img/forecast/night/fogIcon-night.png';
 //雪
-import SnowIcon_day  from '@/assets/img/forecast/day/snowIcon-day.png';
-import SnowIcon_night  from '@/assets/img/forecast/night/snowIcon-night.png';
+import SnowIcon_day from '@/assets/img/forecast/day/snowIcon-day.png';
+import SnowIcon_night from '@/assets/img/forecast/night/snowIcon-night.png';
 //暴雨
-import TStormsIcon_day  from '@/assets/img/forecast/day/tStormsIcon-day.png';
-import TStormsIcon_night  from '@/assets/img/forecast/night/tStormsIcon-night.png';
+import TStormsIcon_day from '@/assets/img/forecast/day/tStormsIcon-day.png';
+import TStormsIcon_night from '@/assets/img/forecast/night/tStormsIcon-night.png';
 //小雪
-import FlurriesIcon_day  from '@/assets/img/forecast/day/flurriesIcon-day.png';
-import FlurriesIcon_night  from '@/assets/img/forecast/night/flurriesIcon-night.png';
+import FlurriesIcon_day from '@/assets/img/forecast/day/flurriesIcon-day.png';
+import FlurriesIcon_night from '@/assets/img/forecast/night/flurriesIcon-night.png';
 //阵雨
-import ShowersIcon_day  from '@/assets/img/forecast/day/showersIcon-day.png';
-import ShowersIcon_night  from '@/assets/img/forecast/night/showersIcon-night.png';
-
+import ShowersIcon_day from '@/assets/img/forecast/day/showersIcon-day.png';
+import ShowersIcon_night from '@/assets/img/forecast/night/showersIcon-night.png';
+//未获取到天气
+import Unknown from '@/assets/img/Unknown.png';
 
 /**
  *
@@ -141,350 +142,321 @@ export function getWeekByTimeStamp(timeStamp: number, type = 'd') {
 }
 
 /**
+ * 根据code获取中英文
+ * @date 28/06/2023
+ * @export
+ * @param {number} code
+ * @param {number} isDay 1:白天 0:黑夜
+ * @returns {*}
+ */
+export function translateByCode(code: number, isDay: boolean) {
+    const item = FORECAST_SETTING_MAPPING[code];
+    return isDay ? i18n.global.t(item.day) : i18n.global.t(item.night);
+}
+
+/**
  * 天气预报信息映射
  * @date 20/06/2023
  * @export
  * @param {number} code
  * @returns {*}
  */
-export const FORECAST_SETTING_MAPPING: IForeCastMapping[] = [
-	{
-		"code" : 1000,
-		"day" : i18n.global.t('FORECAST.SUNNY'),  //"Sunny",
-		"night" : i18n.global.t('FORECAST.CLEAR'),//"Clear",
-		"dayIcon" : SunnyIcon_day,
-        "nightIcon":SunnyIcon_night,
-	},
-	{
-		"code" : 1003,
-		"day" : i18n.global.t('FORECAST.SUNNY_CLOUDY'), //"Partly cloudy",
-		"night" : i18n.global.t('FORECAST.CLOUDY'), //"Partly cloudy",
-		"dayIcon" : CloudyIcon_day,
-        "nightIcon":CloudyIcon_night,
-	},
-	{
-		"code" : 1006,
-		"day" : i18n.global.t('FORECAST.CLOUDY'),
-		"night" : i18n.global.t('FORECAST.CLOUDY'),
-		"dayIcon" : CloudyIcon_day,
-        "nightIcon":CloudyIcon_night,
-	},
-	{
-		"code" : 1009,
-		"day" : i18n.global.t('FORECAST.CLOUDY'),
-		"night" : i18n.global.t('FORECAST.CLOUDY'),
-		"dayIcon" : CloudyIcon_day,
-        "nightIcon":CloudyIcon_night,
-	},
-	{
-		"code" : 1030,
-		"day" : i18n.global.t('FORECAST.FOG'),
-		"night" : i18n.global.t('FORECAST.FOG'),
-		"dayIcon" : FogIcon_day,
-        "nightIcon":FogIcon_night,
-	},
-	{
-		"code" : 1063,
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1066,
-		"day" : i18n.global.t('FORECAST.SNOW'),
-		"night" : i18n.global.t('FORECAST.SNOW'),
-		"dayIcon" : SnowIcon_day,
-        "nightIcon":SnowIcon_night,
-	},
-	{
-		"code" : 1069,
-		"day" : i18n.global.t('FORECAST.RAIN_SNOW'),
-		"night" : i18n.global.t('FORECAST.RAIN_SNOW'),
-		"dayIcon" : RainSnowIcon_day,
-        "nightIcon":RainSnowIcon_night,
-	},
-	{
-		"code" : 1072,
-		"day" : i18n.global.t('FORECAST.SLEET'),
-		"night" : i18n.global.t('FORECAST.SLEET'),
-		"dayIcon" : SleetIcon_day,
-        "nightIcon":SleetIcon_night,
-	},
-	{
-		"code" : 1087,//11
-		"day" : i18n.global.t('FORECAST.TSTORMS'),
-		"night" : i18n.global.t('FORECAST.TSTORMS'),
-		"dayIcon" : TStormsIcon_day,
-        "nightIcon":TStormsIcon_night,
-	},
-	{
-		"code" : 1114,
-		"day" : i18n.global.t('FORECAST.FLURRIES'),
-		"night" : i18n.global.t('FORECAST.FLURRIES'),
-		"dayIcon" : FlurriesIcon_day,
-        "nightIcon":FlurriesIcon_night,
-	},
-	{
-		"code" : 1117,
-		"day" : i18n.global.t('FORECAST.SNOW'),
-		"night" : i18n.global.t('FORECAST.SNOW'),
-		"dayIcon" : SnowIcon_day,
-        "nightIcon":SnowIcon_night,
-	},
-	{
-		"code" : 1135,
-		"day" : i18n.global.t('FORECAST.FOG'),
-		"night" : i18n.global.t('FORECAST.FOG'),
-		"dayIcon" : FogIcon_day,
-        "nightIcon":FogIcon_night,
-	},
-	{
-		"code" : 1147,
-		"day" : i18n.global.t('FORECAST.FOG'),
-		"night" : i18n.global.t('FORECAST.FOG'),
-		"dayIcon" : FogIcon_day,
-        "nightIcon":FogIcon_night,
-	},
-	{
-		"code" : 1150,
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1153,
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1168,
-		"day" : i18n.global.t('FORECAST.SLEET'),
-		"night" : i18n.global.t('FORECAST.SLEET'),
-		"dayIcon" : SleetIcon_day,
-        "nightIcon":SleetIcon_night,
-	},
-	{
-		"code" : 1171,
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1180,
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1183,
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1186,
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1189,
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1192,
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1195,
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1198,
-		"day" : i18n.global.t('FORECAST.SLEET'),
-		"night" : i18n.global.t('FORECAST.SLEET'),
-		"dayIcon" : SleetIcon_day,
-        "nightIcon":SleetIcon_night,
-	},
-	{
-		"code" : 1201,
-		"day" : i18n.global.t('FORECAST.SLEET'),
-		"night" : i18n.global.t('FORECAST.SLEET'),
-		"dayIcon" : SleetIcon_day,
-        "nightIcon":SleetIcon_night,
-	},
-	{
-		"code" : 1204,
-		"day" : i18n.global.t('FORECAST.RAIN_SNOW'),
-		"night" : i18n.global.t('FORECAST.RAIN_SNOW'),
-		"dayIcon" : RainSnowIcon_day,
-        "nightIcon":RainSnowIcon_night,
-	},
-	{
-		"code" : 1207,
-		"day" : i18n.global.t('FORECAST.RAIN_SNOW'),
-		"night" : i18n.global.t('FORECAST.RAIN_SNOW'),
-		"dayIcon" : RainSnowIcon_day,
-        "nightIcon":RainSnowIcon_night,
-	},
-	{
-		"code" : 1210,
-		"day" : i18n.global.t('FORECAST.FLURRIES'),
-		"night" : i18n.global.t('FORECAST.FLURRIES'),
-		"dayIcon" : FlurriesIcon_day,
-        "nightIcon":FlurriesIcon_night,
-	},
-	{
-		"code" : 1213,
-		"day" : i18n.global.t('FORECAST.FLURRIES'),
-		"night" : i18n.global.t('FORECAST.FLURRIES'),
-		"dayIcon" : FlurriesIcon_day,
-        "nightIcon":FlurriesIcon_night,
-	},
-	{
-		"code" : 1216,
-		"day" : i18n.global.t('FORECAST.SNOW'),
-		"night" : i18n.global.t('FORECAST.SNOW'),
-		"dayIcon" : SnowIcon_day,
-        "nightIcon":SnowIcon_night,
-	},
-	{
-		"code" : 1219,
-		"day" : i18n.global.t('FORECAST.SNOW'),
-		"night" : i18n.global.t('FORECAST.SNOW'),
-		"dayIcon" : SnowIcon_day,
-        "nightIcon":SnowIcon_night,
-	},
-	{
-		"code" : 1222,
-		"day" : i18n.global.t('FORECAST.SNOW'),
-		"night" : i18n.global.t('FORECAST.SNOW'),
-		"dayIcon" : SnowIcon_day,
-        "nightIcon":SnowIcon_night,
-	},
-	{
-		"code" : 1225,
-		"day" : i18n.global.t('FORECAST.SNOW'),
-		"night" : i18n.global.t('FORECAST.SNOW'),
-		"dayIcon" : SnowIcon_day,
-        "nightIcon":SnowIcon_night,
-	},
-	{
-		"code" : 1237,
-		"day" : i18n.global.t('FORECAST.SLEET'),
-		"night" : i18n.global.t('FORECAST.SLEET'),
-		"dayIcon" : SleetIcon_day,
-        "nightIcon":SleetIcon_night,
-	},
-	{
-		"code" : 1240,//11
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1243,//11
-		"day" : i18n.global.t('FORECAST.SHOWERS'),
-		"night" : i18n.global.t('FORECAST.SHOWERS'),
-		"dayIcon" : ShowersIcon_day,
-        "nightIcon":ShowersIcon_night,
-	},
-	{
-		"code" : 1246,
-		"day" : i18n.global.t('FORECAST.TSTORMS'),
-		"night" : i18n.global.t('FORECAST.TSTORMS'),
-		"dayIcon" : TStormsIcon_day,
-        "nightIcon":TStormsIcon_night,
-	},
-	{
-		"code" : 1249,
-		"day" : i18n.global.t('FORECAST.SLEET'),
-		"night" : i18n.global.t('FORECAST.SLEET'),
-		"dayIcon" : SleetIcon_day,
-        "nightIcon":SleetIcon_night,
-	},
-	{
-		"code" : 1252,
-		"day" : i18n.global.t('FORECAST.RAIN_SNOW'),
-		"night" : i18n.global.t('FORECAST.RAIN_SNOW'),
-		"dayIcon" : RainSnowIcon_day,
-        "nightIcon":RainSnowIcon_night,
-	},
-	{
-		"code" : 1255,//11
-		"day" : i18n.global.t('FORECAST.FLURRIES'),
-		"night" : i18n.global.t('FORECAST.FLURRIES'),
-		"dayIcon" : FlurriesIcon_day,
-        "nightIcon":FlurriesIcon_night,
-	},
-	{
-		"code" : 1258,//11
-		"day" : i18n.global.t('FORECAST.SNOW'),
-		"night" : i18n.global.t('FORECAST.SNOW'),
-		"dayIcon" : SnowIcon_day,
-        "nightIcon":SnowIcon_night,
-	},
-	{
-		"code" : 1261,
-		"day" : i18n.global.t('FORECAST.SLEET'),
-		"night" : i18n.global.t('FORECAST.SLEET'),
-		"dayIcon" : SleetIcon_day,
-        "nightIcon":SleetIcon_night,
-	},
-	{
-		"code" : 1264,
-		"day" : i18n.global.t('FORECAST.SLEET'),
-		"night" : i18n.global.t('FORECAST.SLEET'),
-		"dayIcon" : SleetIcon_day,
-        "nightIcon":SleetIcon_night,
-	},
-	{
-		"code" : 1273,//11
-		"day" : i18n.global.t('FORECAST.TSTORMS'),
-		"night" : i18n.global.t('FORECAST.TSTORMS'),
-		"dayIcon" : TStormsIcon_day,
-        "nightIcon":TStormsIcon_night,
-	},
-	{
-		"code" : 1276,//11
-		"day" : i18n.global.t('FORECAST.TSTORMS'),
-		"night" : i18n.global.t('FORECAST.TSTORMS'),
-		"dayIcon" : TStormsIcon_day,
-        "nightIcon":TStormsIcon_night,
-	},
-	{
-		"code" : 1279,
-		"day" : i18n.global.t('FORECAST.FLURRIES'),
-		"night" : i18n.global.t('FORECAST.FLURRIES'),
-		"dayIcon" : FlurriesIcon_day,
-        "nightIcon":FlurriesIcon_night,
-	},
-	{
-		"code" : 1282,
-		"day" : i18n.global.t('FORECAST.SNOW'),
-		"night" : i18n.global.t('FORECAST.SNOW'),
-		"dayIcon" : SnowIcon_day,
-        "nightIcon":SnowIcon_night,
-	}
-]
+export const FORECAST_SETTING_MAPPING: IForeCastMapping = {
+    0: {
+        day: 'unknown',
+        night: 'unknown',
+        dayIcon: Unknown,
+        nightIcon: Unknown,
+    },
+    1000: {
+        day: 'FORECAST.SUNNY', //"Sunny",
+        night: 'FORECAST.CLEAR', //"Clear",
+        dayIcon: SunnyIcon_day,
+        nightIcon: SunnyIcon_night,
+    },
+    1003: {
+        day: 'FORECAST.SUNNY_CLOUDY', //"Partly cloudy",
+        night: 'FORECAST.CLOUDY', //"Partly cloudy",
+        dayIcon: SunnyCloudyIcon_day,
+        nightIcon: SunnyCloudyIcon_night,
+    },
+    1006: {
+        day: 'FORECAST.CLOUDY',
+        night: 'FORECAST.CLOUDY',
+        dayIcon: CloudyIcon_day,
+        nightIcon: CloudyIcon_night,
+    },
+    1009: {
+        day: 'FORECAST.CLOUDY',
+        night: 'FORECAST.CLOUDY',
+        dayIcon: CloudyIcon_day,
+        nightIcon: CloudyIcon_night,
+    },
+    1030: {
+        day: 'FORECAST.FOG',
+        night: 'FORECAST.FOG',
+        dayIcon: FogIcon_day,
+        nightIcon: FogIcon_night,
+    },
+    1063: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1066: {
+        day: 'FORECAST.SNOW',
+        night: 'FORECAST.SNOW',
+        dayIcon: SnowIcon_day,
+        nightIcon: SnowIcon_night,
+    },
+    1069: {
+        day: 'FORECAST.RAIN_SNOW',
+        night: 'FORECAST.RAIN_SNOW',
+        dayIcon: RainSnowIcon_day,
+        nightIcon: RainSnowIcon_night,
+    },
+    1072: {
+        day: 'FORECAST.SLEET',
+        night: 'FORECAST.SLEET',
+        dayIcon: SleetIcon_day,
+        nightIcon: SleetIcon_night,
+    },
+    1087: {
+        day: 'FORECAST.TSTORMS',
+        night: 'FORECAST.TSTORMS',
+        dayIcon: TStormsIcon_day,
+        nightIcon: TStormsIcon_night,
+    },
+    1114: {
+        day: 'FORECAST.FLURRIES',
+        night: 'FORECAST.FLURRIES',
+        dayIcon: FlurriesIcon_day,
+        nightIcon: FlurriesIcon_night,
+    },
+    1117: {
+        day: 'FORECAST.SNOW',
+        night: 'FORECAST.SNOW',
+        dayIcon: SnowIcon_day,
+        nightIcon: SnowIcon_night,
+    },
+    1135: {
+        day: 'FORECAST.FOG',
+        night: 'FORECAST.FOG',
+        dayIcon: FogIcon_day,
+        nightIcon: FogIcon_night,
+    },
+    1147: {
+        day: 'FORECAST.FOG',
+        night: 'FORECAST.FOG',
+        dayIcon: FogIcon_day,
+        nightIcon: FogIcon_night,
+    },
+    1150: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1153: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1168: {
+        day: 'FORECAST.SLEET',
+        night: 'FORECAST.SLEET',
+        dayIcon: SleetIcon_day,
+        nightIcon: SleetIcon_night,
+    },
+    1171: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1180: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1183: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1186: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1189: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1192: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1195: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1198: {
+        day: 'FORECAST.SLEET',
+        night: 'FORECAST.SLEET',
+        dayIcon: SleetIcon_day,
+        nightIcon: SleetIcon_night,
+    },
+    1201: {
+        day: 'FORECAST.SLEET',
+        night: 'FORECAST.SLEET',
+        dayIcon: SleetIcon_day,
+        nightIcon: SleetIcon_night,
+    },
+    1204: {
+        day: 'FORECAST.RAIN_SNOW',
+        night: 'FORECAST.RAIN_SNOW',
+        dayIcon: RainSnowIcon_day,
+        nightIcon: RainSnowIcon_night,
+    },
+    1207: {
+        day: 'FORECAST.RAIN_SNOW',
+        night: 'FORECAST.RAIN_SNOW',
+        dayIcon: RainSnowIcon_day,
+        nightIcon: RainSnowIcon_night,
+    },
+    1210: {
+        day: 'FORECAST.FLURRIES',
+        night: 'FORECAST.FLURRIES',
+        dayIcon: FlurriesIcon_day,
+        nightIcon: FlurriesIcon_night,
+    },
+    1213: {
+        day: 'FORECAST.FLURRIES',
+        night: 'FORECAST.FLURRIES',
+        dayIcon: FlurriesIcon_day,
+        nightIcon: FlurriesIcon_night,
+    },
+    1216: {
+        day: 'FORECAST.SNOW',
+        night: 'FORECAST.SNOW',
+        dayIcon: SnowIcon_day,
+        nightIcon: SnowIcon_night,
+    },
+    1219: {
+        day: 'FORECAST.SNOW',
+        night: 'FORECAST.SNOW',
+        dayIcon: SnowIcon_day,
+        nightIcon: SnowIcon_night,
+    },
+    1222: {
+        day: 'FORECAST.SNOW',
+        night: 'FORECAST.SNOW',
+        dayIcon: SnowIcon_day,
+        nightIcon: SnowIcon_night,
+    },
+    1225: {
+        day: 'FORECAST.SNOW',
+        night: 'FORECAST.SNOW',
+        dayIcon: SnowIcon_day,
+        nightIcon: SnowIcon_night,
+    },
+    1237: {
+        day: 'FORECAST.SLEET',
+        night: 'FORECAST.SLEET',
+        dayIcon: SleetIcon_day,
+        nightIcon: SleetIcon_night,
+    },
+    1240: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1243: {
+        day: 'FORECAST.SHOWERS',
+        night: 'FORECAST.SHOWERS',
+        dayIcon: ShowersIcon_day,
+        nightIcon: ShowersIcon_night,
+    },
+    1246: {
+        day: 'FORECAST.TSTORMS',
+        night: 'FORECAST.TSTORMS',
+        dayIcon: TStormsIcon_day,
+        nightIcon: TStormsIcon_night,
+    },
+    1249: {
+        day: 'FORECAST.SLEET',
+        night: 'FORECAST.SLEET',
+        dayIcon: SleetIcon_day,
+        nightIcon: SleetIcon_night,
+    },
+    1252: {
+        day: 'FORECAST.RAIN_SNOW',
+        night: 'FORECAST.RAIN_SNOW',
+        dayIcon: RainSnowIcon_day,
+        nightIcon: RainSnowIcon_night,
+    },
+    1255: {
+        day:'FORECAST.FLURRIES',
+        night:'FORECAST.FLURRIES',
+        dayIcon: FlurriesIcon_day,
+        nightIcon: FlurriesIcon_night,
+    },
+    1258: {
+        day:'FORECAST.SNOW',
+        night:'FORECAST.SNOW',
+        dayIcon: SnowIcon_day,
+        nightIcon: SnowIcon_night,
+    },
+    1261: {
+        day:'FORECAST.SLEET',
+        night:'FORECAST.SLEET',
+        dayIcon: SleetIcon_day,
+        nightIcon: SleetIcon_night,
+    },
+    1264: {
+        day:'FORECAST.SLEET',
+        night:'FORECAST.SLEET',
+        dayIcon: SleetIcon_day,
+        nightIcon: SleetIcon_night,
+    },
+    1273: {
+        day:'FORECAST.TSTORMS',
+        night:'FORECAST.TSTORMS',
+        dayIcon: TStormsIcon_day,
+        nightIcon: TStormsIcon_night,
+    },
+    1276: {
+        day:'FORECAST.TSTORMS',
+        night:'FORECAST.TSTORMS',
+        dayIcon: TStormsIcon_day,
+        nightIcon: TStormsIcon_night,
+    },
+    1279: {
+        day:'FORECAST.FLURRIES',
+        night:'FORECAST.FLURRIES',
+        dayIcon: FlurriesIcon_day,
+        nightIcon: FlurriesIcon_night,
+    },
+    1282: {
+        day:'FORECAST.SNOW',
+        night:'FORECAST.SNOW',
+        dayIcon: SnowIcon_day,
+        nightIcon: SnowIcon_night,
+    },
+};
 
 /**
  * 判断对象是否为空
@@ -507,7 +479,7 @@ export function isEmptyObject(object: object) {
  * @returns {*}
  */
 export function kmToMs(kph: number) {
-    if(!kph || kph<=0)return '';
+    if (!kph || kph <= 0) return '';
     return Math.round((kph * 1000) / 3600);
 }
 
@@ -519,88 +491,24 @@ export function kmToMs(kph: number) {
  * @returns {*}
  */
 export const WIND_DIR_MAPPING: {
-    [windDir:string]:string
+    [windDir: string]: string;
 } = {
-    N: i18n.global.t('WIND_DIRECTION.N'),
-    NNE: i18n.global.t('WIND_DIRECTION.NNE'),
-    NE: i18n.global.t('WIND_DIRECTION.NE'),
-    ENE: i18n.global.t('WIND_DIRECTION.ENE'),
-    E: i18n.global.t('WIND_DIRECTION.E'),
-    ESE: i18n.global.t('WIND_DIRECTION.ESE'),
-    SE: i18n.global.t('WIND_DIRECTION.SE'),
-    SSE: i18n.global.t('WIND_DIRECTION.SSE'),
-    S: i18n.global.t('WIND_DIRECTION.S'),
-    SSW: i18n.global.t('WIND_DIRECTION.SSW'),
-    SW: i18n.global.t('WIND_DIRECTION.SW'),
-    WSW: i18n.global.t('WIND_DIRECTION.WSW'),
-    W: i18n.global.t('WIND_DIRECTION.W'),
-    WNW: i18n.global.t('WIND_DIRECTION.WNW'),
-    NW: i18n.global.t('WIND_DIRECTION.NW'),
-    NNW: i18n.global.t('WIND_DIRECTION.NNW'),
-    // {
-    //     zh_sc: '北风',
-    //     en_us: 'N',
-    // },
-    // NNE: {
-    //     zh_sc: '北东北风',
-    //     en_us: 'NNE',
-    // },
-    // NE: {
-    //     zh_sc: '东北风',
-    //     en_us: 'NE',
-    // },
-    // ENE: {
-    //     zh_sc: '东东北风向',
-    //     en_us: 'ENE',
-    // },
-    // E: {
-    //     zh_sc: '东风向',
-    //     en_us: 'E',
-    // },
-    // ESE: {
-    //     zh_sc: '东东南风向',
-    //     en_us: 'ESE',
-    // },
-    // SE: {
-    //     zh_sc: '东南风向',
-    //     en_us: 'SE',
-    // },
-    // SSE: {
-    //     zh_sc: '南东南风向',
-    //     en_us: 'SSE',
-    // },
-    // S: {
-    //     zh_sc: '南风',
-    //     en_us: 'S',
-    // },
-    // SSW: {
-    //     zh_sc: '南西南风向',
-    //     en_us: 'SSW',
-    // },
-    // SW: {
-    //     zh_sc: '西南风向',
-    //     en_us: 'SW',
-    // },
-    // WSW: {
-    //     zh_sc: '西西南风向',
-    //     en_us: 'WSW',
-    // },
-    // W: {
-    //     zh_sc: '西风',
-    //     en_us: 'W',
-    // },
-    // WNW: {
-    //     zh_sc: '西西北风向',
-    //     en_us: 'WNW',
-    // },
-    // NW: {
-    //     zh_sc: '西北风向',
-    //     en_us: 'NW',
-    // },
-    // NNW: {
-    //     zh_sc: '北西北风向',
-    //     en_us: 'NNW',
-    // },
+    N: 'WIND_DIRECTION.N',
+    NNE: 'WIND_DIRECTION.NNE',
+    NE: 'WIND_DIRECTION.NE',
+    ENE: 'WIND_DIRECTION.ENE',
+    E: 'WIND_DIRECTION.E',
+    ESE: 'WIND_DIRECTION.ESE',
+    SE: 'WIND_DIRECTION.SE',
+    SSE: 'WIND_DIRECTION.SSE',
+    S: 'WIND_DIRECTION.S',
+    SSW: 'WIND_DIRECTION.SSW',
+    SW: 'WIND_DIRECTION.SW',
+    WSW: 'WIND_DIRECTION.WSW',
+    W: 'WIND_DIRECTION.W',
+    WNW: 'WIND_DIRECTION.WNW',
+    NW: 'WIND_DIRECTION.NW',
+    NNW: 'WIND_DIRECTION.NNW',
 };
 
 /**
