@@ -4,7 +4,7 @@ ENV ENABLE_PRINT_BUILDINFO=1 \
     CONFIG_CUBE_HOST=ihost \
     CONFIG_DATA_PATH=/data \
     LOG_LEVEL=info \
-    APP_NAME="CUBE Weather forecast"
+    APP_NAME="Weather forecast"
 
 WORKDIR /workspace/ewelink-cube-weather-addon
 
