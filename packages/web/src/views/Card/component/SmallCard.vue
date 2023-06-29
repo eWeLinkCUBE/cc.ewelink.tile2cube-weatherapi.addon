@@ -81,8 +81,8 @@ const init = () => {
     const tempUnit = props.tempUnit ? 'temp_c' : 'temp_f';
     formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
     //天气更新时间
-    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
-    formState.updateTime = formatTimeUtils(time, 'HH:mm');
+    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated'], 0);
+    formState.updateTime =time.split(' ')[1]; // formatTimeUtils((new Date(time).getTime()), 'HH:mm');
     //当前天气
     const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
     //根据code获取对应中英文、白天黑夜图标

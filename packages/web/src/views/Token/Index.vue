@@ -56,9 +56,9 @@ const timer = ref<any>(null);
 /** 当前语言环境 */
 const language = computed(() => etcStore.language === 'zh-cn');
 /** 英文轮播图列表 */
-const en_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_zh }, { imgSrc: Confirm_zh }];
+const en_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_en }, { imgSrc: Confirm_en }];
 // /** 中文轮播图列表 */
-const zh_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_en }, { imgSrc: Confirm_en }];
+const zh_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_zh}, { imgSrc:  Confirm_zh }];
 
 onMounted(async () => {
     const res = await weatherStore.getTokenInfo();

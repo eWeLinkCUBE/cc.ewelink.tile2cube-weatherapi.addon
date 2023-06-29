@@ -1,5 +1,5 @@
 <template>
-    <div class="detail scroll-bar" :class="{'isNight':!isDay}">
+    <div class="detail Scroll-bar" :class="{'isNight':!isDay}">
         <!-- 头部时间 -->
         <Header :foreCastInfo="foreCastInfo" />
         <!-- 未来几天天气 -->
