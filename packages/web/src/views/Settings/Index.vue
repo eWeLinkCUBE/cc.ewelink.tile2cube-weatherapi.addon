@@ -13,7 +13,7 @@
                         <a-form-item :name="['weather', 'weatherApiKey']" label="weatherApiKey" :rules="[{ required: true }]">
                             <a-input @change="judgeDisabled" v-model:value="formState.weather.weatherApiKey" :placeholder="$t('PLEASE_ENTER_API_KEY')" />
                         </a-form-item>
-                        <a-form-item :name="['weather', 'cityData']" label="cityData" :rules="[{ required: true }]">
+                        <a-form-item :name="['weather', 'cityData']" :label="$t('CITY_NAME')" :rules="[{ required: true }]">
                             <a-select
                                 v-model:value="formState.weather.cityData"
                                 show-search
@@ -31,7 +31,7 @@
                                 </a-select-option>
                             </a-select>
                         </a-form-item>
-                        <a-form-item :name="['weather', 'tempUnit']" label="tempUnit" :rules="[{ required: true }]">
+                        <a-form-item :name="['weather', 'tempUnit']" :label="$t('TEMP_UNIT')" :rules="[{ required: true }]">
                             <a-select @change="judgeDisabled" v-model:value="formState.weather.tempUnit" style="width: 350px" :placeholder="$t('PLEASE_ENTER_TEMPERATURE')">
                                 <a-select-option :key="select.label" :value="select.value" v-for="select in temperatureData">
                                     {{ select.label }}

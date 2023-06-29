@@ -1,13 +1,13 @@
 <template>
-    <a-spin style="min-height: 100vh;min-width:100vw;background-color: rgba(34,34,34,0.6); color: #ffff" :spinning="loading" :indicator="indicator" :tip="'loading'" size="large">
-        <div style="min-height: 100vh;min-width:100vw;">
-            <component :is="cardType" :foreCastInfo="weatherStore.foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
-        </div>
-    </a-spin>
+    <!-- <a-spin style="min-height: 100vh;min-width:100vw;background-color: rgba(34,34,34,0.6); color: #ffff" :spinning="loading" :indicator="indicator" :tip="'loading'" size="large"> -->
+    <div style="min-height: 100vh;">
+        <component :is="cardType" :foreCastInfo="weatherStore.foreCastInfo" :isDay="isDay" :tempUnit="tempUnit" />
+    </div>
+    <!-- </a-spin> -->
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted ,onBeforeUnmount ,watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import SmallCard from '@/views/Card/component/SmallCard.vue';
 import LargeCard from '@/views/Card/component/LargeCard.vue';
 import DetailCard from '@/views/Card/component/DetailCard.vue';
@@ -53,16 +53,28 @@ onMounted(async () => {
     setInterValHandler();
 });
 
-onBeforeUnmount(()=>{
+onBeforeUnmount(() => {
     clearInterval(timer.value);
 });
 
 /** 天气预报轮询 */
-const setInterValHandler = () =>{
-    timer.value = setInterval(()=>{
-        weatherStore.getForeCastInfo();
-    },60*60*1000);
-}
+const setInterValHandler = () => {
+    clearInterval(timer.value);
+    //获取当前时间
+    const nowtime = new Date().getTime();
+    //获取下一个小时
+    const h = new Date().getHours() + 1;
+    // 获取下一个小时的时间戳
+    const end = new Date(new Date(new Date().toLocaleDateString()).getTime() + h * 60 * 60 * 1000 - 1).getTime();
+    const timing = end - nowtime + 300000;
+    console.log('timing--------------->', timing);
+    //整点获取数据
+    setTimeout(() => {
+        timer.value = setInterval(() => {
+            weatherStore.getForeCastInfo();
+        }, 60 * 60 * 1000);
+    }, timing);
+};
 
 /** 判断当前卡片类型 */
 const judgeCardType = async () => {
@@ -70,7 +82,7 @@ const judgeCardType = async () => {
     if (params.ihost_env) {
         loading.value = true;
         const res = await weatherStore.getForeCastInfo();
-        if(res.error === 0 && res.data){
+        if (res.error === 0 && res.data) {
             isDay.value = _.get(res.data, ['forecastData', 'current', 'is_day'], 1) === 1; //isDay 1:白天 0:黑夜
             cardType.value = relationMap[params.ihost_env];
             //2*1卡片
@@ -86,17 +98,20 @@ const judgeCardType = async () => {
 const tempUnit = ref<boolean>(true);
 
 /** 从配置获取单位 */
-const getTempUnit = async () =>{
+const getTempUnit = async () => {
     const res = await api.GetSaveData();
-    if(res.data && res.error === 0){
+    if (res.data && res.error === 0) {
         tempUnit.value = res.data.tempUnit === 'C';
     }
-}
+};
 
-watch(()=>weatherStore.foreCastInfo,()=>{
-    getTempUnit();
-    isDay.value = _.get(weatherStore.foreCastInfo, ['forecastData', 'current', 'is_day'], 1) === 1;
-})
+watch(
+    () => weatherStore.foreCastInfo,
+    () => {
+        getTempUnit();
+        isDay.value = _.get(weatherStore.foreCastInfo, ['forecastData', 'current', 'is_day'], 1) === 1;
+    }
+);
 
 /** 屏幕尺寸变化重新判断 */
 window.addEventListener('resize', () => {
@@ -114,7 +129,7 @@ const resizeDebounce = _.debounce(judgeCardType, 1000, {
 </script>
 
 <style>
-.ant-spin-nested-loading > div > .ant-spin .ant-spin-text{
+.ant-spin-nested-loading > div > .ant-spin .ant-spin-text {
     text-shadow: none;
 }
 </style>

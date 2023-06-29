@@ -58,8 +58,8 @@ const init = () => {
     const tempUnit = props.tempUnit ? 'temp_c' : 'temp_f';
     formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
     //天气更新时间
-    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
-    formState.updateTime = formatTimeUtils(time, 'HH:mm');
+    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated'], 0);
+    formState.updateTime = time.split(' ')[1]; //formatTimeUtils((new Date(time).getTime()), 'HH:mm');
     //当前天气
     formState.describe = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'text'], '');
 };
@@ -88,7 +88,8 @@ const formState = reactive<ISmallCardData>({
 .cast-card {
     margin: 0 auto;
     text-align: center;
-    padding: 0.5rem;
+    padding: .8rem;//.6875rem;
+    // padding:10px 14px 11px 10px;
     border-radius: 0.375rem;
     width: 100%;
     min-height: 100%;

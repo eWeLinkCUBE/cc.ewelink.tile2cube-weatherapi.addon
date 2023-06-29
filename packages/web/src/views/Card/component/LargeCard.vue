@@ -127,8 +127,8 @@ const getPageData = () => {
     const tempUnit = props.tempUnit ? 'temp_c' : 'temp_f';
     formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
     // //更新时间
-    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
-    formState.updateTime = formatTimeUtils(time, 'HH:mm');
+    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated'], 0);
+    formState.updateTime = time.split(' ')[1]; //formatTimeUtils((new Date(time).getTime()), 'HH:mm');
     //当前天气
     const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
     // const item = FORECAST_SETTING_MAPPING[code];

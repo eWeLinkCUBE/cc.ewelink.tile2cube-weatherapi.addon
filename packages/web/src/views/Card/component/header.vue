@@ -36,8 +36,8 @@ watch(()=>props.foreCastInfo,()=>{
 
 const init = () =>{
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
-    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated_epoch'], 0);
-    formState.updateTime = formatTimeUtils(time, 'HH:mm');
+    const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated'], 0);
+    formState.updateTime = time.split(' ')[1]; //formatTimeUtils((new Date(time).getTime()), 'HH:mm');
 }
 </script>
 

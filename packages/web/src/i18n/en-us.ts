@@ -12,7 +12,7 @@ const en = {
     GET_GATEWAY_TOKEN: 'Get iHost access token',
     NEXT: 'Next',
     CLICK_GET_TOKEN: 'Step 1: Click "Get iHost access token" below.',
-    CONFIRM_GET_TOKEN: 'Step 2: Confirm "Get iHost access token" on the pop-up.',
+    CONFIRM_GET_TOKEN: 'Step 2: Allow "Get iHost access token" on the pop-up.',
     FORECAST_SETTING: 'Weather forecast settings',
     FORECAST_DESCRIBE: "The Weather forecast Add-on is provided by Weather API. Please go to https://www.weatherapi.com/ to register an account and get the Apikey, and enter the obtained Apikey on this page.",
     FORECAST_WEATHER_API:"The Weather forecast Add-on is provided by Weather API. Please go to",
@@ -23,6 +23,8 @@ const en = {
     FINISH: 'Done',
     UPDATE: 'update',
     HOUR_FORECAST: 'hourly forecast',
+    CITY_NAME:'City',
+    TEMP_UNIT:'Temperature unit',
     /** 天气预报翻译 */
     FORECAST: {
         SUNNY:'Sunny',

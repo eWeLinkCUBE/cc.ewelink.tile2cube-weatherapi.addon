@@ -6,7 +6,8 @@
         </div>
         <div class="card">
             <div class="item" v-for="(item, index) in HourData" :key="index">
-                <p>{{ index === 0 ? $t('NOW') : formatTimeUtils(item.time_epoch, 'HH:mm') }}</p>
+                <p>{{ index === 0 ? $t('NOW') : item.time.split(' ')[1] }}</p>
+                <!-- formatTimeUtils(item.time_epoch, 'HH:mm') -->
                 <img :src="imgMapping(item)" alt="" />
                 <p>{{ ( tempUnit ? item.temp_c : item.temp_f ) + '°' }}</p>
             </div>
@@ -47,6 +48,8 @@ interface IHourData {
     temp_f: string;
     /** 小时时间戳 */
     time_epoch: number;
+    /** 当地时间 */
+    time:string
 }
 
 onMounted(() => {
