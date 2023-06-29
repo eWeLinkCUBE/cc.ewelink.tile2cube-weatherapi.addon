@@ -292,6 +292,10 @@ apiv1.post('/config', async (req, res) => {
                         {
                             size: '2×1',
                             src: `http://${HOST}/#/card`
+                        },
+                        {
+                            size: '1×1',
+                            src: `http://${HOST}/#/card`
                         }
                     ],
                     drawer_component: {
