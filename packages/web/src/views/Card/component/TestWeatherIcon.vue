@@ -46,6 +46,15 @@ const inputChange = () =>{
         return;
     }
     arrList.value = [];
+    let flag = false;
+    for(const item in FORECAST_SETTING_MAPPING){
+        if(item == inputVal.value){
+            flag = true;
+        }
+    }
+    if(!flag)return;
+
+    if(inputVal.value)
     arrList.value.push(inputVal.value);
 }
 </script>
