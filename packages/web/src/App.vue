@@ -4,17 +4,17 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { useSseStore } from '@/store/sse';
+// import { useSseStore } from '@/store/sse';
 import { useRouter } from 'vue-router';
 import { useEtcStore } from '@/store/etc';
 import {getQuery} from '@/utils/tools';
 const etcStore = useEtcStore();
 const router = useRouter();
-const sseStore = useSseStore();
+// const sseStore = useSseStore();
 
 onMounted(() => {
     judgeLangue();
-    sseStore.startSse();
+    // sseStore.startSse();
 });
 
 /** 判断当前语言 */

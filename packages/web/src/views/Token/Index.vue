@@ -35,6 +35,7 @@ import { ref, onMounted, computed, watch } from 'vue';
 import type { ITokenInfo } from '@/api/ts/interface/IWeatherInfo';
 import { useRouter } from 'vue-router';
 import { useEtcStore } from '@/store/etc';
+import { useSseStore } from '@/store/sse';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
 import api from '@/api/Weather/index';
@@ -49,6 +50,7 @@ import Confirm_en from '@/assets/img/confirm_en.png';
 const router = useRouter();
 const etcStore = useEtcStore();
 const weatherStore = useWeatherStore();
+const sseStore = useSseStore();
 /** 倒计时时间 */
 const countdownTime = ref<number>(300);
 /** 倒计时定时器 */
@@ -61,6 +63,7 @@ const en_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_en }, { i
 const zh_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_zh}, { imgSrc:  Confirm_zh }];
 
 onMounted(async () => {
+    sseStore.startSse();
     const res = await weatherStore.getTokenInfo();
     if(res.data && res.error ===0){
         clearInterval(timer);

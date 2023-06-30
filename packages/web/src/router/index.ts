@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { useSseStore } from '@/store/sse';
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -26,7 +27,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-    //TODO:进入card页面需要判断一下设置页面有没有配置完成
+    //离开token页面断开sse
+    const sseStore = useSseStore();
+    if(from.path === '/token' || to.path === 'card'){
+        sseStore.closeSse();
+    }
 });
 
 export default router
