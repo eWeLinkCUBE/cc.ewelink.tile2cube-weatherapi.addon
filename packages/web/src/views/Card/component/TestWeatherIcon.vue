@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import i18n from '@/i18n/index';
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, } from 'vue';
 import _ from 'lodash';
 import { FORECAST_SETTING_MAPPING, translateByCode } from '@/utils/tools';
 import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
