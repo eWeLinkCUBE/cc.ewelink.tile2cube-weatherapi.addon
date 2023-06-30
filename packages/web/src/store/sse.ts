@@ -67,6 +67,10 @@ export const useSseStore = defineStore('sse', {
                 },10000)
             });
         },
+        closeSse(){
+            if(!source)return;
+            source.close();
+        }
     },
     persist: true,
 });

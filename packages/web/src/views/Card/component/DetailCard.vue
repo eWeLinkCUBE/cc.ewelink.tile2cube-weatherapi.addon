@@ -8,6 +8,8 @@
         <HourForeCastCard :foreCastInfo="foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
         <!-- 天气参数 -->
         <WeatherDetail :foreCastInfo="foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
+        <!-- 测试天气图标 -->
+        <TestWeatherIcon :foreCastInfo="foreCastInfo"/>
     </div>
 </template>
 
@@ -15,7 +17,8 @@
 import LargeCard from '@/views/Card/component/LargeCard.vue';
 import HourForeCastCard from '@/views/Card/component/HourForeCastCard.vue';
 import WeatherDetail from '@/views/Card/component/WeatherDetail.vue';
-import Header from '@/views/Card/component/header.vue'
+import Header from '@/views/Card/component/header.vue';
+import TestWeatherIcon from '@/views/Card/component/TestWeatherIcon.vue';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
 import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
