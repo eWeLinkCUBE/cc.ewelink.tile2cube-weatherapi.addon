@@ -9,7 +9,7 @@
                 <p>{{ index === 0 ? $t('NOW') : item.time.split(' ')[1] }}</p>
                 <!-- formatTimeUtils(item.time_epoch, 'HH:mm') -->
                 <img :src="imgMapping(item)" alt="" />
-                <p>{{ ( tempUnit ? item.temp_c : item.temp_f ) + '°' }}</p>
+                <p>{{ (tempUnit ? item.temp_c : item.temp_f) + '°' }}</p>
             </div>
         </div>
     </div>
@@ -27,8 +27,8 @@ const weatherStore = useWeatherStore();
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
-    isDay:boolean;
-    tempUnit:boolean
+    isDay: boolean;
+    tempUnit: boolean;
 }>();
 
 /** 天气小时数据 */
@@ -49,15 +49,18 @@ interface IHourData {
     /** 小时时间戳 */
     time_epoch: number;
     /** 当地时间 */
-    time:string
+    time: string;
 }
 
 onMounted(() => {
     assembleData();
 });
-watch(()=>[props.foreCastInfo,props.tempUnit,props.isDay],()=>{
-    assembleData();
-});
+watch(
+    () => [props.foreCastInfo, props.tempUnit, props.isDay],
+    () => {
+        assembleData();
+    }
+);
 
 /** 组装小时数据 */
 const assembleData = () => {
@@ -66,7 +69,7 @@ const assembleData = () => {
         //考虑到当天例如23：00之后四小时时间,目前总共获取两天共48小时的数据;
         const twoDaysHourData: IHourData[] = _.concat(foreCastDay[0].hour, foreCastDay[1].hour);
         if (twoDaysHourData.length > 0) {
-            let index = 0; //当前小时
+            let index = -1; //当前小时
             for (let i = 0; i <= twoDaysHourData.length - 1; i++) {
                 if (twoDaysHourData[i].time_epoch <= moment().unix() && twoDaysHourData[i + 1].time_epoch >= moment().unix()) {
                     index = i;
@@ -74,17 +77,19 @@ const assembleData = () => {
                 }
             }
             //获取五小时的天气数据
-            HourData.value = _.slice(twoDaysHourData, index, index + 5);
-            console.log('index------------>',index,HourData.value);
+            if (index !== -1) {
+                HourData.value = _.slice(twoDaysHourData, index, index + 5);
+                console.log('index------------>', index, HourData.value);
+            }
         }
     }
 };
 
-const imgMapping = (hourData:IHourData) =>{
+const imgMapping = (hourData: IHourData) => {
     const item = FORECAST_SETTING_MAPPING[hourData.condition.code];
-    if(item) return props.isDay ? item.dayIcon : item.nightIcon;
+    if (item) return props.isDay ? item.dayIcon : item.nightIcon;
     return '';
-}
+};
 </script>
 
 <style scoped lang="scss">

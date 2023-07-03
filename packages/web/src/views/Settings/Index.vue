@@ -10,7 +10,7 @@
                 </h3>
                 <div class="form">
                     <a-form :model="formState" v-bind="layout" name="nest-messages" :validate-messages="validateMessages">
-                        <a-form-item :name="['weather', 'weatherApiKey']" label="weatherApiKey" :rules="[{ required: true }]">
+                        <a-form-item :name="['weather', 'weatherApiKey']" :label="$t('WEATHER_API_KEY')" :rules="[{ required: true }]">
                             <a-input @change="judgeDisabled" v-model:value="formState.weather.weatherApiKey" :placeholder="$t('PLEASE_ENTER_API_KEY')" />
                         </a-form-item>
                         <a-form-item :name="['weather', 'cityData']" :label="$t('CITY_NAME')" :rules="[{ required: true }]">

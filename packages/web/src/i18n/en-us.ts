@@ -25,6 +25,7 @@ const en = {
     HOUR_FORECAST: 'hourly forecast',
     CITY_NAME:'City',
     TEMP_UNIT:'Temperature unit',
+    WEATHER_API_KEY:'weatherApiKey',
     /** 天气预报翻译 */
     FORECAST: {
         SUNNY:'Sunny',
