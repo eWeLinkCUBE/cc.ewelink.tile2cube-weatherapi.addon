@@ -9,7 +9,7 @@
         <!-- 天气参数 -->
         <WeatherDetail :foreCastInfo="foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
         <!-- 测试天气图标 -->
-        <TestWeatherIcon :foreCastInfo="foreCastInfo"/>
+        <!-- <TestWeatherIcon :foreCastInfo="foreCastInfo"/> -->
     </div>
 </template>
 
