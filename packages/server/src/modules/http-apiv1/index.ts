@@ -7,7 +7,9 @@ import { logger } from '../../logger';
 import { cubeApiClient } from '../cube-api';
 import {
     createErrorRes,
+    ERR_PARAM_NO_CITY_DATA,
     ERR_PARAM_NO_CITY_NAME,
+    ERR_PARAM_NO_TEMP_UNIT,
     ERR_PARAM_NO_WEATHER_API_KEY,
     ERR_SERVER_INTERNAL,
 } from './error';
@@ -86,7 +88,7 @@ apiv1.get('/cube-token', async (req, res) => {
             name: 'get_cube_token_start',
             data: { requestTokenTime: now }
         });
-        const tokenRes = await cubeApiClient.getBridgeToken();
+        const tokenRes = await cubeApiClient.getBridgeToken({ appName: process.env.APP_NAME });
         SSE.send({
             name: 'get_cube_token_end',
             data: { requestTokenTime: now }
@@ -204,27 +206,61 @@ apiv1.post('/config', async (req, res) => {
     };
 
     try {
-        // TODO: check params
         const weatherApiKey = _.get(req, 'body.weatherApiKey');
         const cityData = _.get(req, 'body.cityData');
         const tempUnit = _.get(req, 'body.tempUnit');
 
-        const saveData = {};
-        if (weatherApiKey) {
-            _.set(saveData, 'weatherApiKey', weatherApiKey);
-        }
-        if (cityData) {
-            _.set(saveData, 'cityData', cityData);
-        }
-        if (tempUnit) {
-            _.set(saveData, 'tempUnit', tempUnit);
+        // 1. Check body params
+        if (!weatherApiKey) {
+            result = createErrorRes(ERR_PARAM_NO_WEATHER_API_KEY);
+            return res.send(result);
         }
 
-        if (!_.isEmpty(saveData)) {
-            await userConfigStore.setUserConfigData(saveData);
+        if (!cityData) {
+            result = createErrorRes(ERR_PARAM_NO_CITY_DATA);
+            return res.send(result);
         }
 
-        // Get iHost UI card list
+        if (!tempUnit) {
+            result = createErrorRes(ERR_PARAM_NO_TEMP_UNIT);
+            return res.send(result);
+        }
+
+        // 2. Get previous user config data
+        const preUserConfigData = await userConfigStore.getUserConfigData();
+        const preWeatherApiKey = _.get(preUserConfigData, 'weatherApiKey');
+        const preCityDataLat = _.get(preUserConfigData, 'cityData.lat');
+        const preCityDataLon = _.get(preUserConfigData, 'cityData.lon');
+
+        // 3. Check Weather API key validation
+        if (preWeatherApiKey !== weatherApiKey) {
+            weatherApiClient.setRequestKey(weatherApiKey);
+            const weatherRes = await weatherApiClient.requestJsonData('search.json', { q: cityData.name });
+            if (weatherRes.error !== 0) {
+                result = createErrorRes(weatherRes);
+                return res.send(result);
+            }
+        }
+
+        // 4. If city changed, update weather data
+        const cityChanged = !((preCityDataLat === cityData.lat) && (preCityDataLon === cityData.lon));
+
+        // 5. Save new user config data
+        await userConfigStore.setUserConfigData({
+            weatherApiKey,
+            cityData,
+            tempUnit
+        });
+        if (cityChanged) {
+            await weatherApiClient.getForecastData(5);
+        }
+
+        SSE.send({
+            name: 'user_config_updated',
+            data: {}
+        });
+
+        // 6. Get iHost UI card list
         const cardListRes = await cubeApiClient.getUiCardList();
         if (cardListRes.error !== 0) {
             result = createErrorRes(cardListRes);
@@ -232,7 +268,7 @@ apiv1.post('/config', async (req, res) => {
         }
         const cardList = cardListRes.data;
 
-        // Check pre-save UI card ID
+        // 7. Check pre-save UI card ID
         let shouldCreateWeatherUiCard = true;
         const userConfigData = await userConfigStore.getUserConfigData();
         if (userConfigData && userConfigData.weatherCardIdList && userConfigData.weatherCardIdList.length !== 0) {
@@ -245,8 +281,9 @@ apiv1.post('/config', async (req, res) => {
             }
         }
 
+        // 8. Create weather UI card
         if (shouldCreateWeatherUiCard) {
-            const HOST = `${process.env.CONFIG_CUBE_HOST}:${LISTEN_PORT}`;
+            const HOST = `ihost.local:${LISTEN_PORT}`;
             const addRes = await cubeApiClient.addUiCardList({
                 label: 'Weather Card',
                 web_settings: {
@@ -254,6 +291,10 @@ apiv1.post('/config', async (req, res) => {
                     dimensions: [
                         {
                             size: '2×1',
+                            src: `http://${HOST}/#/card`
+                        },
+                        {
+                            size: '1×1',
                             src: `http://${HOST}/#/card`
                         }
                     ],

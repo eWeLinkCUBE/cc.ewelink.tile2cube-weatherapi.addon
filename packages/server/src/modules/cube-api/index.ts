@@ -64,7 +64,7 @@ class CubeApiClient {
     }
 
     private async _sendHttpRequest(params: CubeApiClientSendHttpRequestParams) {
-        if (!this._token) {
+        if (params.needToken && !this._token) {
             return createErrorRes(ERR_NO_CUBE_API_TOKEN);
         }
 

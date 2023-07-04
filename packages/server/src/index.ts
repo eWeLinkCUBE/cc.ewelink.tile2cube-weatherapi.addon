@@ -75,6 +75,8 @@ app.listen(LISTEN_PORT, LISTEN_HOST, async () => {
         cubeApiClient.setToken(tokenStr);
     }
 
+    // Try to update weather data
+    weatherApiClient.getForecastData(5);
     // Start weather schedule
     weatherApiClient.startSched();
 });
