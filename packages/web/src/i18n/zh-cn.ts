@@ -29,6 +29,7 @@ const cn = {
     WEATHER_API_KEY_REQUIRED:'ApiKey必填 ！',
     CITY_REQUIRED:'城市必填 ！',
     TEMP_UNIT_REQUIRED:'温度单位必选 ！',
+    SAVE_SUCCESS:'保存成功',
     /** 天气预报翻译 */
     FORECAST: {
         SUNNY:'晴',

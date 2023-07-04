@@ -29,6 +29,7 @@ const en = {
     WEATHER_API_KEY_REQUIRED:'ApiKey is required !',
     CITY_REQUIRED:'City is required !',
     TEMP_UNIT_REQUIRED:'Temperature unit is required !',
+    SAVE_SUCCESS:'Success',
     /** 天气预报翻译 */
     FORECAST: {
         SUNNY:'Sunny',

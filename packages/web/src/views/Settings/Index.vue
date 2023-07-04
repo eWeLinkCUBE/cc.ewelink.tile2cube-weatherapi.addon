@@ -136,7 +136,7 @@ const submitHandler = async () => {
     btnLoading.value = false;
     weatherStore.setWeatherInfo(_.cloneDeep(formState));
     if (res.error === 0 && res.data) {
-        message.success('success');
+        message.success(i18n.global.t('SAVE_SUCCESS'));
         judgeDisabled();
     }
     /** apiKey error */
