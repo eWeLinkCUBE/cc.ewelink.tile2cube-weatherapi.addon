@@ -5,7 +5,7 @@ const isTestEnv = () => import.meta.env.DEV;
 const env = isTestEnv() ? EEnv.TEST : EEnv.PROD;
 
 /** 调试用ip */
-const WeatherIp = isTestEnv() ? '192.168.31.145' : 'localhost';
+const WeatherIp = isTestEnv() ? '192.168.31.212' : 'localhost';
 /** 版本(从.env文件获取) */
 const version = import.meta.env.VITE_VERSION;
 

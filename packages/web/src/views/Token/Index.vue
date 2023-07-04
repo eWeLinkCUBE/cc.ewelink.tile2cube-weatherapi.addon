@@ -66,7 +66,7 @@ onMounted(async () => {
     sseStore.startSse();
     const res = await weatherStore.getTokenInfo();
     if(res.data && res.error ===0){
-        clearInterval(timer);
+        clearInterval(timer.value);
         const seconds = moment(moment()).diff(moment(res.data.requestTokenTime), 'seconds');
         if(seconds>=0 && seconds<=300 && !res.data.cubeTokenValid){
             setCutDownTimer(seconds);
@@ -78,8 +78,8 @@ const tokenInfo = computed(() => weatherStore.tokenInfo);
 
 watch(()=>weatherStore.countdownStatus,(newValue, oldValue) => {
     if(!newValue){
-        console.log('!newValue--------->',!newValue);
-        clearInterval(timer);
+        console.log('!newValue--------->',!newValue,timer.value);
+        clearInterval(timer.value);
     }
 });
 
@@ -101,21 +101,16 @@ const setCutDownTimer = (seconds: number) => {
 
 /** 下一步 */
 const nextStep = () => {
-    if (tokenInfo.value.cubeTokenValid) {
-        clearInterval(timer);
-        router.push('/setting');
-    }
+    if (!tokenInfo.value.cubeTokenValid)return;
+    clearInterval(timer.value);
+    router.push('/setting');
 };
 
-/** 获取token按钮 */
-const getToken = async () => {
+/** 发请求获取token */
+const getToken = () => {
     if (tokenInfo.value.cubeTokenValid || weatherStore.countdownStatus) return;
-    //直接开始倒计时；
     setCutDownTimer(0);
-    // 开始获取token
-    await api.GetToken();
-    // // 获取token信息
-    // await weatherStore.getTokenInfo();
+    api.sendRequestGetToken();
 };
 
 /** 格式化时间 */
@@ -178,6 +173,7 @@ const formatCount = (count: number) => {
             h3 {
                 width: 365px;
                 text-align: left;
+                white-space: nowrap;
             }
         }
         :deep(.ant-btn) {

@@ -8,7 +8,7 @@ async function GetTokenInfo() {
 }
 
 /** 获取token接口 */
-async function GetToken() {
+async function sendRequestGetToken() {
     return await request<{ token: string }>(`/cube-token`, {}, EReqMethod.GET);
 }
 
@@ -34,7 +34,7 @@ async function getForeCastInfo(params:IRequestForeCastInfo){
 
 export default {
     GetTokenInfo,
-    GetToken,
+    sendRequestGetToken,
     GetCityList,
     GetSaveData,
     setConfigData,

@@ -146,7 +146,7 @@ const submitHandler = async () => {
 };
 
 /** 禁止填写按钮 */
-const disabled = ref(false);
+const disabled = ref(true);
 
 /** 控制提交按钮是否可以点击 */
 const judgeDisabled = () => {
