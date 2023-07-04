@@ -1,60 +1,66 @@
 <template>
-    <a-spin style="min-height: 100vh; background-color: rgba(34, 34, 34, 0.6); color: #ffff" :spinning="loading" :indicator="indicator" :tip="'loading'" size="large">
-        <div class="setting">
-            <section>
-                <h2 class="foreCast-setting">{{ $t('FORECAST_SETTING') }}</h2>
-                <h3 class="forecast-describe">
-                    {{ $t('FORECAST_WEATHER_API') }}
-                    <a href="https://www.weatherapi.com/" target="_blank">https://www.weatherapi.com/</a>
-                    {{ $t('FORECAST_API_KEY') }}
-                </h3>
-                <div class="form">
-                    <a-form :model="formState" v-bind="layout" name="nest-messages" :validate-messages="validateMessages">
-                        <a-form-item :name="['weather', 'weatherApiKey']" :label="$t('WEATHER_API_KEY')" :rules="[{ required: true }]">
-                            <a-input @change="judgeDisabled" v-model:value="formState.weather.weatherApiKey" :placeholder="$t('PLEASE_ENTER_API_KEY')" />
-                        </a-form-item>
-                        <a-form-item :name="['weather', 'cityData']" :label="$t('CITY_NAME')" :rules="[{ required: true }]">
-                            <a-select
-                                v-model:value="formState.weather.cityData"
-                                show-search
-                                :placeholder="$t('PLEASE_ENTER_CITY')"
-                                style="width: 350px"
-                                :default-active-first-option="false"
-                                :filter-option="false"
-                                :not-found-content="null"
-                                :disabled="!formState.weather.weatherApiKey.trim()"
-                                @search="(value:string)=>toggleDebounce(value)"
-                                @change="judgeDisabled"
-                            >
-                                <a-select-option :key="select.id" :value="select.id" v-for="select in cityData">
-                                    {{ select.display_name }}
-                                </a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item :name="['weather', 'tempUnit']" :label="$t('TEMP_UNIT')" :rules="[{ required: true }]">
-                            <a-select @change="judgeDisabled" v-model:value="formState.weather.tempUnit" style="width: 350px" :placeholder="$t('PLEASE_ENTER_TEMPERATURE')">
-                                <a-select-option :key="select.label" :value="select.value" v-for="select in temperatureData">
-                                    {{ select.label }}
-                                </a-select-option>
-                            </a-select>
-                        </a-form-item>
-                    </a-form>
-                </div>
-            </section>
-            <footer class="footer">
-                <a-button :disabled="disabled" :class="{ 'disabled-btn': disabled}" type="primary" @click="submitHandler">{{ $t('FINISH') }}</a-button>
-            </footer>
+    <div class="setting">
+        <section>
+            <h2 class="foreCast-setting">{{ $t('FORECAST_SETTING') }}</h2>
+            <h3 class="forecast-describe">
+                {{ $t('FORECAST_WEATHER_API') }}
+                <a href="https://www.weatherapi.com/" target="_blank">https://www.weatherapi.com/</a>
+                {{ $t('FORECAST_API_KEY') }}
+            </h3>
+            <div class="form">
+                <a-form :model="formState" v-bind="layout" name="nest-messages">
+                    <a-form-item
+                        :name="['weather', 'weatherApiKey']"
+                        :label="$t('WEATHER_API_KEY')"
+                        :rules="[{ required: true, message: $t('WEATHER_API_KEY_REQUIRED') }, { validateTrigger: 'blur' }]"
+                    >
+                        <a-input
+                            @change="judgeDisabled"
+                            v-model:value="formState.weather.weatherApiKey"
+                            :placeholder="$t('PLEASE_ENTER_API_KEY')"
+                        />
+                    </a-form-item>
+                    <a-form-item :name="['weather', 'cityData']" :label="$t('CITY_NAME')" :rules="[{ required: true, message: $t('CITY_REQUIRED') }]">
+                        <a-select
+                            v-model:value="formState.weather.cityData"
+                            show-search
+                            :placeholder="$t('PLEASE_ENTER_CITY')"
+                            style="width: 350px"
+                            :default-active-first-option="false"
+                            :filter-option="false"
+                            :not-found-content="null"
+                            :disabled="!formState.weather.weatherApiKey.trim()"
+                            @search="(value:string)=>toggleDebounce(value)"
+                            @change="judgeDisabled"
+                        >
+                            <a-select-option :key="select.id" :value="select.id" v-for="select in cityData">
+                                {{ select.display_name }}
+                            </a-select-option>
+                        </a-select>
+                    </a-form-item>
+                    <a-form-item :name="['weather', 'tempUnit']" :label="$t('TEMP_UNIT')" :rules="[{ required: true, message: $t('TEMP_UNIT_REQUIRED') }]">
+                        <a-select @change="judgeDisabled" v-model:value="formState.weather.tempUnit" style="width: 350px" :placeholder="$t('PLEASE_ENTER_TEMPERATURE')">
+                            <a-select-option :key="select.label" :value="select.value" v-for="select in temperatureData">
+                                {{ select.label }}
+                            </a-select-option>
+                        </a-select>
+                    </a-form-item>
+                </a-form>
+            </div>
+        </section>
+        <footer class="footer">
+            <a-button :loading="btnLoading" :disabled="disabled" :class="{ 'disabled-btn': disabled }" type="primary" @click="submitHandler">{{ $t('FINISH') }}</a-button>
+        </footer>
 
-            <!--<div class="test" style="width:180px;height: 180px;">
+        <!--<div class="test" style="width:180px;height: 180px;">
                 <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCard&language=en-us" class="scroll-bar" style="width: 100%; height: 100%" />
             </div>
             <div class="test" style="width:170px;height: 170px;">
                 <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCard&language=en-us" class="scroll-bar" style="width: 360px; height: 180px" />
             </div> -->
-            <!-- ?ihost_env=iHostWebCustomCardDrawer&language=en-us -->
-            <!-- <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCardDrawer&language=en-us" class="scroll-bar" style="max-width: 457px; height: 868px;" /> -->
-        </div>
-    </a-spin>
+        <!-- ?ihost_env=iHostWebCustomCardDrawer&language=en-us -->
+        <!-- <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCardDrawer&language=en-us" class="scroll-bar" style="max-width: 457px; height: 868px;" /> -->
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -71,15 +77,6 @@ import type { ICityData, IFormState, IRequestForeCastInfo, IRequestConfigInfo, I
 const weatherStore = useWeatherStore();
 const router = useRouter();
 
-const loading = ref(false);
-
-const indicator = h(LoadingOutlined, {
-    style: {
-        fontSize: '24px',
-    },
-    spin: true,
-});
-
 onMounted(async () => {
     const res = await api.GetTokenInfo();
     if (res.error === 0 && res.data?.cubeTokenValid) {
@@ -90,7 +87,7 @@ onMounted(async () => {
 });
 
 /** 表单数据 */
-const formState = reactive<IFormState>({
+let formState = reactive<IFormState>({
     weather: {
         weatherApiKey: '',
         cityData: undefined,
@@ -100,21 +97,18 @@ const formState = reactive<IFormState>({
 
 /** 获取已经保存的数据 */
 const getSaveDate = async () => {
-    loading.value = false;
     const res = await api.GetSaveData();
     if (res.error === 0 && res.data) {
-        if (res.data.cityData) {
-            cityData.value = [res.data?.cityData];
-            formState.weather.weatherApiKey = res.data?.weatherApiKey;
-            formState.weather.cityData = res.data?.cityData.id;
-            formState.weather.tempUnit = res.data?.tempUnit;
+        if (res.data && res.data.cityData) {
+            cityData.value = [res.data.cityData];
+            formState.weather.weatherApiKey = res.data.weatherApiKey;
+            formState.weather.cityData = res.data.cityData.id;
+            formState.weather.tempUnit = res.data.tempUnit;
+            /** 将后端保存的数据存到本地 */
             weatherStore.setWeatherInfo(_.cloneDeep(formState));
             judgeDisabled();
         }
     }
-    setTimeout(() => {
-        loading.value = false;
-    }, 200);
 };
 
 /** form表单的长度 */
@@ -123,8 +117,7 @@ const layout = {
     wrapperCol: { span: 18 },
 };
 
-/** 必填校验 */
-const validateMessages = { required: '${label} is required!' };
+const btnLoading = ref(false);
 
 /** 设置配置信息  */
 const submitHandler = async () => {
@@ -138,12 +131,15 @@ const submitHandler = async () => {
             params.cityData = item;
         }
     }
+    btnLoading.value = true;
     const res = await api.setConfigData(params);
+    btnLoading.value = false;
     weatherStore.setWeatherInfo(_.cloneDeep(formState));
     if (res.error === 0 && res.data) {
         message.success('success');
         judgeDisabled();
     }
+    /** apiKey error */
     if (res.error > 3000 && res.error < 3005) {
         message.error(`${i18n.global.t(`ERROR.${res.error}`)}`);
     }
@@ -206,13 +202,14 @@ const toggleDebounce = _.debounce(getCityList, 800, {
         text-align: center;
     }
     .forecast-describe {
-        max-width: 470px;
+        max-width: 500px;
         line-height: 26px;
         margin: 0 auto;
         text-align: center;
         margin-top: 20px;
         margin-bottom: 20px;
-        word-break: break-all;
+        // word-break: break-all;
+        word-break: normal;
     }
     .form {
         width: 600px;
@@ -230,9 +227,9 @@ const toggleDebounce = _.debounce(getCityList, 800, {
             border-radius: 4px;
             border: none;
             font-size: 16px;
-            color:#1890ff;
+            color: #1890ff;
         }
-        .disabled-btn{
+        .disabled-btn {
             opacity: 0.5;
         }
     }

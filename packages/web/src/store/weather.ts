@@ -78,5 +78,5 @@ export const useWeatherStore = defineStore('weather', {
             return seconds >= 300 || state.tokenInfo.cubeTokenValid ? false : true;
         }
     },
-    persist: false,
+    persist: true,
 });

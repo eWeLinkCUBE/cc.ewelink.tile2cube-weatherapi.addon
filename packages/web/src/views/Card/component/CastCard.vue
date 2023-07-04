@@ -3,7 +3,7 @@
         <!--  :style="{ width: formState.cardWidth + 'px' }" -->
         <header>
             <div class="area-icon">
-                <img src="@/assets/img/area.png" alt="" />
+                <img src="@/assets/img/phone-area.png" alt="" />
                 <span>{{ formState.cityName }}</span>
             </div>
         </header>
@@ -21,8 +21,8 @@
         <div class="update-time">
             <span>{{ $t('UPDATE') + ':' + formState.updateTime }}</span>
             <div class="api">
-                <img alt="" src="@/assets/img/area.png" />
-                <span>weather<br />api</span>
+                <img alt="" src="@/assets/img/api.png" />
+                <!-- <span>weather<br />api</span> -->
             </div>
         </div>
     </div>
@@ -86,20 +86,21 @@ const formState = reactive<ISmallCardData>({
 
 <style scoped lang="scss">
 .cast-card {
-    margin: 0 auto;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     padding: .8rem;//.6875rem;
-    // padding:10px 14px 11px 10px;
-    border-radius: 0.375rem;
+    padding:.625rem .875rem 1rem .625rem;
     width: 100%;
-    min-height: 100%;
+    height: 100vh;
+    min-height: 100vh;
     header {
         display: flex;
         align-items: center;
         text-align: left;
         .area-icon {
             img {
-                width: 0.875rem;
+                width: 0.7rem;
                 height: 0.875rem;
                 margin-right: 0.375rem;
             }
@@ -109,32 +110,34 @@ const formState = reactive<ISmallCardData>({
         }
     }
     section {
-        margin-top: 0.5rem;
+        // margin-top: 0.5rem;
         .temperature {
             display: flex;
             justify-content: space-between;
             align-items: center;
             img {
-                width: 3.25rem;
-                height: 3.25rem;
+                width: 3.5rem;//3.25rem;
+                height: 3.5rem;//3.25rem;
             }
             span {
                 color: #333333;
-                font-size: 1.75rem;
+                font-size: 2.5rem;//1.75rem;
+                font-weight: 600;
             }
         }
         .weather {
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            margin-top: 0.625rem;
+            margin-top: .1rem;//0.625rem;
             .word {
                 display: inline-block;
                 white-space: nowrap;
                 width: 3.25rem;
                 text-align: center;
                 color: #333333;
-                font-size: 1rem;
+                font-weight: 600;
+                font-size: 1.2rem;
             }
         }
     }
@@ -142,7 +145,7 @@ const formState = reactive<ISmallCardData>({
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-top: 0.9375rem;
+        // margin-top: 0.9375rem;
         font-size: 0.875rem;
         color: #333333;
         white-space: nowrap;
@@ -151,15 +154,10 @@ const formState = reactive<ISmallCardData>({
             justify-content: space-between;
             align-items: center;
             img {
-                width: 0.75rem;
+                // width: 0.75rem;
+                width: 2.3rem;
                 height: 0.9375rem;
-                margin-right: 0.3125rem;
-            }
-            span {
-                font-size: 0.75rem;
-                color: #333333;
-                text-align: right;
-                line-height: 0.6875rem;
+                // margin-right: 0.3125rem;
             }
         }
     }

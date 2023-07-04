@@ -21,7 +21,7 @@
         <div class="update-time">
             <span>{{ $t('UPDATE') + ':' + formState.updateTime }}</span>
             <div class="api">
-                <img alt="" src="@/assets/img/area.png" />
+                <img alt="" src="@/assets/img/weather-api.png" />
                 <span>weather<br />api</span>
             </div>
         </div>

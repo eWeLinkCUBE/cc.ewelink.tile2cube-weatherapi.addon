@@ -1,5 +1,5 @@
 // 基准大小
-let baseSize = 68;
+let baseSize = 68;//58;
 
 // 设置 rem 函数
 export function setRem() {
