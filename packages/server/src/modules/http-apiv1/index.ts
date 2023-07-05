@@ -303,10 +303,10 @@ apiv1.post('/config', async (req, res) => {
                     }
                 },
                 cast_settings: {
-                    default: '1×1',
+                    default: '2×2',
                     dimensions: [
                         {
-                            size: '1×1',
+                            size: '2×2',
                             src: `http://${HOST}/#/card`
                         }
                     ]
