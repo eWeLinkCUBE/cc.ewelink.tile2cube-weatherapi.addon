@@ -99,6 +99,8 @@ const formState = reactive<ISmallCardData>({
         align-items: center;
         text-align: left;
         .area-icon {
+            display: flex;
+            align-items: center;
             img {
                 width: 0.7rem;
                 height: 0.875rem;
@@ -145,7 +147,7 @@ const formState = reactive<ISmallCardData>({
         display: flex;
         align-items: center;
         justify-content: space-between;
-        // margin-top: 0.9375rem;
+        margin-top: 0.3rem;
         font-size: 0.875rem;
         color: #333333;
         white-space: nowrap;
