@@ -2,10 +2,16 @@
     <div class="setting">
         <section>
             <h2 class="foreCast-setting">{{ $t('FORECAST_SETTING') }}</h2>
-            <h3 class="forecast-describe">
-                {{ $t('FORECAST_WEATHER_API') }}
-                <a href="https://www.weatherapi.com/" target="_blank">https://www.weatherapi.com/</a>
-                {{ $t('FORECAST_API_KEY') }}
+            <h3 class="forecast-describe" :style="{'width':language?'500px':'600px'}">
+                <span>
+                    {{ $t('FORECAST_WEATHER_API') }}
+                    <a href="https://www.weatherapi.com/" target="_blank">https://www.weatherapi.com/</a><br/>
+                </span>
+                <span>{{ $t('FORECAST_API_KEY') }}<br/></span>
+                <span class="notice">
+                    <img alt="" src="@/assets/img/warn.png"/>
+                    {{ $t('FORECAST_NOTICE')}}
+                </span>
             </h3>
             <div class="form">
                 <a-form :model="formState" v-bind="layout" name="nest-messages">
@@ -73,9 +79,12 @@ import { useWeatherStore } from '@/store/weather';
 import { message } from 'ant-design-vue';
 import { temperatureData } from '@/utils/tools';
 import { LoadingOutlined } from '@ant-design/icons-vue';
+import { useEtcStore } from '@/store/etc';
 import type { ICityData, IFormState, IRequestForeCastInfo, IRequestConfigInfo, ISubmitData } from '@/api/ts/interface/IWeatherInfo';
 const weatherStore = useWeatherStore();
 const router = useRouter();
+const etcStore = useEtcStore();
+const language = computed(() => etcStore.language === 'zh-cn');
 
 onMounted(async () => {
     const res = await api.GetTokenInfo();
@@ -195,21 +204,34 @@ const toggleDebounce = _.debounce(getCityList, 800, {
     padding: 18px;
     margin: 0 auto;
     .title {
-        font-size: 16px;
+        font-size: 20px;
         font-weight: 600;
     }
     .foreCast-setting {
         text-align: center;
     }
     .forecast-describe {
-        max-width: 500px;
+        // width: 600px;
         line-height: 26px;
         margin: 0 auto;
-        text-align: center;
+        text-align: left;
         margin-top: 20px;
         margin-bottom: 20px;
         // word-break: break-all;
         word-break: normal;
+        font-size: 14px;
+        white-space: nowrap;
+        .notice{
+            display: flex;
+            align-items: center;
+            img{
+                width: 14px;
+                height: 14px;
+                margin-right: 5px;
+            }
+            color:#A1A1A1 ;
+            font-size: 12px;
+        }
     }
     .form {
         width: 600px;
