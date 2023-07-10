@@ -3,6 +3,7 @@ import api from '@/api/Weather/index';
 import _ from 'lodash';
 import router from '@/router';
 import moment from 'moment';
+import { emitter } from '@/main';
 import type { ITokenInfo ,IFormState ,IForeCastResultInfo} from '@/api/ts/interface/IWeatherInfo';
 
 interface IWeatherState {
@@ -43,8 +44,12 @@ export const useWeatherStore = defineStore('weather', {
         /** get token info */
         async getTokenInfo(){
             const res = await api.GetTokenInfo();
-            if(res.error === 0 && res.data){
+            if(res.data && res.error ===0){
                 this.tokenInfo = res.data;
+                const seconds = moment(moment()).diff(moment(res.data.requestTokenTime), 'seconds');
+                if(seconds>=0 && seconds<=300 && !res.data.cubeTokenValid){
+                    emitter.emit('cutdown', seconds);
+                }
             }else{
                 this.tokenInfo.cubeTokenValid = false;
             }
@@ -56,7 +61,7 @@ export const useWeatherStore = defineStore('weather', {
             const res = await api.getForeCastInfo({days:5});
             if(res.error === 0 && res.data){
                 this.foreCastInfo = res.data;
-                console.log('foreCastInfo--------------->', res.data);
+                // console.log('foreCastInfo--------------->', res.data);
             }
             return res;
         },

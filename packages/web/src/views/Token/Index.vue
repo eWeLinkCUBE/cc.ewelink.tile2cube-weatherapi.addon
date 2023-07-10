@@ -43,11 +43,11 @@ import moment from 'moment';
 import { emitter } from '@/main';
 import { useWeatherStore } from '@/store/weather';
 //Chinese carousel
-import GetToken_zh from '@/assets/img/get_token_zh.png';
-import GetToken_en from '@/assets/img/get_token_en.png';
+import tokenZhImg from '@/assets/img/get_token_zh.png';
+import tokenEnImg from '@/assets/img/get_token_en.png';
 //english carousel
-import Confirm_zh from '@/assets/img/confirm_zh.png';
-import Confirm_en from '@/assets/img/confirm_en.png';
+import confirmZhImg from '@/assets/img/confirm_zh.png';
+import confirmEnImg from '@/assets/img/confirm_en.png';
 const router = useRouter();
 const etcStore = useEtcStore();
 const weatherStore = useWeatherStore();
@@ -59,31 +59,20 @@ const timer = ref<any>(null);
 /** current locale */
 const language = computed(() => etcStore.language === 'zh-cn');
 /** English carousel list */
-const en_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_en }, { imgSrc: Confirm_en }];
+const en_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: tokenEnImg }, { imgSrc: confirmEnImg }];
 /** Chinese carousel list */
-const zh_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_zh}, { imgSrc:  Confirm_zh }];
+const zh_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: tokenZhImg}, { imgSrc:  confirmZhImg }];
 
 onMounted(() => {
     sseStore.startSse();
-    getTokenInfo();
+    weatherStore.getTokenInfo();
 });
-
-const getTokenInfo = async () =>{
-    const res = await weatherStore.getTokenInfo();
-    if(res.data && res.error ===0){
-        clearInterval(timer.value);
-        const seconds = moment(moment()).diff(moment(res.data.requestTokenTime), 'seconds');
-        if(seconds>=0 && seconds<=300 && !res.data.cubeTokenValid){
-            setCutDownTimer(seconds);
-        }
-    }
-}
 
 const tokenInfo = computed(() => weatherStore.tokenInfo);
 
 watch(()=>weatherStore.countdownStatus,(newValue, oldValue) => {
     if(!newValue){
-        console.log('!newValue--------->',!newValue,timer.value);
+        // console.log('!newValue--------->',!newValue,timer.value);
         clearInterval(timer.value);
     }
 });
@@ -99,7 +88,7 @@ const setCutDownTimer = (seconds: number) => {
         } else {
             window.clearInterval(timer.value);
             countdownTime.value = 0;
-            getTokenInfo();
+            weatherStore.getTokenInfo();
         }
     }, 1000);
 };
@@ -114,7 +103,6 @@ const nextStep = () => {
 /** Send a request to get token */
 const getToken = () => {
     if (tokenInfo.value.cubeTokenValid || weatherStore.countdownStatus) return;
-    clearInterval(timer.value);
     setCutDownTimer(0);
     api.sendRequestGetToken();
 };
@@ -125,6 +113,10 @@ const formatCount = (count: number) => {
     const sec = count % 60;
     return `${min}min${sec}s`;
 };
+
+emitter.on('cutdown', (time: number) => {
+    setCutDownTimer(time);
+});
 </script>
 
 <style scoped lang="scss">
