@@ -7,7 +7,6 @@
         <div class="card">
             <div class="item" v-for="(item, index) in HourData" :key="index">
                 <p>{{ index === 0 ? $t('NOW') : item.time.split(' ')[1] }}</p>
-                <!-- formatTimeUtils(item.time_epoch, 'HH:mm') -->
                 <img :src="imgMapping(item)" alt="" />
                 <p>{{ (tempUnit ? item.temp_c : item.temp_f) + '°' }}</p>
             </div>
@@ -31,24 +30,24 @@ const props = defineProps<{
     tempUnit: boolean;
 }>();
 
-/** 天气小时数据 */
+/** weather hour data */
 const HourData = ref<IHourData[]>([]);
 
-/** 仅取自己所需要的小时数据 */
+/** hour data list */
 interface IHourData {
     condition: {
-        /** 天气对应图码 */
+        /** weather icon */
         code: number;
-        /** 当前天气 */
+        /** current weather */
         text: string;
     };
-    /** 当前小时摄氏度 */
+    /** Celsius */
     temp_c: string;
-    /** 当前小时华氏度 */
+    /** Fahrenheit */
     temp_f: string;
-    /** 小时时间戳 */
+    /** hour timestamp */
     time_epoch: number;
-    /** 当地时间 */
+    /** local time */
     time: string;
 }
 
@@ -62,21 +61,21 @@ watch(
     }
 );
 
-/** 组装小时数据 */
+/** Assemble hour data */
 const assembleData = () => {
     const foreCastDay = _.get(props.foreCastInfo, ['forecastData', 'forecast', 'forecastday'], []);
     if (foreCastDay.length > 1) {
-        //考虑到当天例如23：00之后四小时时间,目前总共获取两天共48小时的数据;
+        //Considering the day, for example, four hours after 23:00, a total of two days and 48 hours of data are currently obtained;
         const twoDaysHourData: IHourData[] = _.concat(foreCastDay[0].hour, foreCastDay[1].hour);
         if (twoDaysHourData.length > 0) {
-            let index = -1; //当前小时
+            let index = -1;
             for (let i = 0; i <= twoDaysHourData.length - 1; i++) {
                 if (twoDaysHourData[i].time_epoch <= moment().unix() && twoDaysHourData[i + 1].time_epoch >= moment().unix()) {
                     index = i;
                     break;
                 }
             }
-            //获取五小时的天气数据
+            //Get five hours of weather data
             if (index !== -1) {
                 HourData.value = _.slice(twoDaysHourData, index, index + 5);
                 console.log('index------------>', index, HourData.value);

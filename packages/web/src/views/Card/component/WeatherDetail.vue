@@ -42,39 +42,38 @@ const props = defineProps<{
     tempUnit:boolean
 }>();
 
-/** 仅取自己所需要的详情数据 */
 interface IWeatherDetail {
-    /** 摄氏体感温度 */
+    /** Sensitive temperature in Celsius */
     feelslike_c: number;
-    /** 华氏体感温度 */
+    /** Sensitive temperature in Fahrenheit */
     feelslike_f: number;
-    /** 日出 */
+    /** sunrise */
     sunrise: string;
-    /** 日落 */
+    /** sunset */
     sunset: string;
-    /** 气压 */
+    /** barometric pressure */
     pressure_mb: number;
-    /** 风速 */
-    wind_kph: number; //目前单位千米每小时
-    /** 降雨量 */
-    precip_mm: number; //单位mm毫米
-    /** 风向 */
+    /** wind speed */
+    wind_kph: number; //km/h
+    /** rainfall */
+    precip_mm: number; //mm
+    /** wind direction */
     wind_dir: string; //W N E
-    /** 空气质量 */
-    air_quality: number; //所有空气数据
-    /** 紫外线 */
+    /** air quality */
+    air_quality: number;
+    /** ultraviolet light */
     uv: number;
-    /** 能见度 */
+    /** visibility */
     avgvis_km: number;
 }
 
-/** 展示的每行数据 */
+/** line data */
 interface IItemData {
-    /** 图标 */
+    /** weather icon */
     imgSrc: string;
-    /** 天气对应数值 */
+    /** weather temperature */
     value: string | number;
-    /** 天气 */
+    /** weather describe */
     describe: string;
 }
 
@@ -87,7 +86,7 @@ watch(()=>[props.foreCastInfo,props.tempUnit,props.isDay],()=>{
 
 const itemData = ref<IItemData[]>([]);
 
-/** 初始化赋值 */
+/** init */
 const initialAssignment = () => {
     let formState: IWeatherDetail = {
         feelslike_c: _.get(props.foreCastInfo, ['forecastData', 'current', 'feelslike_c'], 0),

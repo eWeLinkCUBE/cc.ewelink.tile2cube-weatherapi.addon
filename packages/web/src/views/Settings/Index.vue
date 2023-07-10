@@ -57,15 +57,6 @@
         <footer class="footer">
             <a-button :loading="btnLoading" :disabled="disabled" :class="{ 'disabled-btn': disabled }" type="primary" @click="submitHandler">{{ $t('FINISH') }}</a-button>
         </footer>
-
-        <!--<div class="test" style="width:180px;height: 180px;">
-                <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCard&language=en-us" class="scroll-bar" style="width: 100%; height: 100%" />
-            </div>
-            <div class="test" style="width:170px;height: 170px;">
-                <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCard&language=en-us" class="scroll-bar" style="width: 360px; height: 180px" />
-            </div> -->
-        <!-- ?ihost_env=iHostWebCustomCardDrawer&language=en-us -->
-        <!-- <iframe src="http://127.0.0.1:5173/#/card?ihost_env=iHostWebCustomCardDrawer&language=en-us" class="scroll-bar" style="max-width: 457px; height: 868px;" /> -->
     </div>
 </template>
 
@@ -95,7 +86,7 @@ onMounted(async () => {
     }
 });
 
-/** 表单数据 */
+/** form data */
 let formState = reactive<IFormState>({
     weather: {
         weatherApiKey: '',
@@ -104,7 +95,7 @@ let formState = reactive<IFormState>({
     },
 });
 
-/** 获取已经保存的数据 */
+/** get saved data */
 const getSaveDate = async () => {
     const res = await api.GetSaveData();
     if (res.error === 0 && res.data) {
@@ -113,14 +104,13 @@ const getSaveDate = async () => {
             formState.weather.weatherApiKey = res.data.weatherApiKey;
             formState.weather.cityData = res.data.cityData.id;
             formState.weather.tempUnit = res.data.tempUnit;
-            /** 将后端保存的数据存到本地 */
+            /** Save the data saved in the backend locally */
             weatherStore.setWeatherInfo(_.cloneDeep(formState));
             judgeDisabled();
         }
     }
 };
 
-/** form表单的长度 */
 const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
@@ -128,7 +118,7 @@ const layout = {
 
 const btnLoading = ref(false);
 
-/** 设置配置信息  */
+/** Set configuration information  */
 const submitHandler = async () => {
     let params: IRequestConfigInfo = {
         cityData: {},
@@ -154,16 +144,16 @@ const submitHandler = async () => {
     }
 };
 
-/** 禁止填写按钮 */
+/** Do not fill button */
 const disabled = ref(true);
 
-/** 控制提交按钮是否可以点击 */
+/** Controls whether the submit button can be clicked */
 const judgeDisabled = () => {
     if (!formState.weather.weatherApiKey || !formState.weather.cityData || !formState.weather.tempUnit) {
         disabled.value = true;
         return;
     }
-    //与旧数据有异
+    //different from the old data
     const weatherInfo = JSON.stringify(formState.weather);
     if (JSON.stringify(weatherStore.weatherInfo.weather) !== weatherInfo) {
         disabled.value = false;
@@ -172,10 +162,10 @@ const judgeDisabled = () => {
     disabled.value = true;
 };
 
-//城市数据
+//city data
 const cityData = ref<ICityData[]>([]);
 
-/** 获取城市数据 */
+/** get city data */
 const getCityList = async (value: string) => {
     if (!value || !formState.weather.weatherApiKey) return;
     const res = await api.GetCityList(formState.weather.weatherApiKey.trim(), value);
@@ -189,7 +179,7 @@ const getCityList = async (value: string) => {
     }
 };
 
-/** 搜索城市防抖 */
+/** Search City Stabilization */
 const toggleDebounce = _.debounce(getCityList, 800, {
     leading: true,
     trailing: true,

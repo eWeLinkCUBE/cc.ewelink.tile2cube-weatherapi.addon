@@ -1,5 +1,4 @@
 <template>
-    <!--  :style="{ width: formState.cardWidth + 'px' }" -->
     <div class="small-card">
         <header>
             <div class="area-icon">
@@ -42,19 +41,19 @@ const props = defineProps<{
 }>();
 
 interface ISmallCardData {
-    /** 城市名称 */
+    /** city name */
     cityName: string;
-    /** 温度 */
+    /** temperature */
     temperature: number;
-    /** 天气描述 */
+    /** weather describe */
     describe: string;
-    /** 更新时间 */
+    /** weather update time */
     updateTime?: number | string;
-    /** 图标 */
+    /** weather icon */
     imgSrc: string;
 }
 
-/** 1*1卡片所需的数据 */
+/** Data required for 1*1 card */
 const formState = reactive<ISmallCardData>({
     cityName: '',
     temperature: 0,
@@ -75,17 +74,17 @@ watch(
 );
 
 const init = () => {
-    //城市名称
+    //city name
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
-    //根据缓存取对应单位的温度
+    //Take the temperature in the corresponding unit according to the interface
     const tempUnit = props.tempUnit ? 'temp_c' : 'temp_f';
     formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
-    //天气更新时间
+    //weather update time
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated'], 0);
     formState.updateTime =time.split(' ')[1]; // formatTimeUtils((new Date(time).getTime()), 'HH:mm');
-    //当前天气
+    //current weather code
     const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
-    //根据code获取对应中英文、白天黑夜图标
+    //Get the corresponding Chinese and English, day and night icons according to the code
     const item = FORECAST_SETTING_MAPPING[code];
     formState.describe = translateByCode(code,props.isDay);
     formState.imgSrc = props.isDay ? item.dayIcon : item.nightIcon;

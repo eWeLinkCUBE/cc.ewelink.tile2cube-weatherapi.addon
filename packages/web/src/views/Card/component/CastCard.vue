@@ -1,6 +1,5 @@
 <template>
     <div class="cast-card">
-        <!--  :style="{ width: formState.cardWidth + 'px' }" -->
         <header>
             <div class="area-icon">
                 <img src="@/assets/img/phone-area.png" alt="" />
@@ -22,7 +21,6 @@
             <span>{{ $t('UPDATE') + ':' + formState.updateTime }}</span>
             <div class="api">
                 <img alt="" src="@/assets/img/api.png" />
-                <!-- <span>weather<br />api</span> -->
             </div>
         </div>
     </div>
@@ -32,10 +30,9 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
-import type { IForeCastResultInfo, ICardStyle } from '@/api/ts/interface/IWeatherInfo';
+import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 import { useWeatherStore } from '@/store/weather';
 import { formatTimeUtils } from '@/utils/tools';
-const weatherStore = useWeatherStore();
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
@@ -52,30 +49,30 @@ watch(()=>[props.foreCastInfo,props.tempUnit,props.isDay],()=>{
 });
 
 const init = () => {
-    //城市名称
+    //city name
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
-    //根据缓存取对应单位的温度
+    //get correct temperature by cache;
     const tempUnit = props.tempUnit ? 'temp_c' : 'temp_f';
     formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
-    //天气更新时间
+    //weather update time
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated'], 0);
     formState.updateTime = time.split(' ')[1]; //formatTimeUtils((new Date(time).getTime()), 'HH:mm');
-    //当前天气
+    //weather describe
     formState.describe = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'text'], '');
 };
 
 interface ISmallCardData {
-    /** 城市名称 */
+    /** city name */
     cityName: string;
-    /** 温度 */
+    /** temperature */
     temperature: number;
-    /** 天气描述 */
+    /** weather describe */
     describe: string;
-    /** 更新时间 */
+    /** weather update time */
     updateTime?: number | string;
 }
 
-/** cast卡片所需的数据 */
+/** cast card data */
 const formState = reactive<ISmallCardData>({
     cityName: '',
     temperature: 0,
@@ -156,10 +153,8 @@ const formState = reactive<ISmallCardData>({
             justify-content: space-between;
             align-items: center;
             img {
-                // width: 0.75rem;
                 width: 2.3rem;
                 height: 0.9375rem;
-                // margin-right: 0.3125rem;
             }
         }
     }

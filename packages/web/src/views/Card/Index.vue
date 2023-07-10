@@ -1,9 +1,7 @@
 <template>
-    <!-- <a-spin style="min-height: 100vh;min-width:100vw;background-color: rgba(34,34,34,0.6); color: #ffff" :spinning="loading" :indicator="indicator" :tip="'loading'" size="large"> -->
     <div style="min-height: 100vh;">
         <component :is="cardType" :foreCastInfo="weatherStore.foreCastInfo" :isDay="isDay" :tempUnit="tempUnit" />
     </div>
-    <!-- </a-spin> -->
 </template>
 
 <script setup lang="ts">
@@ -25,26 +23,24 @@ const indicator = h(LoadingOutlined, {
     },
     spin: true,
 });
-/** 当前的卡片类型 */
+/** current card type */
 const cardType = shallowRef<any>();
-/** 请求接口loading */
-const loading = ref(false);
-/** 白天或黑夜 */
+/** day or night */
 const isDay = ref(false);
 
-/** 对应的映射卡片 */
+/** Corresponding mapping card */
 const relationMap: { [key: string]: any } = {
-    /** iHost中控台web环境 - 自定义卡片，默认1*1*/
+    /** iHost console web environment - custom card, default 1*1 */
     iHostWebCustomCard: SmallCard,
-    /** iHost中控台web环境 2*1卡片 */
+    /** iHost console web environment 2*1 card */
     iHostWebCustomLargeCard: LargeCard,
-    /** iHost中控台web环境 - 自定义卡片抽屉 */
+    /** iHost console web environment - custom card drawer */
     iHostWebCustomCardDrawer: DetailCard,
-    /** iHost Cast环境 - 自定义Thing卡片 */
+    /** iHost Cast Environment - Custom Thing Cards */
     iHostCastThingCard: CastCard,
 };
 
-/** 定时器id */
+/** timer id */
 const timer = ref<any>();
 
 onMounted(async () => {
@@ -57,18 +53,17 @@ onBeforeUnmount(() => {
     clearInterval(timer.value);
 });
 
-/** 天气预报轮询 */
+/** weather poll */
 const setInterValHandler = () => {
     clearInterval(timer.value);
-    //获取当前时间
+    //get current time
     const nowtime = new Date().getTime();
-    //获取下一个小时
+    //get next hour time
     const h = new Date().getHours() + 1;
-    // 获取下一个小时的时间戳
+    // Get the next hour's timestamp
     const end = new Date(new Date(new Date().toLocaleDateString()).getTime() + h * 60 * 60 * 1000 - 1).getTime();
     const timing = end - nowtime + 300000;
-    console.log('timing--------------->', timing);
-    //整点获取数据
+    //Get data all the time
     setTimeout(() => {
         timer.value = setInterval(() => {
             weatherStore.getForeCastInfo();
@@ -76,11 +71,10 @@ const setInterValHandler = () => {
     }, timing);
 };
 
-/** 判断当前卡片类型 */
+/** Determine the current card type */
 const judgeCardType = async () => {
     const params = getQuery(window.location.href);
     if (params.ihost_env) {
-        loading.value = true;
         const res = await weatherStore.getForeCastInfo();
         if (res.error === 0 && res.data) {
             isDay.value = _.get(res.data, ['forecastData', 'current', 'is_day'], 1) === 1; //isDay 1:白天 0:黑夜
@@ -89,15 +83,14 @@ const judgeCardType = async () => {
             if (window.innerWidth !== window.innerHeight && params.ihost_env === 'iHostWebCustomCard') {
                 cardType.value = relationMap['iHostWebCustomLargeCard'];
             }
-            loading.value = false;
         }
     }
 };
 
-/** true:摄氏度,false:华氏度 */
+/** true:Celsius,false:Fahrenheit */
 const tempUnit = ref<boolean>(true);
 
-/** 从配置获取单位 */
+/** Get units from config */
 const getTempUnit = async () => {
     const res = await api.GetSaveData();
     if (res.data && res.error === 0) {
@@ -113,7 +106,7 @@ watch(
     }
 );
 
-/** 屏幕尺寸变化重新判断 */
+/** Screen size change re-judgment */
 window.addEventListener('resize', () => {
     const params = getQuery(window.location.href);
     if (params.ihost_env && params.ihost_env === 'iHostWebCustomCard') {
@@ -121,7 +114,7 @@ window.addEventListener('resize', () => {
     }
 });
 
-/** resize防抖 */
+/** resize */
 const resizeDebounce = _.debounce(judgeCardType, 1000, {
     leading: true,
     trailing: true,

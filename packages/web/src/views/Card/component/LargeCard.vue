@@ -1,5 +1,5 @@
 <template>
-    <!-- 2*1卡片和详情内卡片复用  :style="{ width: formState.cardWidth + 'px' }"-->
+    <!-- 2*1 card and card multiplexing in details -->
     <div class="Large-card" :class="isDetailCard ? 'isDetail-card' : ''">
         <header v-if="!isDetailCard">
             <div class="area-icon">
@@ -49,19 +49,19 @@ const props = defineProps<{
     tempUnit: boolean;
 }>();
 
-/** 2*1 卡片所需的数据 */
+/** 2*1 data required by the card */
 interface ILargeCardData {
-    /** 城市名称 */
+    /** city name */
     cityName: string;
-    /** 天气 */
+    /** weather describe */
     describe: string;
-    /** 温度 */
+    /** temperature */
     temperature: number;
-    /** 更新时间 */
+    /** weather update time */
     updateTime?: number | string;
-    /** 未来四天的天气数据 */
+    /** Weather data for the next four days */
     forecastday: IForeCastDay[];
-    /** 当前天气的图片 */
+    /** Pictures of the current weather */
     imgSrc: string;
 }
 
@@ -78,7 +78,6 @@ interface IForeCastDay {
     hour: any[];
 }
 
-/** 当前天气数据，仅仅写了自己需要,数据太多有需要自取 */
 interface IDays {
     //最大摄氏度
     maxtemp_c: '';
@@ -116,27 +115,27 @@ watch(
     }
 );
 
-/**判断当前是否是2*1卡片还是详情内 */
+/** Determine whether the current card is 2*1 or in the details */
 const isDetailCard = ref(false);
 
-/** 获取页面参数 */
+/** get page params */
 const getPageData = () => {
-    //城市名
+    //city name
     formState.cityName = _.get(props.foreCastInfo, ['forecastData', 'location', 'name'], '');
-    // //根据缓存取对应单位的温度
+    //Get the temperature of the corresponding unit according to the interface
     const tempUnit = props.tempUnit ? 'temp_c' : 'temp_f';
     formState.temperature = _.get(props.foreCastInfo, ['forecastData', 'current', tempUnit], '');
-    // //更新时间
+    // weather update time
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated'], 0);
     formState.updateTime = time.split(' ')[1]; //formatTimeUtils((new Date(time).getTime()), 'HH:mm');
-    //当前天气
+    //current weather code
     const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
     // const item = FORECAST_SETTING_MAPPING[code];
     formState.describe =translateByCode(code,props.isDay);
     formState.imgSrc = props.isDay ? FORECAST_SETTING_MAPPING[code].dayIcon : FORECAST_SETTING_MAPPING[code].nightIcon;
-    //未来天气预报
+    //foreCast
     formState.forecastday = _.get(props.foreCastInfo, ['forecastData', 'forecast', 'forecastday'], []);
-    //不足五天用缺省图补全五天;
+    //If it is less than five days, use the default map to complete five days;
     try {
         if (formState.forecastday && formState.forecastday.length === 3) {
             for (let i = 0; i < 2; i++) {
@@ -153,13 +152,13 @@ const getPageData = () => {
         console.log(error);
     }
 
-    //去除当日天气
+    //Remove the weather of the day
     formState.forecastday = formState.forecastday.filter((i, d) => d !== 0);
 
     judgeCardType();
 };
 
-/** 判断是2*1卡片还是详情抽屉卡片 */
+/** Determine whether it is a 2*1 card or a details drawer card */
 const judgeCardType = () => {
     const params = getQuery(window.location.href);
     if (params.ihost_env === 'iHostWebCustomCardDrawer') {
@@ -169,14 +168,14 @@ const judgeCardType = () => {
     }
 };
 
-/** 获取对应单位的最低和最高温度 */
+/** Get the minimum and maximum temperature of the corresponding unit */
 const getMiniMaxTempByList = (days: IDays) => {
     if (isEmptyObject(days)) return '';
-    //不足五天补全时的展示
+    // Display when completion is less than five days old
     if (!days.mintemp_c && !days.mintemp_f) {
         return '--';
     }
-    //判断温度单位
+    // Judgment temperature unit
     if (props.tempUnit) {
         return days.mintemp_c + '-' + days.maxtemp_c + '°';
     } else {
@@ -184,7 +183,7 @@ const getMiniMaxTempByList = (days: IDays) => {
     }
 };
 
-/** 映射图片 */
+/** map picture */
 const imgMapping = (days: IDays) => {
     const item = FORECAST_SETTING_MAPPING[days.condition.code];
     if (item) return props.isDay ? item.dayIcon : item.nightIcon;
