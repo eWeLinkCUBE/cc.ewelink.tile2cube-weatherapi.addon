@@ -40,30 +40,35 @@ import i18n from '@/i18n/index';
 import _ from 'lodash';
 import api from '@/api/Weather/index';
 import moment from 'moment';
+import { emitter } from '@/main';
 import { useWeatherStore } from '@/store/weather';
-//中文轮播图
+//Chinese carousel
 import GetToken_zh from '@/assets/img/get_token_zh.png';
 import GetToken_en from '@/assets/img/get_token_en.png';
-//英文轮播图
+//english carousel
 import Confirm_zh from '@/assets/img/confirm_zh.png';
 import Confirm_en from '@/assets/img/confirm_en.png';
 const router = useRouter();
 const etcStore = useEtcStore();
 const weatherStore = useWeatherStore();
 const sseStore = useSseStore();
-/** 倒计时时间 */
+/** countdown time */
 const countdownTime = ref<number>(300);
-/** 倒计时定时器 */
+/** countdown timer */
 const timer = ref<any>(null);
-/** 当前语言环境 */
+/** current locale */
 const language = computed(() => etcStore.language === 'zh-cn');
-/** 英文轮播图列表 */
+/** English carousel list */
 const en_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_en }, { imgSrc: Confirm_en }];
-// /** 中文轮播图列表 */
+/** Chinese carousel list */
 const zh_autoplayImageList: { imgSrc: string }[] = [{ imgSrc: GetToken_zh}, { imgSrc:  Confirm_zh }];
 
-onMounted(async () => {
+onMounted(() => {
     sseStore.startSse();
+    getTokenInfo();
+});
+
+const getTokenInfo = async () =>{
     const res = await weatherStore.getTokenInfo();
     if(res.data && res.error ===0){
         clearInterval(timer.value);
@@ -72,7 +77,7 @@ onMounted(async () => {
             setCutDownTimer(seconds);
         }
     }
-});
+}
 
 const tokenInfo = computed(() => weatherStore.tokenInfo);
 
@@ -83,7 +88,7 @@ watch(()=>weatherStore.countdownStatus,(newValue, oldValue) => {
     }
 });
 
-/** 开始倒计时 */
+/** start cutdown */
 const setCutDownTimer = (seconds: number) => {
     countdownTime.value = 300 - seconds;
     if (timer.value) window.clearInterval(timer.value);
@@ -94,26 +99,27 @@ const setCutDownTimer = (seconds: number) => {
         } else {
             window.clearInterval(timer.value);
             countdownTime.value = 0;
+            getTokenInfo();
         }
-        console.log('---------------->', countdownTime.value);
     }, 1000);
 };
 
-/** 下一步 */
+/** next button */
 const nextStep = () => {
     if (!tokenInfo.value.cubeTokenValid)return;
     clearInterval(timer.value);
     router.push('/setting');
 };
 
-/** 发请求获取token */
+/** Send a request to get token */
 const getToken = () => {
     if (tokenInfo.value.cubeTokenValid || weatherStore.countdownStatus) return;
+    clearInterval(timer.value);
     setCutDownTimer(0);
     api.sendRequestGetToken();
 };
 
-/** 格式化时间 */
+/** format time */
 const formatCount = (count: number) => {
     const min = Math.floor(count / 60);
     const sec = count % 60;

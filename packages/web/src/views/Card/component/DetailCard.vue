@@ -1,15 +1,13 @@
 <template>
     <div class="detail" :class="{'isNight':!isDay}">
-        <!-- 头部时间 -->
+        <!-- header time -->
         <Header :foreCastInfo="foreCastInfo" />
-        <!-- 未来几天天气 -->
+        <!-- forCast weather -->
         <LargeCard :foreCastInfo="foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
-        <!-- 当天小时天气数据 -->
+        <!-- hour weather data -->
         <HourForeCastCard :foreCastInfo="foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
-        <!-- 天气参数 -->
+        <!-- weather params -->
         <WeatherDetail :foreCastInfo="foreCastInfo" :isDay="isDay" :tempUnit="tempUnit"/>
-        <!-- 测试天气图标 -->
-        <!-- <TestWeatherIcon :foreCastInfo="foreCastInfo"/> -->
     </div>
 </template>
 
@@ -18,7 +16,6 @@ import LargeCard from '@/views/Card/component/LargeCard.vue';
 import HourForeCastCard from '@/views/Card/component/HourForeCastCard.vue';
 import WeatherDetail from '@/views/Card/component/WeatherDetail.vue';
 import Header from '@/views/Card/component/header.vue';
-import TestWeatherIcon from '@/views/Card/component/TestWeatherIcon.vue';
 import i18n from '@/i18n/index';
 import _ from 'lodash';
 import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
@@ -50,19 +47,15 @@ const props = defineProps<{
     background-size: 100% 100%;
 }
 .detail::-webkit-scrollbar {
-    /*滚动条整体样式*/
     width: 8px;
-    /*高宽分别对应横竖滚动条的尺寸*/
     height: 8px;
 }
 .detail::-webkit-scrollbar-thumb {
-    /*滚动条里面小方块*/
     border-radius: 5px;
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
     background: rgba(0, 0, 0, 0.1);
 }
 .detail::-webkit-scrollbar-track {
-    /*滚动条里面轨道*/
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
     border-radius: 0;
     background: rgba(0, 0, 0, 0.1);

@@ -6,11 +6,11 @@ import moment from 'moment';
 import type { ITokenInfo ,IFormState ,IForeCastResultInfo} from '@/api/ts/interface/IWeatherInfo';
 
 interface IWeatherState {
-    /** token信息 */
+    /** token info */
     tokenInfo: ITokenInfo;
-    /** 保存的配置信息 */
+    /** saved token info */
     weatherInfo: IFormState;
-    /** 天气预报数据 */
+    /** wether foreCast info */
     foreCastInfo:IForeCastResultInfo;
 }
 
@@ -40,7 +40,7 @@ export const useWeatherStore = defineStore('weather', {
         };
     },
     actions: {
-        /** 获取token信息 */
+        /** get token info */
         async getTokenInfo(){
             const res = await api.GetTokenInfo();
             if(res.error === 0 && res.data){
@@ -51,7 +51,7 @@ export const useWeatherStore = defineStore('weather', {
             return res;
         },
 
-        /** 获取天气预报数据 */
+        /** get weather data */
         async getForeCastInfo(){
             const res = await api.getForeCastInfo({days:5});
             if(res.error === 0 && res.data){
@@ -61,12 +61,12 @@ export const useWeatherStore = defineStore('weather', {
             return res;
         },
 
-        /** 设置配置信息 */
+        /** set weather info */
         setWeatherInfo(weatherInfo: IFormState) {
             this.weatherInfo = weatherInfo;
         },
 
-        /** 设置token信息 */
+        /** set token info */
         setTokenInfo(info:ITokenInfo){
             this.tokenInfo = info;
         },
@@ -74,7 +74,6 @@ export const useWeatherStore = defineStore('weather', {
     getters: {
         countdownStatus(state){
             const seconds = moment(moment()).diff(moment(state.tokenInfo.requestTokenTime), 'seconds');
-            console.log('getters second------------>', seconds);
             return seconds >= 300 || state.tokenInfo.cubeTokenValid ? false : true;
         }
     },

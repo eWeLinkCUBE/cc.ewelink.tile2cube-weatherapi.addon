@@ -17,7 +17,7 @@ onMounted(() => {
     // sseStore.startSse();
 });
 
-/** 判断当前语言 */
+/** judge locale */
 const judgeLangue = () => {
     let browserLanguage = window.location.href;
     if (!browserLanguage) {
