@@ -8,7 +8,7 @@
         </header>
         <section>
             <div class="temperature">
-                <img src="@/assets/img/sunny.png" alt="" />
+                <img :src="formState.imgSrc" alt="" />
                 <span>{{ formState.temperature + '°' }}</span>
             </div>
             <div class="weather">
@@ -32,7 +32,7 @@ import i18n from '@/i18n/index';
 import _ from 'lodash';
 import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 import { useWeatherStore } from '@/store/weather';
-import { formatTimeUtils } from '@/utils/tools';
+import { FORECAST_SETTING_MAPPING, translateByCode} from '@/utils/tools';
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
@@ -58,7 +58,11 @@ const init = () => {
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated'], 0);
     formState.updateTime = time.split(' ')[1]; //formatTimeUtils((new Date(time).getTime()), 'HH:mm');
     //weather describe
-    formState.describe = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'text'], '');
+    const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
+    // formState.describe = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'text'], '');
+    const item = FORECAST_SETTING_MAPPING[code];
+    formState.describe = translateByCode(code,props.isDay);
+    formState.imgSrc = props.isDay ? item.dayIcon : item.nightIcon;
 };
 
 interface ISmallCardData {
@@ -70,6 +74,8 @@ interface ISmallCardData {
     describe: string;
     /** weather update time */
     updateTime?: number | string;
+    /** icon */
+    imgSrc:string
 }
 
 /** cast card data */
@@ -78,6 +84,7 @@ const formState = reactive<ISmallCardData>({
     temperature: 0,
     describe: '',
     updateTime: 0,
+    imgSrc:'',
 });
 </script>
 
@@ -131,12 +138,14 @@ const formState = reactive<ISmallCardData>({
             margin-top: .1rem;//0.625rem;
             .word {
                 display: inline-block;
+                width: 10rem;
+                overflow: hidden;
                 white-space: nowrap;
-                width: 3.25rem;
-                text-align: center;
+                text-overflow: ellipsis;
+                text-align: left;
                 color: #333333;
                 font-weight: 600;
-                font-size: 1.2rem;
+                font-size: 1.125rem;
             }
         }
     }

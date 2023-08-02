@@ -16,13 +16,6 @@ import api from '@/api/Weather/index';
 import _ from 'lodash';
 import { useWeatherStore } from '@/store/weather';
 const weatherStore = useWeatherStore();
-
-const indicator = h(LoadingOutlined, {
-    style: {
-        fontSize: '24px',
-    },
-    spin: true,
-});
 /** current card type */
 const cardType = shallowRef<any>();
 /** day or night */
