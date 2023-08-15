@@ -205,12 +205,19 @@ const imgMapping = (days: IDays) => {
         justify-content: space-between;
         text-align: left;
         .area-icon {
+            display: flex;
+            align-items: center;
             img {
                 width: 14px;
                 height: 14px;
                 margin-right: 6px;
             }
             span {
+                display:inline-block;
+                width:240px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
                 font-size: 12px;
             }
         }
@@ -249,6 +256,10 @@ const imgMapping = (days: IDays) => {
                 text-align: left;
                 p {
                     width: 100%;
+                    max-width: 54vw;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                     color: #333333;
                     font-size: 16px;
                     font-weight: 600;

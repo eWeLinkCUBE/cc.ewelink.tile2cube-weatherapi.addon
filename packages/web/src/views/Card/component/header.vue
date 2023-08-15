@@ -51,10 +51,21 @@ header {
     user-select: none;
     font-weight: 400;
     color: #FFFFFF;
-    img {
-        width: 18px;
-        height: 18px;
-        margin-right: 5px;
+    .left{
+        display: flex;
+        align-items: center;
+        img {
+            width: 18px;
+            height: 18px;
+            margin-right: 5px;
+        }
+        span{
+            display: inline-block;
+            width: 68vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     }
 }
 </style>

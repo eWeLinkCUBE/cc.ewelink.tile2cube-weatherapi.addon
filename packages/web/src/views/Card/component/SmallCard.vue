@@ -103,6 +103,10 @@ const init = () => {
         align-items: center;
         text-align: left;
         .area-icon {
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             img {
                 width: 14px;
                 height: 14px;
@@ -126,18 +130,21 @@ const init = () => {
             span {
                 color: #333333;
                 font-size: 28px;
+                white-space: nowrap;
             }
         }
         .weather {
             display: flex;
-            align-items: center;
+            align-items: left;
             justify-content: space-between;
             margin-top: 10px;
             .word {
                 display: inline-block;
+                width: 90vw;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 white-space: nowrap;
-                width: 52px;
-                text-align: center;
+                text-align: left;
                 color: #333333;
                 font-size: 16px;
             }

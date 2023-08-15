@@ -93,11 +93,11 @@ const formState = reactive<ISmallCardData>({
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: .8rem;//.6875rem;
+    box-sizing:border-box;
     padding:.625rem .875rem 1rem .625rem;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
-    min-height: 100vh;
+    overflow: hidden;
     header {
         display: flex;
         align-items: center;
@@ -112,6 +112,10 @@ const formState = reactive<ISmallCardData>({
             }
             span {
                 font-size: 0.75rem;
+                width:70vw;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
             }
         }
     }
@@ -129,6 +133,7 @@ const formState = reactive<ISmallCardData>({
                 color: #333333;
                 font-size: 2.5rem;//1.75rem;
                 font-weight: 600;
+                white-space: nowrap;
             }
         }
         .weather {
@@ -139,9 +144,7 @@ const formState = reactive<ISmallCardData>({
             .word {
                 display: inline-block;
                 width: 10rem;
-                overflow: hidden;
                 white-space: nowrap;
-                text-overflow: ellipsis;
                 text-align: left;
                 color: #333333;
                 font-weight: 600;
