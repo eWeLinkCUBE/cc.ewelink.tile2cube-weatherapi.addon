@@ -8,7 +8,7 @@
         </header>
         <section>
             <div class="temperature">
-                <img src="@/assets/img/sunny.png" alt="" />
+                <img :src="formState.imgSrc" alt="" />
                 <span>{{ formState.temperature + '°' }}</span>
             </div>
             <div class="weather">
@@ -32,7 +32,7 @@ import i18n from '@/i18n/index';
 import _ from 'lodash';
 import type { IForeCastResultInfo } from '@/api/ts/interface/IWeatherInfo';
 import { useWeatherStore } from '@/store/weather';
-import { formatTimeUtils } from '@/utils/tools';
+import { FORECAST_SETTING_MAPPING, translateByCode} from '@/utils/tools';
 
 const props = defineProps<{
     foreCastInfo: IForeCastResultInfo;
@@ -58,7 +58,11 @@ const init = () => {
     const time = _.get(props.foreCastInfo, ['forecastData', 'current', 'last_updated'], 0);
     formState.updateTime = time.split(' ')[1]; //formatTimeUtils((new Date(time).getTime()), 'HH:mm');
     //weather describe
-    formState.describe = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'text'], '');
+    const code = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'code'], 1000);
+    // formState.describe = _.get(props.foreCastInfo, ['forecastData', 'current', 'condition', 'text'], '');
+    const item = FORECAST_SETTING_MAPPING[code];
+    formState.describe = translateByCode(code,props.isDay);
+    formState.imgSrc = props.isDay ? item.dayIcon : item.nightIcon;
 };
 
 interface ISmallCardData {
@@ -70,6 +74,8 @@ interface ISmallCardData {
     describe: string;
     /** weather update time */
     updateTime?: number | string;
+    /** icon */
+    imgSrc:string
 }
 
 /** cast card data */
@@ -78,6 +84,7 @@ const formState = reactive<ISmallCardData>({
     temperature: 0,
     describe: '',
     updateTime: 0,
+    imgSrc:'',
 });
 </script>
 
@@ -86,11 +93,11 @@ const formState = reactive<ISmallCardData>({
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: .8rem;//.6875rem;
+    box-sizing:border-box;
     padding:.625rem .875rem 1rem .625rem;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
-    min-height: 100vh;
+    overflow: hidden;
     header {
         display: flex;
         align-items: center;
@@ -105,6 +112,10 @@ const formState = reactive<ISmallCardData>({
             }
             span {
                 font-size: 0.75rem;
+                width:70vw;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
             }
         }
     }
@@ -122,6 +133,7 @@ const formState = reactive<ISmallCardData>({
                 color: #333333;
                 font-size: 2.5rem;//1.75rem;
                 font-weight: 600;
+                white-space: nowrap;
             }
         }
         .weather {
@@ -131,12 +143,12 @@ const formState = reactive<ISmallCardData>({
             margin-top: .1rem;//0.625rem;
             .word {
                 display: inline-block;
+                width: 10rem;
                 white-space: nowrap;
-                width: 3.25rem;
-                text-align: center;
+                text-align: left;
                 color: #333333;
                 font-weight: 600;
-                font-size: 1.2rem;
+                font-size: 1.125rem;
             }
         }
     }
